@@ -2,7 +2,21 @@
 
 @layer base {
   body {
-    background-color: #f9fafb; /* bg-gray-50 fallback */
-    color: #111827;            /* text-gray-900 fallback */
+    @apply bg-zinc-50 text-zinc-900 antialiased;
+    background-color: #fafafa;
+    color: #18181b;
+  }
+}
+
+@theme {
+  --animate-marquee: marquee 25s linear infinite;
+  
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
   }
 }

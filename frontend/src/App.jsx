@@ -26,11 +26,14 @@ function Navigation({ session, handleLogout, openAuth }) {
     <nav className="bg-white/95 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
-          <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white font-black text-xl shadow-sm">
-              S
+          <Link to="/" className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-md">
+              B
             </div>
-            <span className="text-xl font-black text-gray-900 tracking-tight hidden sm:block">SkillGap AI</span>
+            <div className="flex flex-col">
+              <span className="text-xl font-black text-gray-900 tracking-tight hidden sm:block leading-tight">Bridge-IQ</span>
+              <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest hidden sm:block leading-tight">Skill Analytics</span>
+            </div>
           </Link>
 
           {/* Desktop Navigation Links */}
@@ -49,7 +52,7 @@ function Navigation({ session, handleLogout, openAuth }) {
           {session ? (
             <div className="flex items-center gap-3 animate-in fade-in duration-300">
               <span className="px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-sm font-bold text-indigo-700">
-                {session.user?.email || 'user@skillgap.ai'}
+                {session.user?.email || 'user@bridge-iq.ai'}
               </span>
               <Link 
                 to="/dashboard"
@@ -97,7 +100,7 @@ function Navigation({ session, handleLogout, openAuth }) {
             </div>
           ) : (
             <div className="pt-4 border-t border-gray-100 space-y-3">
-              <div className="px-4 text-sm font-bold text-indigo-600 truncate">{session.user?.email || 'user@skillgap.ai'}</div>
+              <div className="px-4 text-sm font-bold text-indigo-600 truncate">{session.user?.email || 'user@bridge-iq.ai'}</div>
               <button onClick={() => { setMobileMenuOpen(false); handleLogout(); }} className="w-full text-left px-4 py-3 text-sm font-bold text-red-600 hover:bg-red-50 rounded-xl transition-colors">Logout</button>
             </div>
           )}
