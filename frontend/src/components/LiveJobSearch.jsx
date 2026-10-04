@@ -88,7 +88,7 @@ export default function LiveJobSearch() {
         }));
         aggregatedJobs = [...aggregatedJobs, ...normalizedJSearch];
       } else {
-        setApiWarning('Primary Job API failed to connect. Showing available fallback results from Arbeitnow.');
+        setApiWarning('JSearch API failed to connect. Showing available fallback results from Arbeitnow.');
       }
 
       // 2. Process Arbeitnow (Public API directly from Frontend)
@@ -293,7 +293,7 @@ export default function LiveJobSearch() {
                         <span>{locBadge.icon}</span> {locBadge.text}
                       </span>
                       <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
-                        job.source === 'RemoteOK' 
+                        job.source === 'JSearch' 
                           ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200' 
                           : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200'
                       }`}>
