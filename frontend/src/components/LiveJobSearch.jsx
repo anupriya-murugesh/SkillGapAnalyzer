@@ -1,7 +1,13 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { saveJobBookmark, removeJobBookmark, getSavedJobs } from '../services/persistenceService';
+import { useToast } from '../context/ToastContext';
+import { API_BASE_URL } from '../config';
 
-export default function LiveJobSearch({ onAnalyzeJob }) {
+export default function LiveJobSearch() {
+  const navigate = useNavigate();
+  const { addToast } = useToast();
+  
   const [query, setQuery] = useState('');
   const [location, setLocation] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,10 +29,12 @@ export default function LiveJobSearch({ onAnalyzeJob }) {
       const newIds = new Set(savedJobIds);
       newIds.delete(id);
       setSavedJobIds(newIds);
+      addToast('Job removed from wishlist', 'info');
     } else {
       const jobToSave = { ...job, job_id: id };
       await saveJobBookmark(jobToSave);
       setSavedJobIds(new Set(savedJobIds).add(id));
+      addToast('Job saved to your Target Wishlist!', 'success');
     }
   };
 
@@ -36,7 +44,7 @@ export default function LiveJobSearch({ onAnalyzeJob }) {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:8000/api/live-jobs', {
+      const response = await fetch(`${API_BASE_URL}/api/live-jobs`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +111,7 @@ export default function LiveJobSearch({ onAnalyzeJob }) {
             
             <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-gray-200">
               <button 
-                onClick={() => onAnalyzeJob(job.title, job.description)}
+                onClick={() => navigate('/analyzer', { state: { jobTitle: job.title, jobDesc: job.description } })}
                 className="flex-1 px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-bold rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-colors shadow-sm"
               >
                 Analyze Skill Gap

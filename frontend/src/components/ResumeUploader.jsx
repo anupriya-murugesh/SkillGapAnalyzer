@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_BASE_URL } from '../config';
 
 export default function ResumeUploader({ onSkillsExtracted }) {
   const [loading, setLoading] = useState(false);
@@ -15,7 +16,7 @@ export default function ResumeUploader({ onSkillsExtracted }) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     try {
-      const response = await fetch('http://localhost:8000/api/extract-resume', {
+      const response = await fetch(`${API_BASE_URL}/api/extract-resume`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ resume_text: text }),

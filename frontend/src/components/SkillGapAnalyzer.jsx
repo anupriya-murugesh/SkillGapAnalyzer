@@ -1,15 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import ResumeUploader from './ResumeUploader';
-import LiveJobSearch from './LiveJobSearch';
+import LearningRoadmap from './LearningRoadmap';
+import { useToast } from '../context/ToastContext';
+import { API_BASE_URL } from '../config';
 
 export default function SkillGapAnalyzer() {
-  const [activeTab, setActiveTab] = useState('analyzer'); // 'analyzer' or 'jobs'
+  const location = useLocation();
+  const { addToast } = useToast();
+  
+  const incomingJobTitle = location.state?.jobTitle || '';
+  const incomingJobDesc = location.state?.jobDesc || '';
 
   // Analyzer State
-  const [jobTitle, setJobTitle] = useState('');
-  const [jobDescription, setJobDescription] = useState('');
+  const [jobTitle, setJobTitle] = useState(incomingJobTitle);
+  const [jobDescription, setJobDescription] = useState(incomingJobDesc);
   const [userSkills, setUserSkills] = useState([]);
   const [skillInput, setSkillInput] = useState('');
+  
+  useEffect(() => {
+    if (incomingJobTitle) setJobTitle(incomingJobTitle);
+    if (incomingJobDesc) setJobDescription(incomingJobDesc);
+  }, [incomingJobTitle, incomingJobDesc]);
   
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -32,14 +44,7 @@ export default function SkillGapAnalyzer() {
   const handleSkillsExtracted = (extractedSkills) => {
     const newSkills = [...new Set([...userSkills, ...extractedSkills])];
     setUserSkills(newSkills);
-  };
-
-  const handleAnalyzeJob = (title, description) => {
-    setJobTitle(title);
-    setJobDescription(description);
-    setActiveTab('analyzer');
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    addToast('Resume uploaded and skills extracted successfully!', 'success');
   };
 
   const handleSubmit = async (e) => {
@@ -48,7 +53,7 @@ export default function SkillGapAnalyzer() {
     setError('');
     
     try {
-      const response = await fetch('http://localhost:8000/api/analyze-gap', {
+      const response = await fetch(`${API_BASE_URL}/api/analyze-gap`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -61,6 +66,7 @@ export default function SkillGapAnalyzer() {
       if (!response.ok) throw new Error('Analysis request failed');
       const data = await response.json();
       setResult(data);
+      addToast('Job match analysis complete!', 'success');
       
       // Auto-save to persistence service
       import('../services/persistenceService').then(({ saveAnalysisResult }) => {
@@ -81,29 +87,6 @@ export default function SkillGapAnalyzer() {
 
   return (
     <div className="max-w-5xl mx-auto mt-8 px-4">
-      {/* Tabs */}
-      <div className="flex space-x-2 mb-6 bg-gray-200/50 p-1.5 rounded-2xl">
-        <button 
-          onClick={() => setActiveTab('analyzer')}
-          className={`flex-1 py-3.5 text-sm font-bold rounded-xl transition-all duration-300 ${activeTab === 'analyzer' ? 'bg-white text-indigo-700 shadow-md scale-100' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200/50 scale-95'}`}
-        >
-          Skill Analyzer & Resume
-        </button>
-        <button 
-          onClick={() => setActiveTab('jobs')}
-          className={`flex-1 py-3.5 text-sm font-bold rounded-xl transition-all duration-300 ${activeTab === 'jobs' ? 'bg-white text-indigo-700 shadow-md scale-100' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200/50 scale-95'}`}
-        >
-          Live Global Job Market
-        </button>
-      </div>
-
-      {activeTab === 'jobs' && (
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <LiveJobSearch onAnalyzeJob={handleAnalyzeJob} />
-        </div>
-      )}
-
-      {activeTab === 'analyzer' && (
         <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-gray-100 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <h2 className="text-2xl font-bold mb-6 text-gray-800">Analyze Your Skill Gap</h2>
           
@@ -226,10 +209,15 @@ export default function SkillGapAnalyzer() {
                   )}
                 </div>
               )}
+              
+              {result.roadmap && result.roadmap.length > 0 && (
+                <div className="mt-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <LearningRoadmap roadmap={result.roadmap} />
+                </div>
+              )}
             </div>
           )}
         </div>
-      )}
     </div>
   );
 }

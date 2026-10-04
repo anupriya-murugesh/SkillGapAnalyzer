@@ -1,10 +1,17 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getAnalysisHistory, getSavedJobs, removeJobBookmark } from '../services/persistenceService';
+import LearningRoadmap from './LearningRoadmap';
+import { useToast } from '../context/ToastContext';
 
-export default function Dashboard({ onAnalyzeJob }) {
+export default function Dashboard() {
+  const navigate = useNavigate();
+  const { addToast } = useToast();
+  
   const [history, setHistory] = useState([]);
   const [savedJobs, setSavedJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [expandedHistoryId, setExpandedHistoryId] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,6 +27,7 @@ export default function Dashboard({ onAnalyzeJob }) {
   const handleRemoveBookmark = async (jobId) => {
     await removeJobBookmark(jobId);
     setSavedJobs(savedJobs.filter(j => (j.data?.job_id || j.id) !== jobId && j.job_id !== jobId));
+    addToast('Job removed from wishlist', 'info');
   };
 
   if (loading) {
@@ -68,22 +76,34 @@ export default function Dashboard({ onAnalyzeJob }) {
         ) : (
           <div className="grid gap-4">
             {history.map((item, idx) => (
-              <div key={idx} className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4 hover:shadow-md transition-shadow">
-                <div className="flex-1 w-full">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="font-bold text-xl text-gray-900">{item.data.jobTitle || 'Custom Job Profile'}</h3>
-                    <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full border border-gray-200 whitespace-nowrap">{new Date(item.created_at).toLocaleDateString()}</span>
+              <div key={idx} className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                <div 
+                  className="p-6 flex flex-col sm:flex-row justify-between items-center gap-4 cursor-pointer"
+                  onClick={() => setExpandedHistoryId(expandedHistoryId === idx ? null : idx)}
+                >
+                  <div className="flex-1 w-full">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="font-bold text-xl text-gray-900">{item.data.jobTitle || 'Custom Job Profile'}</h3>
+                      <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full border border-gray-200 whitespace-nowrap">{new Date(item.created_at).toLocaleDateString()}</span>
+                    </div>
+                    <p className="text-sm text-gray-600 font-semibold flex items-center gap-4">
+                      <span className="flex items-center gap-1.5"><span className="text-red-500">✗</span> {item.data.missing_tech_skills?.length || 0} Tech Missing</span>
+                      <span className="flex items-center gap-1.5"><span className="text-purple-500">✎</span> {item.data.missing_soft_skills?.length || 0} Soft Missing</span>
+                    </p>
                   </div>
-                  <p className="text-sm text-gray-600 font-semibold flex items-center gap-4">
-                    <span className="flex items-center gap-1.5"><span className="text-red-500">✗</span> {item.data.missing_tech_skills?.length || 0} Tech Missing</span>
-                    <span className="flex items-center gap-1.5"><span className="text-purple-500">✎</span> {item.data.missing_soft_skills?.length || 0} Soft Missing</span>
-                  </p>
+                  <div className="text-right flex-shrink-0 flex items-center gap-4">
+                    <span className={`px-5 py-2.5 rounded-xl font-black text-lg shadow-sm border ${item.data.match_percentage >= 70 ? 'bg-green-50 text-green-700 border-green-200' : item.data.match_percentage >= 40 ? 'bg-orange-50 text-orange-700 border-orange-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
+                      {item.data.match_percentage}% Match
+                    </span>
+                    <span className={`text-gray-400 font-bold transform transition-transform ${expandedHistoryId === idx ? 'rotate-180' : ''}`}>▼</span>
+                  </div>
                 </div>
-                <div className="text-right flex-shrink-0">
-                  <span className={`px-5 py-2.5 rounded-xl font-black text-lg shadow-sm border ${item.data.match_percentage >= 70 ? 'bg-green-50 text-green-700 border-green-200' : item.data.match_percentage >= 40 ? 'bg-orange-50 text-orange-700 border-orange-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
-                    {item.data.match_percentage}% Match
-                  </span>
-                </div>
+                
+                {expandedHistoryId === idx && item.data.roadmap && (
+                  <div className="px-2 pb-6 pt-2 bg-gray-50 border-t border-gray-100">
+                    <LearningRoadmap roadmap={item.data.roadmap} />
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -123,7 +143,7 @@ export default function Dashboard({ onAnalyzeJob }) {
                   
                   <div className="mt-auto flex flex-col xl:flex-row gap-3">
                     <button 
-                      onClick={() => onAnalyzeJob(job.title, job.description)}
+                      onClick={() => navigate('/analyzer', { state: { jobTitle: job.title, jobDesc: job.description } })}
                       className="flex-1 px-4 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-xl hover:bg-gray-800 transition-colors"
                     >
                       Analyze

@@ -1,8 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
-export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
-  const [isLogin, setIsLogin] = useState(true);
+export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode = 'login' }) {
+  const [isLogin, setIsLogin] = useState(initialMode === 'login');
+
+  useEffect(() => {
+    setIsLogin(initialMode === 'login');
+  }, [initialMode, isOpen]);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -65,10 +70,10 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
         <div className="p-8">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-black text-gray-900 mb-2">
-              {isLogin ? 'Welcome Back' : 'Create Account'}
+              {isLogin ? 'Welcome Back' : 'Create Your Account'}
             </h2>
             <p className="text-gray-500 font-medium text-sm">
-              {isLogin ? 'Sign in to sync your gap analysis' : 'Sign up to save your career progression'}
+              {isLogin ? 'Log in to sync your gap analysis' : 'Sign up to save your career progression'}
             </p>
           </div>
 
@@ -112,7 +117,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
               disabled={loading}
               className="w-full py-3.5 bg-gray-900 hover:bg-gray-800 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-60 flex justify-center items-center mt-2"
             >
-              {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Sign Up'}
+              {loading ? 'Processing...' : isLogin ? 'Log In' : 'Sign Up'}
             </button>
           </form>
           

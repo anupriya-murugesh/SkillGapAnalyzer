@@ -6,6 +6,7 @@ from services.ai_extractor import extract_skills_from_jd
 from services.gap_engine import calculate_skill_gap
 from services.resume_extractor import extract_skills_from_resume
 from services.job_search import search_live_jobs
+from services.roadmap_generator import generate_learning_roadmap
 import logging
 import re
 
@@ -86,6 +87,10 @@ def analyze_gap(request: AnalyzeGapRequest):
         except Exception as e:
             logging.error(f"Supabase insert failed: {e}")
             
+    # Generate Roadmap
+    missing_all = gap_result["missing_tech_skills"] + gap_result["missing_soft_skills"]
+    roadmap = generate_learning_roadmap(missing_all, request.job_title)
+
     # 4. Return the complete analysis
     return {
         "job_title": request.job_title,
@@ -95,7 +100,8 @@ def analyze_gap(request: AnalyzeGapRequest):
         "missing_soft_skills": gap_result["missing_soft_skills"],
         "all_required_tech": req_tech,
         "all_required_soft": req_soft,
-        "saved_to_db": saved_to_db
+        "saved_to_db": saved_to_db,
+        "roadmap": roadmap
     }
 
 class ResumeRequest(BaseModel):
