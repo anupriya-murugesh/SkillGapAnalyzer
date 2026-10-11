@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { saveJobBookmark, removeJobBookmark, getSavedJobs } from '../services/persistenceService';
 import { useToast } from '../context/ToastContext';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, RAPIDAPI_KEY } from '../config';
 import { cleanHtmlText, truncateText, extractKeySkills } from '../utils/cleanText';
 
 export default function LiveJobSearch() {
@@ -51,17 +51,64 @@ export default function LiveJobSearch() {
     const qLower = searchQuery.toLowerCase();
 
     try {
+      // 1. Fetch JSearch Jobs (Backend-first with direct RapidAPI fallback)
+      const fetchJSearchJobs = async () => {
+        try {
+          const endpoint = `${API_BASE_URL}/api/live-jobs`;
+          console.log('[LiveJobSearch] Calling backend:', endpoint);
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: searchQuery, location: location || 'Global' }),
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data.jobs) && data.jobs.length > 0) {
+              return data.jobs;
+            }
+          } else {
+            console.warn(`[LiveJobSearch] Backend responded with HTTP ${res.status}`);
+          }
+        } catch (backendErr) {
+          console.warn('[LiveJobSearch] Backend connection failed:', backendErr);
+        }
+
+        // Direct RapidAPI client fallback if key is configured
+        if (RAPIDAPI_KEY) {
+          try {
+            console.log('[LiveJobSearch] Using direct RapidAPI client fallback...');
+            const term = location && location.toLowerCase() !== 'global' ? `${searchQuery} in ${location}` : searchQuery;
+            const encoded = encodeURIComponent(term);
+            const directRes = await fetch(`https://jsearch.p.rapidapi.com/search-v2?query=${encoded}&page=1&num_pages=1`, {
+              headers: {
+                'X-RapidAPI-Key': RAPIDAPI_KEY,
+                'X-RapidAPI-Host': 'jsearch.p.rapidapi.com'
+              }
+            });
+            if (directRes.ok) {
+              const directData = await directRes.json();
+              const raw = directData.data?.jobs || (Array.isArray(directData.data) ? directData.data : []);
+              return raw.map(item => ({
+                job_id: item.job_id,
+                title: item.job_title || item.title,
+                company: item.employer_name || item.company,
+                location: [item.job_city, item.job_country].filter(Boolean).join(', ') || location,
+                source: 'JSearch',
+                description: item.job_description || item.description || '',
+                apply_link: item.job_apply_link || item.apply_link || '#'
+              }));
+            }
+          } catch (directErr) {
+            console.error('[LiveJobSearch] Direct RapidAPI fallback error:', directErr);
+          }
+        }
+
+        throw new Error('JSearch API failed to connect');
+      };
+
       // Execute Hybrid Dual-Source Aggregator
       const [jsearchResult, arbeitnowResult] = await Promise.allSettled([
-        fetch(`${API_BASE_URL}/api/live-jobs`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: searchQuery, location: location || 'Global' }),
-        }).then(async res => {
-          if (!res.ok) throw new Error('JSearch API Error');
-          const data = await res.json();
-          return data.jobs || [];
-        }),
+        fetchJSearchJobs(),
         
         fetch('https://www.arbeitnow.com/api/job-board-api')
           .then(async res => {
@@ -74,8 +121,8 @@ export default function LiveJobSearch() {
       let aggregatedJobs = [];
       setApiWarning('');
 
-      // 1. Process JSearch (RapidAPI via Backend)
-      if (jsearchResult.status === 'fulfilled' && Array.isArray(jsearchResult.value)) {
+      // Process JSearch Results
+      if (jsearchResult.status === 'fulfilled' && Array.isArray(jsearchResult.value) && jsearchResult.value.length > 0) {
         const normalizedJSearch = jsearchResult.value.map((job) => ({
           id: job.job_id || Math.random().toString(),
           title: job.title || job.job_title, 
