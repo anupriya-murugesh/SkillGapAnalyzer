@@ -1,0 +1,25 @@
+# Environment Variables (Never commit secrets)
+.env
+.env.local
+.env.*.local
+*.env
+backend/.env
+frontend/.env
+!.env.example
+
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+
+# Build and logs
+dist/
+dist-ssr/
+build/
+*.log
+
+# System and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
