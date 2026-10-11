@@ -29,6 +29,23 @@ export const supabase = isRealSupabase
         onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
         signInWithPassword: async () => { throw new Error('Failed to fetch') },
         signUp: async () => { throw new Error('Failed to fetch') },
-        signOut: async () => { return { error: null } }
+        signInWithOAuth: async () => { throw new Error('Failed to fetch') },
+        resetPasswordForEmail: async () => { throw new Error('Failed to fetch') },
+        signOut: async () => { return { error: null } },
+        getUser: async () => ({ data: { user: null }, error: null })
+      },
+      from: () => {
+        const queryBuilder = {
+          select: () => queryBuilder,
+          eq: () => queryBuilder,
+          order: () => queryBuilder,
+          single: async () => ({ data: null, error: null }),
+          maybeSingle: async () => ({ data: null, error: null }),
+          then: (resolve) => Promise.resolve({ data: [], error: null }).then(resolve),
+          insert: async (data) => ({ data, error: null }),
+          upsert: async (data) => ({ data, error: null }),
+          delete: () => queryBuilder
+        };
+        return queryBuilder;
       }
     };

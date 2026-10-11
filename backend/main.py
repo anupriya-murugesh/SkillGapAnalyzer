@@ -7,6 +7,7 @@ from services.gap_engine import calculate_skill_gap
 from services.resume_extractor import extract_skills_from_resume
 from services.job_search import search_live_jobs
 from services.roadmap_generator import generate_learning_roadmap
+from services.quiz_generator import generate_quiz_questions
 import logging
 import re
 
@@ -130,4 +131,16 @@ def live_jobs(request: JobSearchRequest):
         "status": "success",
         "jobs": jobs,
         "count": len(jobs)
+    }
+
+class QuizRequest(BaseModel):
+    skill: str
+
+@app.post("/api/generate-quiz")
+def generate_quiz(request: QuizRequest):
+    questions = generate_quiz_questions(request.skill)
+    return {
+        "status": "success",
+        "skill": request.skill,
+        "questions": questions
     }
