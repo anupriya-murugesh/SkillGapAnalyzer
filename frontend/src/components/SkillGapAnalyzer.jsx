@@ -73,7 +73,17 @@ export default function SkillGapAnalyzer() {
         saveAnalysisResult({ ...data, jobTitle: jobTitle || 'Custom Profile' });
       }).catch(console.error);
     } catch (err) {
-      setError(err.message || 'An error occurred during analysis');
+      console.error('SkillGapAnalyzer Error:', err);
+      let errorMsg = err.message || 'An error occurred during analysis';
+      if (err.name === 'TypeError' && String(err.message).toLowerCase().includes('fetch')) {
+        const isProd = typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+        if (isProd && API_BASE_URL.includes('localhost')) {
+          errorMsg = 'Cannot connect to backend: Your deployed frontend is still attempting to call localhost:8000. Please add the VITE_BACKEND_URL environment variable in your Netlify/Vercel dashboard pointing to your deployed backend URL (e.g. https://your-backend.onrender.com).';
+        } else {
+          errorMsg = 'Unable to connect to the backend server. Please ensure the backend is running and reachable.';
+        }
+      }
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
