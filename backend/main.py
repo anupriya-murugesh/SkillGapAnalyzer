@@ -32,6 +32,10 @@ def sanitize_text(text: str) -> str:
 def health_check():
     return {"status": "online", "app": "Skill Gap Analyzer API"}
 
+@app.get("/api")
+def api_health_check():
+    return {"status": "online", "app": "Skill Gap Analyzer API"}
+
 @app.get("/api/db-check")
 def db_check():
     if supabase is not None:
