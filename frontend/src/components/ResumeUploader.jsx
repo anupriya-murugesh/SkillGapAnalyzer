@@ -67,11 +67,12 @@ export default function ResumeUploader({ onSkillsExtracted }) {
   };
 
   return (
-    <div className="border-2 border-gray-200 rounded-2xl p-6 bg-gray-50 flex flex-col gap-4">
+    <div className="border-2 border-slate-800 rounded-3xl p-6 bg-[#0c0e17] flex flex-col gap-4 shadow-inner">
       <div className="flex flex-col sm:flex-row gap-6 items-stretch">
-        <div className="flex-1 flex flex-col justify-center border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:bg-gray-100 transition-colors bg-white">
-          <h3 className="text-lg font-bold text-gray-800 mb-2">Upload Resume File</h3>
-          <p className="text-gray-500 mb-4 text-sm font-medium">Upload a .txt file to automatically extract your skills using AI.</p>
+        <div className="flex-1 flex flex-col justify-center border-2 border-dashed border-slate-700/80 rounded-2xl p-6 text-center hover:border-[#B298E7]/60 transition-colors bg-[#121626]/80">
+          <div className="w-10 h-10 rounded-xl bg-[#B298E7]/15 border border-[#B298E7]/30 flex items-center justify-center text-lg mx-auto mb-3">📄</div>
+          <h3 className="text-base font-black text-white mb-1">Upload Resume File</h3>
+          <p className="text-slate-400 mb-4 text-xs font-medium">Upload a .txt or .md file to automatically extract your skills with Gemini.</p>
           
           <div className="relative mx-auto inline-block">
             <input 
@@ -83,22 +84,25 @@ export default function ResumeUploader({ onSkillsExtracted }) {
             />
             <button 
               disabled={loading}
-              className="px-6 py-2.5 bg-indigo-100 text-indigo-800 font-bold rounded-xl hover:bg-indigo-200 transition-colors pointer-events-none"
+              className="px-6 py-2.5 bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17] font-black rounded-xl shadow-md transition-all pointer-events-none text-xs"
             >
-              Select .txt File
+              Select Resume File
             </button>
           </div>
         </div>
 
         <div className="flex items-center justify-center">
-          <span className="text-gray-400 font-bold uppercase text-sm px-2">OR</span>
+          <span className="text-slate-500 font-mono font-bold uppercase text-xs px-2">OR</span>
         </div>
 
         <div className="flex-1 flex flex-col">
-          <h3 className="text-lg font-bold text-gray-800 mb-2">Paste Resume Text</h3>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xs font-black text-white uppercase tracking-wider">Paste Resume Text</span>
+            <span className="text-[10px] font-bold text-[#B8E3E9] bg-[#B8E3E9]/10 px-2 py-0.5 rounded border border-[#B8E3E9]/30">Direct Ingest</span>
+          </div>
           <textarea
-            className="w-full flex-1 min-h-[120px] p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none resize-none text-sm text-gray-700 font-medium bg-white transition-colors"
-            placeholder="Paste your resume content here..."
+            className="w-full flex-1 min-h-[120px] p-4 border border-slate-800 rounded-2xl focus:border-[#B8E3E9] outline-none resize-none text-xs text-white font-medium bg-[#121626] transition-colors placeholder-slate-500"
+            placeholder="Paste your raw resume work history, skills, or projects..."
             value={resumeText}
             onChange={(e) => setResumeText(e.target.value)}
             disabled={loading}
@@ -106,16 +110,16 @@ export default function ResumeUploader({ onSkillsExtracted }) {
           <button 
             onClick={handleTextSubmit}
             disabled={loading || !resumeText.trim()}
-            className="mt-3 w-full py-2.5 bg-gray-900 text-white font-bold rounded-xl hover:bg-gray-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex justify-center items-center gap-2 shadow-sm"
+            className="mt-3 w-full py-2.5 bg-[#B298E7] text-[#0c0e17] font-black rounded-xl hover:brightness-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 text-xs shadow-md cursor-pointer"
           >
-            {loading ? 'Extracting AI Data...' : 'Extract Skills'}
+            {loading ? 'Extracting Skills with AI...' : 'Extract Skills'}
           </button>
         </div>
       </div>
       
       {error && (
-        <div className="p-3 bg-red-50 text-red-700 rounded-lg border border-red-200 font-semibold text-center text-sm">
-          {error}
+        <div className="p-3 bg-[#F5B8D5]/10 text-[#F5B8D5] rounded-xl border border-[#F5B8D5]/30 font-semibold text-center text-xs">
+          ⚠️ {error}
         </div>
       )}
     </div>

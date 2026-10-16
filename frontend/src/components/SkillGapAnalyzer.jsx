@@ -80,33 +80,43 @@ export default function SkillGapAnalyzer() {
   };
 
   const getMatchColor = (percentage) => {
-    if (percentage >= 70) return 'text-green-700 bg-green-50 border-green-200';
-    if (percentage >= 40) return 'text-orange-700 bg-orange-50 border-orange-200';
-    return 'text-red-700 bg-red-50 border-red-200';
+    if (percentage >= 70) return 'text-[#B8E3E9] bg-[#B8E3E9]/10 border-[#B8E3E9]/40';
+    if (percentage >= 40) return 'text-[#B298E7] bg-[#B298E7]/10 border-[#B298E7]/40';
+    return 'text-[#F5B8D5] bg-[#F5B8D5]/10 border-[#F5B8D5]/40';
   };
 
   return (
     <div className="max-w-5xl mx-auto mt-8 px-4">
-        <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-gray-100 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800">Analyze Your Skill Gap</h2>
+        <div className="bg-[#121626] p-6 sm:p-10 rounded-3xl shadow-2xl border border-slate-800 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-800">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B298E7]/10 border border-[#B298E7]/30 text-[#B298E7] text-xs font-bold uppercase tracking-wider mb-2">
+                <span>AI GAP TELEMETRY</span>
+              </div>
+              <h2 className="text-3xl font-black text-white tracking-tight">Analyze Your Skill Gap</h2>
+            </div>
+            <div className="hidden sm:block text-xs font-mono text-[#B8E3E9] font-bold">Bridge-IQ Engine v2.0</div>
+          </div>
           
           <div className="mb-8">
             <ResumeUploader onSkillsExtracted={handleSkillsExtracted} />
           </div>
 
           <div className="relative flex py-5 items-center">
-            <div className="flex-grow border-t border-gray-200"></div>
-            <span className="flex-shrink-0 mx-4 text-gray-400 text-sm font-semibold uppercase tracking-wider">or manually input</span>
-            <div className="flex-grow border-t border-gray-200"></div>
+            <div className="flex-grow border-t border-slate-800"></div>
+            <span className="flex-shrink-0 mx-4 text-slate-400 text-xs font-bold uppercase tracking-widest">or manually input details</span>
+            <div className="flex-grow border-t border-slate-800"></div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6 mt-4">
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">Job Title</label>
+              <label className="block text-sm font-bold text-slate-200 mb-2">
+                Job Title <span className="text-[#F5B8D5]">*</span>
+              </label>
               <input
                 type="text"
                 required
-                className="w-full px-5 py-4 border-2 border-gray-200 rounded-2xl focus:ring-0 focus:border-indigo-500 outline-none transition-colors text-gray-700 font-medium bg-gray-50 focus:bg-white"
+                className="w-full px-5 py-4 border-2 border-slate-800 rounded-2xl focus:border-[#B298E7] outline-none transition-colors text-white font-medium bg-[#0c0e17] placeholder-slate-500"
                 placeholder="e.g. Senior Frontend Developer"
                 value={jobTitle}
                 onChange={(e) => setJobTitle(e.target.value)}
@@ -114,29 +124,31 @@ export default function SkillGapAnalyzer() {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">Job Description</label>
+              <label className="block text-sm font-bold text-slate-200 mb-2">
+                Job Description <span className="text-[#F5B8D5]">*</span>
+              </label>
               <textarea
                 required
                 rows={5}
-                className="w-full px-5 py-4 border-2 border-gray-200 rounded-2xl focus:ring-0 focus:border-indigo-500 outline-none resize-none transition-colors text-gray-700 font-medium bg-gray-50 focus:bg-white"
-                placeholder="Paste the full job description here..."
+                className="w-full px-5 py-4 border-2 border-slate-800 rounded-2xl focus:border-[#B298E7] outline-none resize-none transition-colors text-white font-medium bg-[#0c0e17] placeholder-slate-500"
+                placeholder="Paste the target job description or requirements here..."
                 value={jobDescription}
                 onChange={(e) => setJobDescription(e.target.value)}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">Your Current Skills</label>
-              <div className="p-3 border-2 border-gray-200 rounded-2xl focus-within:border-indigo-500 bg-gray-50 focus-within:bg-white transition-colors flex flex-wrap gap-2 items-center min-h-[64px]">
+              <label className="block text-sm font-bold text-slate-200 mb-2">Your Current Skills</label>
+              <div className="p-3 border-2 border-slate-800 rounded-2xl focus-within:border-[#B298E7] bg-[#0c0e17] transition-colors flex flex-wrap gap-2 items-center min-h-[64px]">
                 {userSkills.map((skill, idx) => (
-                  <span key={idx} className="flex items-center gap-1.5 bg-indigo-100 text-indigo-800 px-3.5 py-1.5 rounded-xl text-sm font-bold shadow-sm">
+                  <span key={idx} className="flex items-center gap-1.5 bg-[#B298E7]/15 text-[#B298E7] border border-[#B298E7]/30 px-3.5 py-1.5 rounded-xl text-sm font-bold shadow-sm">
                     {skill}
-                    <button type="button" onClick={() => removeSkill(skill)} className="text-indigo-400 hover:text-indigo-900 ml-1 leading-none text-lg">&times;</button>
+                    <button type="button" onClick={() => removeSkill(skill)} className="text-[#B298E7] hover:text-[#F5B8D5] ml-1 leading-none text-lg cursor-pointer">&times;</button>
                   </span>
                 ))}
                 <input
                   type="text"
-                  className="flex-1 outline-none min-w-[180px] bg-transparent text-gray-700 font-medium px-2 py-1"
+                  className="flex-1 outline-none min-w-[180px] bg-transparent text-white font-medium px-2 py-1 placeholder-slate-500"
                   placeholder={userSkills.length === 0 ? "Type a skill and press Enter..." : "Add another skill..."}
                   value={skillInput}
                   onChange={(e) => setSkillInput(e.target.value)}
@@ -148,32 +160,34 @@ export default function SkillGapAnalyzer() {
             <button
               type="submit"
               disabled={loading || userSkills.length === 0}
-              className="w-full py-4 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all disabled:opacity-60 disabled:cursor-not-allowed flex justify-center items-center gap-3 text-lg mt-8"
+              className="w-full py-4 px-4 bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#B8E3E9] text-[#0c0e17] font-black rounded-2xl shadow-xl hover:shadow-[0_0_30px_rgba(184,227,233,0.4)] hover:brightness-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-3 text-lg mt-8 cursor-pointer active:scale-[0.99]"
             >
               {loading ? 'Analyzing Skills with AI...' : 'Analyze Match'}
             </button>
           </form>
 
           {error && (
-            <div className="mt-8 p-4 bg-red-50 text-red-700 rounded-xl border border-red-200 font-semibold">
+            <div className="mt-8 p-4 bg-[#F5B8D5]/10 text-[#F5B8D5] rounded-2xl border border-[#F5B8D5]/30 font-semibold">
               ⚠️ {error}
             </div>
           )}
 
           {result && (
             <div className="mt-12 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className={`p-8 rounded-3xl text-center border-2 shadow-sm ${getMatchColor(result.match_percentage)}`}>
-                <div className="text-sm font-bold uppercase tracking-widest mb-2 opacity-80">Overall Match</div>
+              <div className={`p-8 rounded-3xl text-center border-2 shadow-xl ${getMatchColor(result.match_percentage)}`}>
+                <div className="text-xs font-mono font-bold uppercase tracking-widest mb-2 opacity-90">Overall Market Alignment</div>
                 <div className="text-7xl font-black tracking-tight">{result.match_percentage}%</div>
               </div>
 
               {result.matched_skills?.length > 0 && (
-                <div className="bg-gray-50 p-6 rounded-3xl border border-gray-200">
-                  <h3 className="text-lg font-bold text-gray-800 mb-4">✓ Matched Skills</h3>
+                <div className="bg-[#0c0e17] p-6 sm:p-8 rounded-3xl border border-slate-800">
+                  <h3 className="text-lg font-black text-[#B8E3E9] mb-4 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#B8E3E9]"></span> Matched Skills ({result.matched_skills.length})
+                  </h3>
                   <div className="flex flex-wrap gap-2">
                     {result.matched_skills.map((skill, idx) => (
-                      <span key={idx} className="px-4 py-2 bg-green-100 text-green-800 rounded-xl text-sm font-bold border border-green-200 shadow-sm">
-                        {skill}
+                      <span key={idx} className="px-4 py-2 bg-[#B8E3E9]/15 text-[#B8E3E9] rounded-xl text-sm font-bold border border-[#B8E3E9]/30 shadow-sm">
+                        ✓ {skill}
                       </span>
                     ))}
                   </div>
@@ -183,12 +197,14 @@ export default function SkillGapAnalyzer() {
               {(result.missing_tech_skills?.length > 0 || result.missing_soft_skills?.length > 0) && (
                 <div className="grid md:grid-cols-2 gap-6">
                   {result.missing_tech_skills?.length > 0 && (
-                    <div className="bg-white p-6 rounded-3xl border border-red-100 shadow-sm">
-                      <h3 className="text-lg font-bold text-gray-800 mb-4 text-red-600">✗ Missing Tech Skills</h3>
+                    <div className="bg-[#0c0e17] p-6 rounded-3xl border border-slate-800 shadow-sm">
+                      <h3 className="text-lg font-black text-[#F5B8D5] mb-4 flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-[#F5B8D5]"></span> Missing Tech Skills ({result.missing_tech_skills.length})
+                      </h3>
                       <div className="flex flex-wrap gap-2">
                         {result.missing_tech_skills.map((skill, idx) => (
-                          <span key={idx} className="px-4 py-2 bg-red-50 text-red-700 rounded-xl text-sm font-semibold border border-red-200">
-                            {skill}
+                          <span key={idx} className="px-4 py-2 bg-[#F5B8D5]/15 text-[#F5B8D5] rounded-xl text-sm font-bold border border-[#F5B8D5]/30">
+                            ✗ {skill}
                           </span>
                         ))}
                       </div>
@@ -196,12 +212,14 @@ export default function SkillGapAnalyzer() {
                   )}
 
                   {result.missing_soft_skills?.length > 0 && (
-                    <div className="bg-white p-6 rounded-3xl border border-purple-100 shadow-sm">
-                      <h3 className="text-lg font-bold text-gray-800 mb-4 text-purple-600">✎ Missing Soft Skills</h3>
+                    <div className="bg-[#0c0e17] p-6 rounded-3xl border border-slate-800 shadow-sm">
+                      <h3 className="text-lg font-black text-[#F9BEDD] mb-4 flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-[#F9BEDD]"></span> Missing Soft Skills ({result.missing_soft_skills.length})
+                      </h3>
                       <div className="flex flex-wrap gap-2">
                         {result.missing_soft_skills.map((skill, idx) => (
-                          <span key={idx} className="px-4 py-2 bg-purple-50 text-purple-700 rounded-xl text-sm font-semibold border border-purple-200">
-                            {skill}
+                          <span key={idx} className="px-4 py-2 bg-[#F9BEDD]/15 text-[#F9BEDD] rounded-xl text-sm font-bold border border-[#F9BEDD]/30">
+                            ✎ {skill}
                           </span>
                         ))}
                       </div>
