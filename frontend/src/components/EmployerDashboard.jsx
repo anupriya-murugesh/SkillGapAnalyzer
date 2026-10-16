@@ -221,27 +221,27 @@ export default function EmployerDashboard({ profile, session }) {
     <div className="space-y-10 animate-in fade-in duration-500 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-zinc-950/90 backdrop-blur-2xl border border-zinc-800/80 shadow-2xl p-6 sm:p-8 text-white">
-        <div className="absolute -top-24 -right-24 w-72 h-72 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="relative overflow-hidden rounded-3xl bg-[#121626]/95 backdrop-blur-2xl border border-slate-800 shadow-2xl p-6 sm:p-8 text-white">
+        <div className="absolute -top-24 -right-24 w-72 h-72 bg-[#B298E7]/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-[#B8E3E9]/15 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold tracking-wider">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B298E7]/10 border border-[#B298E7]/30 text-[#B298E7] text-xs font-bold tracking-wider">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#B8E3E9] animate-pulse" />
               Employer Talent Portal
             </div>
             <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
               {companyName}
             </h1>
-            <p className="text-zinc-400 text-sm font-medium">
-              Managed by <span className="text-zinc-200 font-bold">{recruiterName}</span> • Benchmark & recruit vetted engineering talent
+            <p className="text-slate-400 text-sm font-medium">
+              Managed by <span className="text-slate-200 font-bold">{recruiterName}</span> • Benchmark & recruit vetted engineering talent
             </p>
           </div>
 
           <button
             onClick={() => setIsPostJobModalOpen(true)}
-            className="px-6 py-3.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-500 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 transition-all flex items-center justify-center gap-2 active:scale-95"
+            className="px-6 py-3.5 bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#B8E3E9] hover:brightness-105 text-[#0c0e17] font-black text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
           >
             <span>+ Post a New Job</span>
           </button>
@@ -252,55 +252,55 @@ export default function EmployerDashboard({ profile, session }) {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         
         {/* Metric 1: Active Job Posts */}
-        <div className="p-6 rounded-3xl bg-zinc-950/80 backdrop-blur-xl border border-zinc-800/80 shadow-xl relative overflow-hidden group hover:border-blue-500/40 transition-all">
+        <div className="p-6 rounded-3xl bg-[#121626] backdrop-blur-xl border border-slate-800 shadow-xl relative overflow-hidden group hover:border-[#B8E3E9]/40 transition-all">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
               Active Job Posts
             </span>
-            <span className="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center text-lg">
+            <span className="w-10 h-10 rounded-2xl bg-[#B8E3E9]/15 border border-[#B8E3E9]/30 text-[#B8E3E9] flex items-center justify-center text-lg">
               💼
             </span>
           </div>
           <div className="text-4xl font-black text-white mb-1">
             {activeJobCount}
           </div>
-          <div className="text-xs font-medium text-emerald-400 flex items-center gap-1">
+          <div className="text-xs font-bold text-[#B8E3E9] flex items-center gap-1">
             <span>● Live on Bridge-IQ Platform</span>
           </div>
         </div>
 
         {/* Metric 2: Total Applicants */}
-        <div className="p-6 rounded-3xl bg-zinc-950/80 backdrop-blur-xl border border-zinc-800/80 shadow-xl relative overflow-hidden group hover:border-indigo-500/40 transition-all">
+        <div className="p-6 rounded-3xl bg-[#121626] backdrop-blur-xl border border-slate-800 shadow-xl relative overflow-hidden group hover:border-[#B298E7]/40 transition-all">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
               Total Applicants
             </span>
-            <span className="w-10 h-10 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center text-lg">
+            <span className="w-10 h-10 rounded-2xl bg-[#B298E7]/15 border border-[#B298E7]/30 text-[#B298E7] flex items-center justify-center text-lg">
               👥
             </span>
           </div>
           <div className="text-4xl font-black text-white mb-1">
             {totalApplicantCount}
           </div>
-          <div className="text-xs font-medium text-indigo-300">
+          <div className="text-xs font-medium text-slate-400">
             Across active postings & verified talent
           </div>
         </div>
 
         {/* Metric 3: Verified Top Matches */}
-        <div className="p-6 rounded-3xl bg-zinc-950/80 backdrop-blur-xl border border-zinc-800/80 shadow-xl relative overflow-hidden group hover:border-emerald-500/40 transition-all">
+        <div className="p-6 rounded-3xl bg-[#121626] backdrop-blur-xl border border-slate-800 shadow-xl relative overflow-hidden group hover:border-[#F5B8D5]/40 transition-all">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
               Verified Top Matches
             </span>
-            <span className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg">
+            <span className="w-10 h-10 rounded-2xl bg-[#F5B8D5]/15 border border-[#F5B8D5]/30 text-[#F5B8D5] flex items-center justify-center text-lg">
               🛡️
             </span>
           </div>
-          <div className="text-4xl font-black text-emerald-400 mb-1">
+          <div className="text-4xl font-black text-[#F5B8D5] mb-1">
             {verifiedMatchesCount}
           </div>
-          <div className="text-xs font-medium text-zinc-400">
+          <div className="text-xs font-medium text-slate-400">
             Candidates with ≥80% skill certifications
           </div>
         </div>
@@ -309,36 +309,36 @@ export default function EmployerDashboard({ profile, session }) {
 
       {/* ACTIVE JOB POSTINGS SECTION (If any) */}
       {jobs.length > 0 && (
-        <div className="rounded-3xl bg-white p-6 sm:p-8 shadow-sm border border-gray-100 space-y-4">
+        <div className="rounded-3xl bg-[#121626] p-6 sm:p-8 shadow-xl border border-slate-800 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-black text-gray-900">Your Active Job Vacancies</h3>
-            <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">
+            <h3 className="text-xl font-black text-white">Your Active Job Vacancies</h3>
+            <span className="text-xs font-bold text-[#B298E7] bg-[#B298E7]/15 border border-[#B298E7]/30 px-2.5 py-1 rounded-full">
               {jobs.length} Open
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
             {jobs.map((j) => (
-              <div key={j.id} className="p-5 rounded-2xl bg-gray-50 border border-gray-200 flex flex-col justify-between">
+              <div key={j.id} className="p-5 rounded-2xl bg-[#0c0e17] border border-slate-800 flex flex-col justify-between">
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-1">
-                    <h4 className="font-bold text-gray-900 text-base">{j.title}</h4>
-                    <span className="text-[11px] font-semibold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full whitespace-nowrap">
+                    <h4 className="font-bold text-white text-base">{j.title}</h4>
+                    <span className="text-[11px] font-bold bg-[#B8E3E9]/15 text-[#B8E3E9] border border-[#B8E3E9]/30 px-2 py-0.5 rounded-full whitespace-nowrap">
                       {j.location}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500 line-clamp-2 mb-3">{j.description || 'No description provided'}</p>
+                  <p className="text-xs text-slate-400 line-clamp-2 mb-3">{j.description || 'No description provided'}</p>
                 </div>
 
                 <div>
                   <div className="flex flex-wrap gap-1.5 mb-3">
                     {(Array.isArray(j.required_skills) ? j.required_skills : []).slice(0, 4).map((sk, i) => (
-                      <span key={i} className="text-[10px] font-bold px-2 py-0.5 bg-gray-200 text-gray-700 rounded-md">
+                      <span key={i} className="text-[10px] font-bold px-2 py-0.5 bg-[#121626] text-slate-300 border border-slate-800 rounded-md">
                         {sk}
                       </span>
                     ))}
                   </div>
-                  <div className="text-[11px] text-gray-400 font-medium">
+                  <div className="text-[11px] text-slate-500 font-medium">
                     Posted on {new Date(j.created_at).toLocaleDateString()}
                   </div>
                 </div>
@@ -349,14 +349,14 @@ export default function EmployerDashboard({ profile, session }) {
       )}
 
       {/* CANDIDATE TALENT POOL TABLE */}
-      <div className="rounded-3xl bg-zinc-950/90 backdrop-blur-2xl border border-zinc-800/80 shadow-2xl p-6 sm:p-8 text-white space-y-6">
+      <div className="rounded-3xl bg-[#121626]/95 backdrop-blur-2xl border border-slate-800 shadow-2xl p-6 sm:p-8 text-white space-y-6">
         
         {/* Table Header and Search Filter */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
           <div>
             <h3 className="text-2xl font-black text-white">Candidate Talent Pool</h3>
-            <p className="text-zinc-400 text-xs sm:text-sm">
-              Profiles fetched directly from <code className="text-indigo-400 font-mono">public.profiles</code> where <code className="text-indigo-400 font-mono">role = 'candidate'</code>.
+            <p className="text-slate-400 text-xs sm:text-sm">
+              Profiles fetched directly from <code className="text-[#B298E7] font-mono">public.profiles</code> where <code className="text-[#B8E3E9] font-mono">role = 'candidate'</code>.
             </p>
           </div>
 
@@ -366,20 +366,20 @@ export default function EmployerDashboard({ profile, session }) {
               placeholder="Filter by skill, role, or name..."
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
-              className="w-full px-4 py-2.5 bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+              className="w-full px-4 py-2.5 bg-[#0c0e17] border border-slate-800 rounded-xl text-white placeholder-slate-500 text-xs font-medium focus:outline-none focus:border-[#B298E7]"
             />
           </div>
         </div>
 
         {/* Talent Table */}
         {loading ? (
-          <div className="py-16 text-center text-zinc-400 font-semibold animate-pulse">
+          <div className="py-16 text-center text-slate-400 font-semibold animate-pulse">
             Fetching candidate talent records...
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="text-[11px] uppercase tracking-wider text-zinc-500 border-b border-zinc-800">
+              <thead className="text-[11px] uppercase tracking-wider text-slate-400 border-b border-slate-800">
                 <tr>
                   <th className="py-3 px-4">Candidate</th>
                   <th className="py-3 px-4">Target Role</th>
@@ -388,7 +388,7 @@ export default function EmployerDashboard({ profile, session }) {
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-850">
+              <tbody className="divide-y divide-slate-800/80">
                 {filteredCandidates.map((candidate) => {
                   const candidateSkills = Array.isArray(candidate.skills)
                     ? candidate.skills
@@ -400,25 +400,25 @@ export default function EmployerDashboard({ profile, session }) {
                   const match = candidate.match_percentage || 85;
 
                   return (
-                    <tr key={candidate.id} className="hover:bg-zinc-900/50 transition-colors">
+                    <tr key={candidate.id} className="hover:bg-slate-900/50 transition-colors">
                       
                       {/* Name & Email */}
                       <td className="py-4 px-4 whitespace-nowrap">
                         <div className="font-bold text-white text-sm">
                           {candidate.full_name || 'Anonymous Engineer'}
                         </div>
-                        <div className="text-zinc-500 text-xs font-medium">
+                        <div className="text-slate-500 text-xs font-medium">
                           {candidate.email || 'candidate@bridgeiq.ai'}
                         </div>
                       </td>
 
                       {/* Target Role & Experience */}
                       <td className="py-4 px-4 whitespace-nowrap">
-                        <div className="text-zinc-200 font-semibold text-xs">
+                        <div className="text-slate-200 font-semibold text-xs">
                           {candidate.target_role || 'Full-Stack Engineer'}
                         </div>
                         {candidate.experience_level && (
-                          <span className="text-[10px] text-indigo-400 font-bold bg-indigo-500/10 px-2 py-0.5 rounded">
+                          <span className="text-[10px] text-[#B8E3E9] font-bold bg-[#B8E3E9]/15 border border-[#B8E3E9]/30 px-2 py-0.5 rounded">
                             {candidate.experience_level}
                           </span>
                         )}
@@ -435,8 +435,8 @@ export default function EmployerDashboard({ profile, session }) {
                                 key={sIdx}
                                 className={`text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 ${
                                   isVerified
-                                    ? 'bg-emerald-950/80 border border-emerald-500/40 text-emerald-300'
-                                    : 'bg-zinc-800 text-zinc-300'
+                                    ? 'bg-[#B8E3E9]/15 border border-[#B8E3E9]/30 text-[#B8E3E9]'
+                                    : 'bg-[#0c0e17] border border-slate-800 text-slate-300'
                                 }`}
                               >
                                 {isVerified && <span>🛡️</span>}
@@ -445,7 +445,7 @@ export default function EmployerDashboard({ profile, session }) {
                             );
                           })}
                           {candidateSkills.length > 5 && (
-                            <span className="text-[10px] font-semibold text-zinc-500 px-1">
+                            <span className="text-[10px] font-semibold text-slate-500 px-1">
                               +{candidateSkills.length - 5}
                             </span>
                           )}
@@ -457,10 +457,10 @@ export default function EmployerDashboard({ profile, session }) {
                         <span
                           className={`inline-block px-3 py-1 rounded-xl text-xs font-black border ${
                             match >= 90
-                              ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-400'
+                              ? 'bg-[#B8E3E9]/15 border-[#B8E3E9]/40 text-[#B8E3E9]'
                               : match >= 80
-                              ? 'bg-blue-950/60 border-blue-500/40 text-blue-400'
-                              : 'bg-zinc-800 border-zinc-700 text-zinc-300'
+                              ? 'bg-[#B298E7]/15 border-[#B298E7]/40 text-[#B298E7]'
+                              : 'bg-[#F5B8D5]/15 border-[#F5B8D5]/40 text-[#F5B8D5]'
                           }`}
                         >
                           {match}%
@@ -472,7 +472,7 @@ export default function EmployerDashboard({ profile, session }) {
                         <div className="inline-flex items-center gap-2">
                           <button
                             onClick={() => handleInviteCandidate(candidate)}
-                            className="px-3 py-1.5 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/30 rounded-xl text-xs font-bold transition-all"
+                            className="px-3 py-1.5 bg-[#B298E7]/20 hover:bg-[#B298E7] text-[#B298E7] hover:text-[#0c0e17] border border-[#B298E7]/40 rounded-xl text-xs font-bold transition-all cursor-pointer"
                             title="Send MCQ test invite"
                           >
                             Invite to MCQ
@@ -480,10 +480,10 @@ export default function EmployerDashboard({ profile, session }) {
 
                           <button
                             onClick={() => handleToggleShortlist(candidate)}
-                            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
                               isShortlisted
-                                ? 'bg-amber-500 text-black border-amber-400 font-black shadow-md'
-                                : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border-zinc-700'
+                                ? 'bg-gradient-to-r from-[#F5B8D5] to-[#F9BEDD] text-[#0c0e17] border-transparent font-black shadow-md'
+                                : 'bg-[#0c0e17] hover:bg-slate-900 text-slate-300 border-slate-700'
                             }`}
                           >
                             {isShortlisted ? '★ Shortlisted' : 'Shortlist'}
@@ -503,18 +503,18 @@ export default function EmployerDashboard({ profile, session }) {
       {/* "POST A JOB" MODAL */}
       {isPostJobModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
-          <div className="relative w-full max-w-lg bg-zinc-950/95 border border-zinc-800 rounded-3xl shadow-2xl p-6 sm:p-8 text-white">
+          <div className="relative w-full max-w-lg bg-[#121626] border border-slate-800 rounded-3xl shadow-2xl p-6 sm:p-8 text-white">
             
-            <div className="flex items-center justify-between pb-4 border-b border-zinc-800 mb-6">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-6">
               <div>
                 <h3 className="text-xl font-black text-white">Post an Engineering Role</h3>
-                <p className="text-zinc-400 text-xs">
-                  Saves to Supabase <code className="text-indigo-400">employer_jobs</code> table
+                <p className="text-slate-400 text-xs">
+                  Saves to Supabase <code className="text-[#B298E7]">employer_jobs</code> table
                 </p>
               </div>
               <button
                 onClick={() => setIsPostJobModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-zinc-900 text-zinc-400 hover:text-white flex items-center justify-center text-lg font-bold"
+                className="w-8 h-8 rounded-full bg-[#0c0e17] text-slate-400 hover:text-white flex items-center justify-center text-lg font-bold cursor-pointer"
               >
                 &times;
               </button>
@@ -522,8 +522,8 @@ export default function EmployerDashboard({ profile, session }) {
 
             <form onSubmit={handlePostJob} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-zinc-300 mb-1.5 uppercase tracking-wider">
-                  Job Title *
+                <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+                  Job Title <span className="text-[#F5B8D5]">*</span>
                 </label>
                 <input
                   type="text"
@@ -531,13 +531,13 @@ export default function EmployerDashboard({ profile, session }) {
                   placeholder="e.g. Senior React Developer"
                   value={newJob.title}
                   onChange={(e) => setNewJob({ ...newJob, title: e.target.value })}
-                  className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                  className="w-full px-4 py-3 bg-[#0c0e17] border border-slate-800 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#B298E7]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-zinc-300 mb-1.5 uppercase tracking-wider">
-                  Location *
+                <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+                  Location <span className="text-[#F5B8D5]">*</span>
                 </label>
                 <input
                   type="text"
@@ -545,13 +545,13 @@ export default function EmployerDashboard({ profile, session }) {
                   placeholder="e.g. Remote, San Francisco, CA"
                   value={newJob.location}
                   onChange={(e) => setNewJob({ ...newJob, location: e.target.value })}
-                  className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                  className="w-full px-4 py-3 bg-[#0c0e17] border border-slate-800 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#B298E7]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-zinc-300 mb-1.5 uppercase tracking-wider">
-                  Required Skills (comma-separated) *
+                <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+                  Required Skills (comma-separated) <span className="text-[#F5B8D5]">*</span>
                 </label>
                 <input
                   type="text"
@@ -559,13 +559,13 @@ export default function EmployerDashboard({ profile, session }) {
                   placeholder="e.g. React, TypeScript, GraphQL, Docker, Node.js"
                   value={newJob.requiredSkills}
                   onChange={(e) => setNewJob({ ...newJob, requiredSkills: e.target.value })}
-                  className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                  className="w-full px-4 py-3 bg-[#0c0e17] border border-slate-800 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#B298E7]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-zinc-300 mb-1.5 uppercase tracking-wider">
-                  Job Description *
+                <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+                  Job Description <span className="text-[#F5B8D5]">*</span>
                 </label>
                 <textarea
                   required
@@ -573,7 +573,7 @@ export default function EmployerDashboard({ profile, session }) {
                   placeholder="Describe the responsibilities, engineering culture, and expectations..."
                   value={newJob.description}
                   onChange={(e) => setNewJob({ ...newJob, description: e.target.value })}
-                  className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                  className="w-full px-4 py-3 bg-[#0c0e17] border border-slate-800 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#B298E7]"
                 />
               </div>
 
@@ -581,7 +581,7 @@ export default function EmployerDashboard({ profile, session }) {
                 <button
                   type="button"
                   onClick={() => setIsPostJobModalOpen(false)}
-                  className="px-5 py-2.5 bg-zinc-900 text-zinc-400 hover:text-white rounded-xl text-sm font-semibold"
+                  className="px-5 py-2.5 bg-[#0c0e17] text-slate-400 hover:text-white rounded-xl text-sm font-semibold cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -589,11 +589,11 @@ export default function EmployerDashboard({ profile, session }) {
                 <button
                   type="submit"
                   disabled={submittingJob}
-                  className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl text-sm font-bold shadow-lg disabled:opacity-50 flex items-center gap-2"
+                  className="px-6 py-2.5 bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#B8E3E9] hover:brightness-105 text-[#0c0e17] rounded-xl text-sm font-black shadow-lg disabled:opacity-50 flex items-center gap-2 cursor-pointer"
                 >
                   {submittingJob ? (
                     <>
-                      <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                      <div className="w-4 h-4 border-2 border-[#0c0e17]/30 border-t-[#0c0e17] rounded-full animate-spin" />
                       <span>Posting...</span>
                     </>
                   ) : (

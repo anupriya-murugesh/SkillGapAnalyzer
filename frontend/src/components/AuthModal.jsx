@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { signUpUser, signInUser, signInWithGoogle, resetPassword } from '../lib/auth';
 import { useToast } from '../context/ToastContext';
 
-export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode = 'login' }) {
+export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode = 'login', initialRole = 'candidate' }) {
   // Modes: 'login' | 'signup' | 'forgot'
   const [mode, setMode] = useState(initialMode === 'signup' ? 'signup' : 'login');
-  const [prevModalKey, setPrevModalKey] = useState(`${isOpen}-${initialMode}`);
-  const [role, setRole] = useState('candidate'); // 'candidate' | 'employer'
+  const [prevModalKey, setPrevModalKey] = useState(`${isOpen}-${initialMode}-${initialRole}`);
+  const [role, setRole] = useState(initialRole || 'candidate'); // 'candidate' | 'employer'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -16,12 +16,13 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
 
   const { addToast } = useToast() || { addToast: () => {} };
 
-  // Sync state when open or mode prop changes
-  const currentKey = `${isOpen}-${initialMode}`;
+  // Sync state when open, mode, or role prop changes
+  const currentKey = `${isOpen}-${initialMode}-${initialRole}`;
   if (currentKey !== prevModalKey) {
     setPrevModalKey(currentKey);
     if (isOpen) {
       setMode(initialMode === 'signup' ? 'signup' : 'login');
+      setRole(initialRole || 'candidate');
       setErrorMessage('');
       setSuccessMessage('');
     }
@@ -138,26 +139,26 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
       }}
     >
       {/* Modal Container */}
-      <div className="relative w-full max-w-md overflow-hidden rounded-3xl bg-zinc-950/90 backdrop-blur-2xl border border-zinc-800/80 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)] text-white p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-md overflow-hidden rounded-3xl bg-[#121626] backdrop-blur-2xl border border-[#1f2742] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)] text-white p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-200">
         
         {/* Glow Spheres */}
-        <div className="absolute -top-20 -right-20 w-52 h-52 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-20 -left-20 w-52 h-52 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-20 -right-20 w-52 h-52 bg-[#B298E7]/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-20 -left-20 w-52 h-52 bg-[#F5B8D5]/20 rounded-full blur-3xl pointer-events-none" />
 
         {/* Close Button */}
         <button
           onClick={onClose}
           type="button"
           aria-label="Close modal"
-          className="absolute top-5 right-5 text-zinc-400 hover:text-white bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 rounded-full w-8 h-8 flex items-center justify-center transition-all duration-200 text-lg font-bold"
+          className="absolute top-5 right-5 text-slate-400 hover:text-white bg-[#0c0e17] hover:bg-[#161c30] border border-[#1f2742] rounded-full w-8 h-8 flex items-center justify-center transition-all duration-200 text-lg font-bold"
         >
           &times;
         </button>
 
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold mb-3 tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B298E7]/15 border border-[#B298E7]/35 text-[#B298E7] text-xs font-semibold mb-3 tracking-wide">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#B8E3E9] animate-pulse" />
             Bridge-IQ Platform
           </div>
           <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
@@ -167,7 +168,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
               ? 'Create Your Account'
               : 'Welcome Back'}
           </h2>
-          <p className="text-zinc-400 text-xs sm:text-sm mt-1.5 font-medium">
+          <p className="text-slate-400 text-xs sm:text-sm mt-1.5 font-medium">
             {mode === 'forgot'
               ? 'Enter your registered email to receive reset instructions'
               : mode === 'signup'
@@ -179,28 +180,28 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
         {/* Role Selector Tabs (Only in Sign Up Mode) */}
         {mode === 'signup' && (
           <div className="mb-6">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-2 px-1 flex justify-between items-center">
+            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 px-1 flex justify-between items-center">
               <span>Select Account Role</span>
-              <span className="text-indigo-400 font-semibold lowercase">
+              <span className="text-[#B8E3E9] font-semibold lowercase">
                 {role === 'candidate' ? 'Personal Career Track' : 'Company Hiring Track'}
               </span>
             </div>
             
-            <div className="grid grid-cols-2 gap-2 p-1.5 bg-zinc-900/90 rounded-2xl border border-zinc-800">
+            <div className="grid grid-cols-2 gap-2 p-1.5 bg-[#0c0e17] rounded-2xl border border-[#1f2742]">
               <button
                 type="button"
                 onClick={() => setRole('candidate')}
                 className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-xl transition-all duration-200 text-center ${
                   role === 'candidate'
-                    ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold shadow-md shadow-indigo-600/30'
-                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60 font-medium'
+                    ? 'bg-gradient-to-r from-[#B298E7] to-[#F5B8D5] text-[#0c0e17] font-black shadow-md shadow-[#B298E7]/30'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-[#161c30] font-medium'
                 }`}
               >
                 <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold">
                   <span>🎯</span>
                   <span>Candidate</span>
                 </div>
-                <span className={`text-[10px] mt-0.5 ${role === 'candidate' ? 'text-indigo-100' : 'text-zinc-500'}`}>
+                <span className={`text-[10px] mt-0.5 ${role === 'candidate' ? 'text-[#0c0e17]' : 'text-slate-400'}`}>
                   Skill Gap & Growth
                 </span>
               </button>
@@ -210,15 +211,15 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
                 onClick={() => setRole('employer')}
                 className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-xl transition-all duration-200 text-center ${
                   role === 'employer'
-                    ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold shadow-md shadow-indigo-600/30'
-                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60 font-medium'
+                    ? 'bg-gradient-to-r from-[#B298E7] to-[#F5B8D5] text-[#0c0e17] font-black shadow-md shadow-[#B298E7]/30'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-[#161c30] font-medium'
                 }`}
               >
                 <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold">
                   <span>🏢</span>
                   <span>Employer</span>
                 </div>
-                <span className={`text-[10px] mt-0.5 ${role === 'employer' ? 'text-indigo-100' : 'text-zinc-500'}`}>
+                <span className={`text-[10px] mt-0.5 ${role === 'employer' ? 'text-[#0c0e17]' : 'text-slate-400'}`}>
                   Recruit & Benchmark
                 </span>
               </button>
@@ -233,7 +234,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
               type="button"
               onClick={handleGoogleSignIn}
               disabled={loading}
-              className="w-full py-3 px-4 bg-zinc-900/90 hover:bg-zinc-850 border border-zinc-800 hover:border-zinc-700 text-zinc-200 hover:text-white font-semibold text-sm rounded-xl flex items-center justify-center gap-3 transition-all duration-200 shadow-sm active:scale-[0.99] disabled:opacity-50"
+              className="w-full py-3 px-4 bg-[#0c0e17] hover:bg-[#161c30] border border-[#1f2742] hover:border-[#B298E7]/40 text-slate-200 hover:text-white font-semibold text-sm rounded-xl flex items-center justify-center gap-3 transition-all duration-200 shadow-sm active:scale-[0.99] disabled:opacity-50"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path
@@ -257,9 +258,9 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
             </button>
 
             <div className="flex items-center gap-3">
-              <div className="flex-1 h-px bg-zinc-800" />
-              <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest">or email</span>
-              <div className="flex-1 h-px bg-zinc-800" />
+              <div className="flex-1 h-px bg-[#1f2742]" />
+              <span className="text-[11px] font-bold text-[#B8E3E9] uppercase tracking-widest">or email</span>
+              <div className="flex-1 h-px bg-[#1f2742]" />
             </div>
           </div>
         )}
@@ -267,7 +268,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
         {/* Main Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-zinc-300 mb-1.5 tracking-wide">
+            <label className="block text-xs font-bold text-slate-300 mb-1.5 tracking-wide">
               Email Address
             </label>
             <input
@@ -276,21 +277,21 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={role === 'employer' ? 'hiring@company.com' : 'you@example.com'}
-              className="w-full px-4 py-3 bg-zinc-900/90 border border-zinc-800 rounded-xl text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 transition-all text-sm font-medium"
+              className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7] transition-all text-sm font-medium"
             />
           </div>
 
           {mode !== 'forgot' && (
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-xs font-bold text-zinc-300 tracking-wide">
+                <label className="block text-xs font-bold text-slate-300 tracking-wide">
                   Password
                 </label>
                 {mode === 'login' && (
                   <button
                     type="button"
                     onClick={() => handleModeSwitch('forgot')}
-                    className="text-xs text-indigo-400 hover:text-indigo-300 font-semibold transition-colors"
+                    className="text-xs text-[#B298E7] hover:text-[#B8E3E9] font-semibold transition-colors"
                   >
                     Forgot Password?
                   </button>
@@ -304,12 +305,12 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   minLength={6}
-                  className="w-full px-4 py-3 bg-zinc-900/90 border border-zinc-800 rounded-xl text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 transition-all text-sm font-medium pr-10"
+                  className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7] transition-all text-sm font-medium pr-10"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-200 text-xs px-1 font-semibold"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 text-xs px-1 font-semibold"
                   aria-label="Toggle password visibility"
                 >
                   {showPassword ? 'Hide' : 'Show'}
@@ -337,11 +338,11 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/25 hover:shadow-indigo-600/40 transition-all active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2 text-sm mt-2"
+            className="w-full py-3.5 bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#F9BEDD] hover:from-[#B8E3E9] hover:to-[#B298E7] text-[#0c0e17] font-black rounded-xl shadow-lg shadow-[#B298E7]/25 hover:shadow-[#F5B8D5]/35 transition-all active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2 text-sm mt-2 cursor-pointer"
           >
             {loading ? (
               <>
-                <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                <svg className="animate-spin h-4 w-4 text-[#0c0e17]" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
@@ -358,12 +359,12 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
         </form>
 
         {/* Footer Navigation */}
-        <div className="mt-6 text-center text-xs text-zinc-400 font-medium">
+        <div className="mt-6 text-center text-xs text-slate-400 font-medium">
           {mode === 'forgot' ? (
             <button
               type="button"
               onClick={() => handleModeSwitch('login')}
-              className="text-indigo-400 hover:text-indigo-300 font-bold transition-colors inline-flex items-center gap-1"
+              className="text-[#B298E7] hover:text-[#B8E3E9] font-bold transition-colors inline-flex items-center gap-1"
             >
               <span>←</span>
               <span>Back to Sign In</span>
@@ -374,7 +375,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
               <button
                 type="button"
                 onClick={() => handleModeSwitch('signup')}
-                className="text-indigo-400 hover:text-indigo-300 font-bold underline decoration-indigo-400/50 underline-offset-4 transition-colors"
+                className="text-[#B298E7] hover:text-[#B8E3E9] font-bold underline decoration-[#B298E7]/50 underline-offset-4 transition-colors"
               >
                 Register here
               </button>
@@ -385,7 +386,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
               <button
                 type="button"
                 onClick={() => handleModeSwitch('login')}
-                className="text-indigo-400 hover:text-indigo-300 font-bold underline decoration-indigo-400/50 underline-offset-4 transition-colors"
+                className="text-[#B298E7] hover:text-[#B8E3E9] font-bold underline decoration-[#B298E7]/50 underline-offset-4 transition-colors"
               >
                 Sign in
               </button>

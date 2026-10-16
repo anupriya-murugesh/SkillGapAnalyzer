@@ -201,9 +201,9 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
 
   if (loading) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-zinc-400">
-        <div className="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin mb-4" />
-        <p className="font-semibold text-zinc-300">Loading your profile preferences...</p>
+      <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-slate-400">
+        <div className="w-12 h-12 border-4 border-[#B298E7]/20 border-t-[#B298E7] rounded-full animate-spin mb-4" />
+        <p className="font-semibold text-slate-300">Loading your profile preferences...</p>
       </div>
     );
   }
@@ -213,26 +213,26 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
       
       {/* Top Banner & Mode Switcher */}
       <div className="text-center mb-8">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 font-mono text-xs uppercase tracking-widest mb-3">
-          <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#B298E7]/10 border border-[#B298E7]/30 text-[#B298E7] font-mono text-xs uppercase tracking-widest mb-3">
+          <span className="w-2 h-2 rounded-full bg-[#B8E3E9] animate-pulse" />
           Bridge-IQ Identity Engine
         </div>
-        <h1 className="text-3xl sm:text-5xl font-black text-zinc-900 tracking-tight">
-          Complete Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-600">Professional Profile</span>
+        <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+          Complete Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#B8E3E9]">Professional Profile</span>
         </h1>
-        <p className="mt-2 text-zinc-600 text-sm sm:text-base max-w-2xl mx-auto font-medium">
+        <p className="mt-2 text-slate-400 text-sm sm:text-base max-w-2xl mx-auto font-medium">
           Personalize your Bridge-IQ telemetry. We tailor skill gap benchmarks, market metrics, and intelligence to your exact role.
         </p>
 
         {/* Dual Role Selector */}
-        <div className="mt-8 inline-flex p-1.5 bg-zinc-200/70 backdrop-blur-md rounded-2xl border border-zinc-300/80 shadow-inner">
+        <div className="mt-8 inline-flex p-1.5 bg-[#121626] backdrop-blur-md rounded-2xl border border-slate-800 shadow-inner">
           <button
             type="button"
             onClick={() => setRole('candidate')}
-            className={`flex items-center gap-2.5 px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 ${
+            className={`flex items-center gap-2.5 px-6 py-2.5 rounded-xl font-black text-sm transition-all duration-200 cursor-pointer ${
               role === 'candidate'
-                ? 'bg-zinc-900 text-white shadow-md'
-                : 'text-zinc-600 hover:text-zinc-900'
+                ? 'bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17] shadow-md'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
             <span>🎯</span>
@@ -242,10 +242,10 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
           <button
             type="button"
             onClick={() => setRole('employer')}
-            className={`flex items-center gap-2.5 px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 ${
+            className={`flex items-center gap-2.5 px-6 py-2.5 rounded-xl font-black text-sm transition-all duration-200 cursor-pointer ${
               role === 'employer'
-                ? 'bg-zinc-900 text-white shadow-md'
-                : 'text-zinc-600 hover:text-zinc-900'
+                ? 'bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17] shadow-md'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
             <span>🏢</span>
@@ -255,31 +255,31 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
       </div>
 
       {/* Main Glass Card Form */}
-      <div className="relative rounded-3xl bg-zinc-950/90 backdrop-blur-2xl border border-zinc-800/80 shadow-2xl text-white p-6 sm:p-10 overflow-hidden">
+      <div className="relative rounded-3xl bg-[#121626]/95 backdrop-blur-2xl border border-slate-800 shadow-2xl text-white p-6 sm:p-10 overflow-hidden">
         
-        {/* Ambient Gradient Glows */}
-        <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-600/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
+        {/* Ambient Gradient Glows with 4-color combo */}
+        <div className="absolute top-0 right-0 w-80 h-80 bg-[#B298E7]/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#B8E3E9]/15 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           
           {/* Left Column: Context Card & Dynamic Info */}
           <div className="lg:col-span-4 space-y-6">
-            <div className="p-5 rounded-2xl bg-zinc-900/80 border border-zinc-800">
+            <div className="p-5 rounded-2xl bg-[#0c0e17] border border-slate-800">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-blue-500 flex items-center justify-center text-xl shadow-md">
+                <div className="w-10 h-10 rounded-xl bg-[#B298E7]/20 border border-[#B298E7]/40 flex items-center justify-center text-xl shadow-md text-[#B298E7]">
                   {role === 'candidate' ? '🚀' : '💼'}
                 </div>
                 <div>
                   <h3 className="font-bold text-white text-base">
                     {role === 'candidate' ? 'Engineering Candidate' : 'Hiring Organization'}
                   </h3>
-                  <span className="text-xs text-indigo-400 font-medium">
+                  <span className="text-xs text-[#B8E3E9] font-medium">
                     {sessionUser?.email || 'Logged in user'}
                   </span>
                 </div>
               </div>
-              <p className="text-zinc-400 text-xs leading-relaxed">
+              <p className="text-slate-400 text-xs leading-relaxed">
                 {role === 'candidate'
                   ? 'Your profile feeds directly into our gap analyzer algorithms, calibrating missing skills against active market job postings.'
                   : 'Benchmark role descriptions against real engineering market datasets and configure required skill matrices for recruitment.'}
@@ -287,7 +287,7 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
             </div>
 
             <div className="space-y-3">
-              <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider block px-1">
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block px-1">
                 Unlocked Capabilities
               </span>
               {(role === 'candidate'
@@ -304,8 +304,8 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
                     'Direct vacancy bookmarking',
                   ]
               ).map((feature, idx) => (
-                <div key={idx} className="flex items-center gap-2.5 text-xs text-zinc-300 font-medium bg-zinc-900/50 px-3 py-2 rounded-xl border border-zinc-800/60">
-                  <span className="text-emerald-400 font-bold">✓</span>
+                <div key={idx} className="flex items-center gap-2.5 text-xs text-slate-300 font-medium bg-[#0c0e17]/80 px-3 py-2 rounded-xl border border-slate-800/80">
+                  <span className="text-[#B8E3E9] font-bold">✓</span>
                   <span>{feature}</span>
                 </div>
               ))}
@@ -322,8 +322,8 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     {/* Full Name */}
                     <div>
-                      <label className="block text-xs font-bold text-zinc-300 mb-1.5 uppercase tracking-wider">
-                        Full Name <span className="text-indigo-400">*</span>
+                      <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+                        Full Name <span className="text-[#F5B8D5]">*</span>
                       </label>
                       <input
                         type="text"
@@ -331,14 +331,14 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
                         value={candidateData.fullName}
                         onChange={(e) => setCandidateData({ ...candidateData, fullName: e.target.value })}
                         placeholder="e.g. Alex Chen"
-                        className="w-full px-4 py-3 bg-zinc-900/90 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 transition-all text-sm font-medium"
+                        className="w-full px-4 py-3 bg-[#0c0e17] border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-[#B298E7] transition-all text-sm font-medium"
                       />
                     </div>
 
                     {/* Target Role */}
                     <div>
-                      <label className="block text-xs font-bold text-zinc-300 mb-1.5 uppercase tracking-wider">
-                        Target Role <span className="text-indigo-400">*</span>
+                      <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+                        Target Role <span className="text-[#F5B8D5]">*</span>
                       </label>
                       <input
                         type="text"
@@ -346,15 +346,15 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
                         value={candidateData.targetRole}
                         onChange={(e) => setCandidateData({ ...candidateData, targetRole: e.target.value })}
                         placeholder="e.g. Senior Full-Stack Engineer"
-                        className="w-full px-4 py-3 bg-zinc-900/90 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 transition-all text-sm font-medium"
+                        className="w-full px-4 py-3 bg-[#0c0e17] border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-[#B298E7] transition-all text-sm font-medium"
                       />
                     </div>
                   </div>
 
                   {/* Experience Level */}
                   <div>
-                    <label className="block text-xs font-bold text-zinc-300 mb-2 uppercase tracking-wider">
-                      Experience Level <span className="text-indigo-400">*</span>
+                    <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">
+                      Experience Level <span className="text-[#F5B8D5]">*</span>
                     </label>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                       {['Junior (0-2y)', 'Mid-Level (3-5y)', 'Senior (6-8y)', 'Lead / Principal (8y+)'].map((lvl) => {
@@ -365,10 +365,10 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
                             key={lvl}
                             type="button"
                             onClick={() => setCandidateData({ ...candidateData, experienceLevel: simpleKey })}
-                            className={`py-2.5 px-3 rounded-xl border text-xs font-bold transition-all text-center ${
+                            className={`py-2.5 px-3 rounded-xl border text-xs font-bold transition-all text-center cursor-pointer ${
                               isSelected
-                                ? 'bg-gradient-to-r from-indigo-600 to-blue-600 border-indigo-500 text-white shadow-md shadow-indigo-600/30'
-                                : 'bg-zinc-900/80 border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800'
+                                ? 'bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] border-transparent text-[#0c0e17] font-black shadow-md'
+                                : 'bg-[#0c0e17] border-slate-800 text-slate-400 hover:text-white hover:bg-slate-900'
                             }`}
                           >
                             {lvl}
@@ -381,10 +381,10 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
                   {/* Core Skills (comma-separated with chips) */}
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
-                      <label className="block text-xs font-bold text-zinc-300 uppercase tracking-wider">
-                        Core Skills (comma-separated) <span className="text-indigo-400">*</span>
+                      <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                        Core Skills (comma-separated) <span className="text-[#F5B8D5]">*</span>
                       </label>
-                      <span className="text-[11px] text-zinc-400 font-semibold">
+                      <span className="text-[11px] text-slate-400 font-semibold">
                         {parsedCandidateSkills.length} skills listed
                       </span>
                     </div>
@@ -395,7 +395,7 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
                       value={candidateData.skillsInput}
                       onChange={(e) => setCandidateData({ ...candidateData, skillsInput: e.target.value })}
                       placeholder="React, TypeScript, Python, Docker, AWS, GraphQL"
-                      className="w-full px-4 py-3 bg-zinc-900/90 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 transition-all text-sm font-medium"
+                      className="w-full px-4 py-3 bg-[#0c0e17] border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-[#B298E7] transition-all text-sm font-medium"
                     />
 
                     {/* Live Skill Chips Preview */}
@@ -404,13 +404,13 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
                         {parsedCandidateSkills.map((skill, i) => (
                           <span
                             key={i}
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-medium"
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#B298E7]/15 border border-[#B298E7]/30 text-[#B298E7] text-xs font-bold"
                           >
                             <span>{skill}</span>
                             <button
                               type="button"
                               onClick={() => toggleSkillChip(skill)}
-                              className="text-indigo-400 hover:text-white text-xs font-bold leading-none"
+                              className="text-[#B298E7] hover:text-[#F5B8D5] text-xs font-bold leading-none cursor-pointer"
                             >
                               &times;
                             </button>
@@ -421,7 +421,7 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
 
                     {/* Suggested skills bar */}
                     <div className="mt-3">
-                      <span className="text-[11px] text-zinc-500 font-bold uppercase tracking-wider block mb-1.5">
+                      <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider block mb-1.5">
                         Quick Add Recommended:
                       </span>
                       <div className="flex flex-wrap gap-1.5">
@@ -432,10 +432,10 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
                               key={s}
                               type="button"
                               onClick={() => toggleSkillChip(s)}
-                              className={`text-[11px] px-2 py-1 rounded-md transition-all font-semibold ${
+                              className={`text-[11px] px-2.5 py-1 rounded-lg transition-all font-semibold cursor-pointer ${
                                 hasIt
-                                  ? 'bg-zinc-800 text-zinc-500 border border-zinc-800'
-                                  : 'bg-zinc-900 text-zinc-300 hover:bg-zinc-800 border border-zinc-800 hover:text-white'
+                                  ? 'bg-[#0c0e17] text-slate-500 border border-slate-800'
+                                  : 'bg-[#0c0e17] text-slate-300 hover:text-white border border-slate-800 hover:border-[#B8E3E9]'
                               }`}
                             >
                               {hasIt ? `✓ ${s}` : `+ ${s}`}
@@ -454,8 +454,8 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     {/* Recruiter Full Name */}
                     <div>
-                      <label className="block text-xs font-bold text-zinc-300 mb-1.5 uppercase tracking-wider">
-                        Full Name / Recruiter Name <span className="text-indigo-400">*</span>
+                      <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+                        Full Name / Recruiter Name <span className="text-[#F5B8D5]">*</span>
                       </label>
                       <input
                         type="text"
@@ -463,14 +463,14 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
                         value={employerData.fullName}
                         onChange={(e) => setEmployerData({ ...employerData, fullName: e.target.value })}
                         placeholder="e.g. Jordan Vance"
-                        className="w-full px-4 py-3 bg-zinc-900/90 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 transition-all text-sm font-medium"
+                        className="w-full px-4 py-3 bg-[#0c0e17] border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-[#B298E7] transition-all text-sm font-medium"
                       />
                     </div>
 
                     {/* Company Name */}
                     <div>
-                      <label className="block text-xs font-bold text-zinc-300 mb-1.5 uppercase tracking-wider">
-                        Company Name <span className="text-indigo-400">*</span>
+                      <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+                        Company Name <span className="text-[#F5B8D5]">*</span>
                       </label>
                       <input
                         type="text"
@@ -478,7 +478,7 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
                         value={employerData.companyName}
                         onChange={(e) => setEmployerData({ ...employerData, companyName: e.target.value })}
                         placeholder="e.g. Acme Cloud Systems"
-                        className="w-full px-4 py-3 bg-zinc-900/90 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 transition-all text-sm font-medium"
+                        className="w-full px-4 py-3 bg-[#0c0e17] border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-[#B298E7] transition-all text-sm font-medium"
                       />
                     </div>
                   </div>
@@ -486,8 +486,8 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     {/* Company Website */}
                     <div>
-                      <label className="block text-xs font-bold text-zinc-300 mb-1.5 uppercase tracking-wider">
-                        Company Website <span className="text-indigo-400">*</span>
+                      <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+                        Company Website <span className="text-[#F5B8D5]">*</span>
                       </label>
                       <input
                         type="url"
@@ -495,23 +495,23 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
                         value={employerData.companyWebsite}
                         onChange={(e) => setEmployerData({ ...employerData, companyWebsite: e.target.value })}
                         placeholder="https://acmecloud.com"
-                        className="w-full px-4 py-3 bg-zinc-900/90 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 transition-all text-sm font-medium"
+                        className="w-full px-4 py-3 bg-[#0c0e17] border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-[#B298E7] transition-all text-sm font-medium"
                       />
                     </div>
 
                     {/* Industry */}
                     <div>
-                      <label className="block text-xs font-bold text-zinc-300 mb-1.5 uppercase tracking-wider">
-                        Industry <span className="text-indigo-400">*</span>
+                      <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+                        Industry <span className="text-[#F5B8D5]">*</span>
                       </label>
                       <select
                         required
                         value={employerData.industry}
                         onChange={(e) => setEmployerData({ ...employerData, industry: e.target.value })}
-                        className="w-full px-4 py-3 bg-zinc-900/90 border border-zinc-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 transition-all text-sm font-medium"
+                        className="w-full px-4 py-3 bg-[#0c0e17] border border-slate-800 rounded-xl text-white focus:outline-none focus:border-[#B298E7] transition-all text-sm font-medium"
                       >
                         {industryOptions.map((opt) => (
-                          <option key={opt} value={opt} className="bg-zinc-900 text-white">
+                          <option key={opt} value={opt} className="bg-[#0c0e17] text-white">
                             {opt}
                           </option>
                         ))}
@@ -521,7 +521,7 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
 
                   {/* Primary Hiring Target / Focus */}
                   <div>
-                    <label className="block text-xs font-bold text-zinc-300 mb-1.5 uppercase tracking-wider">
+                    <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
                       Primary Hiring Roles & Skill Stack (Optional)
                     </label>
                     <input
@@ -529,7 +529,7 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
                       value={employerData.hiringFocus}
                       onChange={(e) => setEmployerData({ ...employerData, hiringFocus: e.target.value })}
                       placeholder="e.g. Senior Frontend, Staff DevOps, React, Rust, Kubernetes"
-                      className="w-full px-4 py-3 bg-zinc-900/90 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 transition-all text-sm font-medium"
+                      className="w-full px-4 py-3 bg-[#0c0e17] border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-[#B298E7] transition-all text-sm font-medium"
                     />
                   </div>
                 </>
@@ -537,7 +537,7 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
 
               {/* Status Alert */}
               {statusMsg && (
-                <div className="p-3 bg-red-950/60 border border-red-800/80 text-red-200 rounded-xl text-xs font-semibold">
+                <div className="p-3 bg-[#F5B8D5]/10 border border-[#F5B8D5]/30 text-[#F5B8D5] rounded-xl text-xs font-semibold">
                   {statusMsg}
                 </div>
               )}
@@ -547,11 +547,11 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="w-full sm:w-auto flex-1 py-4 px-8 bg-gradient-to-r from-indigo-600 via-indigo-500 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 transition-all active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
+                  className="w-full sm:w-auto flex-1 py-4 px-8 bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#B8E3E9] text-[#0c0e17] font-black rounded-xl shadow-xl hover:brightness-105 transition-all active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2 text-sm cursor-pointer"
                 >
                   {saving ? (
                     <>
-                      <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                      <div className="w-4 h-4 border-2 border-[#0c0e17]/30 border-t-[#0c0e17] rounded-full animate-spin" />
                       <span>Saving to Supabase profiles...</span>
                     </>
                   ) : (
@@ -562,7 +562,7 @@ export default function Onboarding({ session: propSession, onProfileUpdated }) {
                 <button
                   type="button"
                   onClick={() => navigate(role === 'employer' ? '/jobs' : '/dashboard')}
-                  className="w-full sm:w-auto px-6 py-4 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-white rounded-xl text-sm font-semibold transition-all"
+                  className="w-full sm:w-auto px-6 py-4 bg-[#0c0e17] hover:bg-slate-900 border border-slate-800 text-slate-400 hover:text-white rounded-xl text-sm font-bold transition-all cursor-pointer"
                 >
                   Skip for Now
                 </button>
