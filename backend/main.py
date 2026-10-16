@@ -144,3 +144,18 @@ def generate_quiz(request: QuizRequest):
         "skill": request.skill,
         "questions": questions
     }
+
+class RoadmapRequest(BaseModel):
+    target_role: str = "Full-Stack Developer"
+    missing_skills: list[str] = []
+
+@app.post("/api/generate-roadmap")
+def generate_roadmap_api(request: RoadmapRequest):
+    skills = request.missing_skills if request.missing_skills else ["Core Architecture", "APIs", "Database Design", "Cloud Deployment"]
+    roadmap = generate_learning_roadmap(skills, request.target_role)
+    return {
+        "status": "success",
+        "target_role": request.target_role,
+        "roadmap": roadmap
+    }
+

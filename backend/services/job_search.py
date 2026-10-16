@@ -83,6 +83,9 @@ def search_live_jobs(query: str, location: str = "Global") -> list[dict]:
             loc_parts = [p for p in [city, country] if p]
             loc_str = ", ".join(loc_parts) if loc_parts else (item.get("job_location") or location)
             
+            experience_dict = item.get("job_required_experience") if isinstance(item.get("job_required_experience"), dict) else {}
+            exp_months = experience_dict.get("required_experience_in_months")
+
             jobs.append({
                 "job_id": item.get("job_id") or str(hash(str(item.get("job_title", "")) + str(item.get("employer_name", "")))),
                 "title": item.get("job_title") or item.get("title", "Untitled Role"),
@@ -90,7 +93,18 @@ def search_live_jobs(query: str, location: str = "Global") -> list[dict]:
                 "location": loc_str,
                 "source": "JSearch",
                 "description": item.get("job_description") or item.get("description", ""),
-                "apply_link": item.get("job_apply_link") or item.get("apply_link", "#")
+                "apply_link": item.get("job_apply_link") or item.get("apply_link", "#"),
+                "employment_type": item.get("job_employment_type") or "FULLTIME",
+                "is_remote": bool(item.get("job_is_remote", False)),
+                "posted_at": item.get("job_posted_at_datetime_utc") or item.get("job_posted_at_timestamp"),
+                "min_salary": item.get("job_min_salary"),
+                "max_salary": item.get("job_max_salary"),
+                "salary_currency": item.get("job_salary_currency") or "USD",
+                "salary_period": item.get("job_salary_period") or "YEAR",
+                "employer_logo": item.get("employer_logo"),
+                "experience_months": exp_months,
+                "skills": item.get("job_required_skills") or [],
+                "publisher": item.get("job_publisher") or "Web"
             })
             
         return jobs
