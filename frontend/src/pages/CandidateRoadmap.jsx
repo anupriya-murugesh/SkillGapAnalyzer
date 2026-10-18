@@ -128,16 +128,16 @@ export default function CandidateRoadmap() {
     <div className="space-y-8 animate-in fade-in duration-300 max-w-6xl mx-auto pb-16">
       
       {/* 1. Header & Role Switcher */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-[#1f2742]">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b-2 border-slate-200">
         <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B298E7]/15 border border-[#B298E7]/35 text-[#B298E7] text-xs font-bold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 border-2 border-emerald-300 text-emerald-950 text-xs font-black uppercase tracking-wider">
             <span>🗺️</span>
             <span>Personalized Career Engine</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-            12-Week AI <span className="bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#B8E3E9] bg-clip-text text-transparent">Learning Roadmap</span>
+          <h1 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
+            12-Week AI <span className="text-emerald-700">Learning Roadmap</span>
           </h1>
-          <p className="text-slate-400 text-sm max-w-2xl leading-relaxed">
+          <p className="text-slate-700 font-medium text-sm max-w-2xl leading-relaxed">
             Step-by-step technical milestones, curated documentation, hands-on portfolio deliverables, and targeted practice assessments.
           </p>
         </div>
@@ -148,14 +148,14 @@ export default function CandidateRoadmap() {
             type="button"
             onClick={handleRegenerateWithAI}
             disabled={loading}
-            className="px-4 py-2.5 bg-[#0c0e17] border border-[#B298E7]/40 text-[#B298E7] hover:border-[#B298E7] hover:bg-[#161c30] text-xs font-bold rounded-xl transition-all cursor-pointer shadow-sm flex items-center gap-2"
+            className="px-4 py-2.5 bg-white border-2 border-slate-300 hover:border-emerald-700 text-slate-900 hover:text-emerald-800 text-xs font-bold rounded-xl transition-all cursor-pointer shadow-xs flex items-center gap-2"
           >
             <span>{loading ? 'Refreshing...' : '⚡ AI Refresh'}</span>
           </button>
           <button
             type="button"
             onClick={() => window.print()}
-            className="px-4 py-2.5 bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17] font-black text-xs rounded-xl shadow-md cursor-pointer hover:brightness-105 transition-all"
+            className="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs rounded-xl shadow-md shadow-emerald-700/25 cursor-pointer transition-all"
           >
             Save / Export PDF 📥
           </button>
@@ -163,8 +163,8 @@ export default function CandidateRoadmap() {
       </div>
 
       {/* 2. Target Roles Switcher Bar (Supports Multiple Roles!) */}
-      <div className="bg-[#121626] rounded-2xl p-4 border border-slate-800 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-xs font-bold text-slate-300">
+      <div className="bg-white rounded-2xl p-4 border-2 border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-2 text-xs font-black text-slate-900 uppercase tracking-wider">
           <span>Active Curriculum Track:</span>
         </div>
         
@@ -180,10 +180,10 @@ export default function CandidateRoadmap() {
                   setExpandedWeek(1);
                   addToast(`Roadmap switched to ${role}`, 'info');
                 }}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold border-2 transition-all cursor-pointer flex items-center gap-1.5 ${
                   isSelected
-                    ? 'bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17] border-transparent font-black shadow-md'
-                    : 'bg-[#0c0e17] border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
+                    ? 'bg-emerald-700 text-white border-emerald-700 font-black shadow-sm'
+                    : 'bg-slate-100 border-slate-200 text-slate-800 hover:text-slate-950 hover:bg-slate-200'
                 }`}
               >
                 <span>{role === profile?.target_role ? '⭐' : '💼'}</span>
@@ -195,7 +195,7 @@ export default function CandidateRoadmap() {
           <button
             type="button"
             onClick={() => navigate('/candidate/profile', { state: { activeTab: 3 } })}
-            className="px-3 py-1.5 rounded-xl text-xs font-bold border border-dashed border-[#B8E3E9]/40 text-[#B8E3E9] hover:bg-[#B8E3E9]/10 cursor-pointer"
+            className="px-3 py-1.5 rounded-xl text-xs font-bold border-2 border-dashed border-emerald-400 text-emerald-800 hover:bg-emerald-50 cursor-pointer"
           >
             + Add Another Role
           </button>
@@ -203,57 +203,57 @@ export default function CandidateRoadmap() {
       </div>
 
       {/* 3. Overall 12-Week Progress Bar & 3-Phase Indicator */}
-      <div className="rounded-3xl bg-gradient-to-br from-[#121626] via-[#161c30] to-[#121626] border border-slate-800 p-6 sm:p-8 shadow-xl space-y-6">
+      <div className="rounded-3xl bg-white border-2 border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Roadmap Progress</span>
-            <h3 className="text-2xl font-black text-white mt-1">
-              {progressPercentage}% Completed • <span className="text-[#B8E3E9]">{completedCount} of {totalTopics} Topics Mastered</span>
+            <span className="text-xs font-black uppercase tracking-wider text-slate-600">Roadmap Progress</span>
+            <h3 className="text-2xl font-black text-slate-950 mt-1">
+              {progressPercentage}% Completed • <span className="text-emerald-700">{completedCount} of {totalTopics} Topics Mastered</span>
             </h3>
           </div>
           <div className="text-right">
-            <span className="text-xs font-semibold text-slate-400">Estimated Duration: </span>
-            <span className="text-xs font-bold text-white">12 Weeks (8 hrs/wk)</span>
+            <span className="text-xs font-semibold text-slate-600">Estimated Duration: </span>
+            <span className="text-xs font-bold text-slate-950">12 Weeks (8 hrs/wk)</span>
           </div>
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full bg-[#0c0e17] rounded-full h-3 overflow-hidden border border-slate-800">
+        <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden border border-slate-300">
           <div 
-            className="bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#B8E3E9] h-full rounded-full transition-all duration-500 shadow-lg"
+            className="bg-emerald-600 h-full rounded-full transition-all duration-500 shadow-sm"
             style={{ width: `${progressPercentage}%` }}
           />
         </div>
 
         {/* 3 Phase Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-          <div className="p-4 rounded-2xl bg-[#0c0e17] border border-[#B8E3E9]/25 flex items-start gap-3">
-            <span className="w-8 h-8 rounded-xl bg-[#B8E3E9]/15 text-[#B8E3E9] flex items-center justify-center font-black text-sm">
+          <div className="p-4 rounded-2xl bg-slate-50 border-2 border-slate-200 flex items-start gap-3">
+            <span className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-950 flex items-center justify-center font-black text-sm border border-emerald-300">
               1
             </span>
             <div>
-              <h4 className="text-xs font-bold text-white">Foundations & Core</h4>
-              <p className="text-[11px] text-slate-400 mt-0.5">Weeks 1 – 4 • Programming & CS Concepts</p>
+              <h4 className="text-xs font-black text-slate-950">Foundations & Core</h4>
+              <p className="text-xs text-slate-600 font-medium mt-0.5">Weeks 1 – 4 • Programming & CS Concepts</p>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-[#0c0e17] border border-[#B298E7]/25 flex items-start gap-3">
-            <span className="w-8 h-8 rounded-xl bg-[#B298E7]/15 text-[#B298E7] flex items-center justify-center font-black text-sm">
+          <div className="p-4 rounded-2xl bg-slate-50 border-2 border-slate-200 flex items-start gap-3">
+            <span className="w-8 h-8 rounded-xl bg-sky-100 text-sky-950 flex items-center justify-center font-black text-sm border border-sky-300">
               2
             </span>
             <div>
-              <h4 className="text-xs font-bold text-white">Applied Competency</h4>
-              <p className="text-[11px] text-slate-400 mt-0.5">Weeks 5 – 8 • Frameworks & Full-Stack</p>
+              <h4 className="text-xs font-black text-slate-950">Applied Competency</h4>
+              <p className="text-xs text-slate-600 font-medium mt-0.5">Weeks 5 – 8 • Frameworks & Full-Stack</p>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-[#0c0e17] border border-[#F5B8D5]/25 flex items-start gap-3">
-            <span className="w-8 h-8 rounded-xl bg-[#F5B8D5]/15 text-[#F5B8D5] flex items-center justify-center font-black text-sm">
+          <div className="p-4 rounded-2xl bg-slate-50 border-2 border-slate-200 flex items-start gap-3">
+            <span className="w-8 h-8 rounded-xl bg-purple-100 text-purple-950 flex items-center justify-center font-black text-sm border border-purple-300">
               3
             </span>
             <div>
-              <h4 className="text-xs font-bold text-white">Production Scale</h4>
-              <p className="text-[11px] text-slate-400 mt-0.5">Weeks 9 – 12 • Cloud, CI/CD & Capstone</p>
+              <h4 className="text-xs font-black text-slate-950">Production Scale</h4>
+              <p className="text-xs text-slate-600 font-medium mt-0.5">Weeks 9 – 12 • Cloud, CI/CD & Capstone</p>
             </div>
           </div>
         </div>
@@ -269,10 +269,10 @@ export default function CandidateRoadmap() {
           return (
             <div 
               key={week.week}
-              className={`rounded-2xl border transition-all overflow-hidden ${
+              className={`rounded-2xl border-2 transition-all overflow-hidden ${
                 isExpanded 
-                  ? 'bg-[#121626] border-[#B298E7]/60 shadow-xl' 
-                  : 'bg-[#121626]/80 border-slate-800 hover:border-slate-700'
+                  ? 'bg-white border-emerald-600 shadow-md' 
+                  : 'bg-white border-slate-200 hover:border-slate-300'
               }`}
             >
               {/* Accordion Trigger Header */}
@@ -284,36 +284,36 @@ export default function CandidateRoadmap() {
                 <div className="flex items-center gap-4 min-w-0">
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-sm flex-shrink-0 ${
                     isWeekFinished
-                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
+                      ? 'bg-emerald-100 text-emerald-950 border-2 border-emerald-300'
                       : isExpanded
-                        ? 'bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17]'
-                        : 'bg-[#0c0e17] text-slate-400 border border-slate-800'
+                        ? 'bg-emerald-700 text-white'
+                        : 'bg-slate-100 text-slate-800 border-2 border-slate-200'
                   }`}>
                     {isWeekFinished ? '✓' : `W${week.week}`}
                   </div>
 
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-slate-600">
                         {week.phase}
                       </span>
                       {isWeekFinished && (
-                        <span className="px-2 py-0.2 rounded-full bg-emerald-500/15 text-emerald-400 text-[10px] font-bold">
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-950 text-[10px] font-black">
                           Completed
                         </span>
                       )}
                     </div>
-                    <h4 className="text-base sm:text-lg font-bold text-white truncate tracking-tight mt-0.5">
+                    <h4 className="text-base sm:text-lg font-black text-slate-950 truncate tracking-tight mt-0.5">
                       {week.focus}
                     </h4>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-4 flex-shrink-0">
-                  <span className="hidden sm:inline-block text-xs font-semibold text-slate-400">
+                  <span className="hidden sm:inline-block text-xs font-bold text-slate-600">
                     {weekCompletedCount} of {week.topics.length} done
                   </span>
-                  <span className={`text-slate-400 text-sm transform transition-transform ${isExpanded ? 'rotate-180 text-[#B298E7]' : ''}`}>
+                  <span className={`text-slate-500 text-sm transform transition-transform ${isExpanded ? 'rotate-180 text-emerald-700' : ''}`}>
                     ▼
                   </span>
                 </div>
@@ -321,11 +321,11 @@ export default function CandidateRoadmap() {
 
               {/* Accordion Expanded Content */}
               {isExpanded && (
-                <div className="p-6 bg-[#0c0e17] border-t border-slate-800 grid grid-cols-1 md:grid-cols-2 gap-8 animate-in slide-in-from-top-2 duration-200">
+                <div className="p-6 bg-slate-50 border-t-2 border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-8 animate-in slide-in-from-top-2 duration-200">
                   
                   {/* Left Column: Topics with Interactive Checkboxes */}
                   <div>
-                    <h5 className="font-black text-[#B8E3E9] mb-3 flex items-center gap-2 text-xs uppercase tracking-wider">
+                    <h5 className="font-black text-emerald-950 mb-3 flex items-center gap-2 text-xs uppercase tracking-wider">
                       <span>📚</span> Concepts & Milestones (Click to Mark Done)
                     </h5>
                     <div className="space-y-2 mb-6">
@@ -334,19 +334,19 @@ export default function CandidateRoadmap() {
                         return (
                           <label
                             key={topic}
-                            className={`flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer ${
+                            className={`flex items-start gap-3 p-3 rounded-xl border-2 transition-all cursor-pointer ${
                               isDone
-                                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-200'
-                                : 'bg-[#121626] border-slate-800 text-slate-300 hover:border-slate-700'
+                                ? 'bg-emerald-100/60 border-emerald-300 text-emerald-950'
+                                : 'bg-white border-slate-200 text-slate-900 hover:border-slate-300'
                             }`}
                           >
                             <input
                               type="checkbox"
                               checked={isDone}
                               onChange={() => toggleTopic(week.week, topic)}
-                              className="mt-1 w-4 h-4 rounded text-[#B298E7] focus:ring-0 cursor-pointer"
+                              className="mt-1 w-4 h-4 rounded text-emerald-700 focus:ring-0 cursor-pointer"
                             />
-                            <span className={`text-xs sm:text-sm font-medium ${isDone ? 'line-through text-slate-400' : ''}`}>
+                            <span className={`text-xs sm:text-sm font-semibold ${isDone ? 'line-through text-slate-500' : 'text-slate-950'}`}>
                               {topic}
                             </span>
                           </label>
@@ -355,13 +355,13 @@ export default function CandidateRoadmap() {
                     </div>
 
                     {/* Curated Resources */}
-                    <h5 className="font-black text-[#B298E7] mb-2.5 flex items-center gap-2 text-xs uppercase tracking-wider">
+                    <h5 className="font-black text-slate-900 mb-2.5 flex items-center gap-2 text-xs uppercase tracking-wider">
                       <span>🔗</span> Curated Study Resources
                     </h5>
-                    <ul className="space-y-1.5 text-xs text-slate-300">
+                    <ul className="space-y-1.5 text-xs text-slate-700 font-medium">
                       {week.resources.map((res, rIdx) => (
                         <li key={rIdx} className="flex items-center gap-2">
-                          <span className="text-[#B298E7] font-bold">•</span>
+                          <span className="text-emerald-700 font-bold">•</span>
                           <span>{res}</span>
                         </li>
                       ))}
@@ -371,32 +371,32 @@ export default function CandidateRoadmap() {
                   {/* Right Column: Mini Project & Quiz Action */}
                   <div className="flex flex-col justify-between">
                     <div>
-                      <h5 className="font-black text-[#F5B8D5] mb-3 flex items-center gap-2 text-xs uppercase tracking-wider">
+                      <h5 className="font-black text-slate-950 mb-3 flex items-center gap-2 text-xs uppercase tracking-wider">
                         <span>🛠️</span> Weekly Hands-on Deliverable
                       </h5>
-                      <div className="p-4 rounded-2xl bg-[#121626] border border-[#F5B8D5]/30 space-y-2">
-                        <span className="text-[11px] font-bold text-[#F5B8D5] uppercase tracking-wider block">
+                      <div className="p-4 rounded-2xl bg-white border-2 border-slate-200 space-y-2">
+                        <span className="text-xs font-black text-emerald-800 uppercase tracking-wider block">
                           Portfolio Capstone Task
                         </span>
-                        <p className="text-xs sm:text-sm text-slate-200 font-medium leading-relaxed">
+                        <p className="text-xs sm:text-sm text-slate-900 font-medium leading-relaxed">
                           {week.project}
                         </p>
                       </div>
                     </div>
 
                     {/* Direct Test Assessment Button */}
-                    <div className="pt-6 mt-6 border-t border-slate-800 flex flex-col sm:flex-row gap-3">
+                    <div className="pt-6 mt-6 border-t-2 border-slate-200 flex flex-col sm:flex-row gap-3">
                       <button
                         type="button"
                         onClick={() => navigate('/candidate/practice', { state: { preSelectedSkill: week.topics[0] } })}
-                        className="flex-1 py-2.5 bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17] font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer hover:brightness-105 shadow text-center"
+                        className="flex-1 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-sm text-center"
                       >
                         🎯 Practice Quiz on W{week.week} Topics
                       </button>
                       <button
                         type="button"
                         onClick={() => navigate('/analyzer')}
-                        className="py-2.5 px-4 bg-[#121626] border border-slate-700 text-slate-300 hover:text-white text-xs font-bold rounded-xl cursor-pointer text-center"
+                        className="py-2.5 px-4 bg-white border-2 border-slate-300 text-slate-900 hover:text-emerald-800 text-xs font-bold rounded-xl cursor-pointer text-center"
                       >
                         Gap Analysis
                       </button>

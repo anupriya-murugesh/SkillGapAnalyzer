@@ -102,7 +102,7 @@ function MainApp() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0c0e17] text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#FAFCF8] text-slate-900 flex flex-col font-sans">
       
       {/* Header Navbar with Dual-Role Sign In trigger */}
       <Navbar
@@ -185,10 +185,10 @@ function MainApp() {
             element={
               <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
                 <div className="text-center mb-10">
-                  <h1 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#B8E3E9] tracking-tight mb-3">
+                  <h1 className="text-4xl md:text-5xl font-black text-slate-950 tracking-tight mb-3">
                     Skill Gap Analyzer
                   </h1>
-                  <p className="mt-2 text-lg md:text-xl font-medium text-[#B8E3E9]">
+                  <p className="mt-2 text-lg md:text-xl font-bold text-emerald-800">
                     AI Enterprise Assessment Copilot
                   </p>
                 </div>

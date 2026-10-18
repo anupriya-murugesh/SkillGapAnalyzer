@@ -133,42 +133,38 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-300"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
       {/* Modal Container */}
-      <div className="relative w-full max-w-md overflow-hidden rounded-3xl bg-[#121626] backdrop-blur-2xl border border-[#1f2742] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)] text-white p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-md overflow-hidden rounded-3xl bg-white border-2 border-slate-200 shadow-2xl text-slate-950 p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-200">
         
-        {/* Glow Spheres */}
-        <div className="absolute -top-20 -right-20 w-52 h-52 bg-[#B298E7]/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-20 -left-20 w-52 h-52 bg-[#F5B8D5]/20 rounded-full blur-3xl pointer-events-none" />
-
         {/* Close Button */}
         <button
           onClick={onClose}
           type="button"
           aria-label="Close modal"
-          className="absolute top-5 right-5 text-slate-400 hover:text-white bg-[#0c0e17] hover:bg-[#161c30] border border-[#1f2742] rounded-full w-8 h-8 flex items-center justify-center transition-all duration-200 text-lg font-bold"
+          className="absolute top-5 right-5 text-slate-700 hover:text-black bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-full w-8 h-8 flex items-center justify-center transition-all duration-200 text-lg font-bold cursor-pointer"
         >
           &times;
         </button>
 
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B298E7]/15 border border-[#B298E7]/35 text-[#B298E7] text-xs font-semibold mb-3 tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#B8E3E9] animate-pulse" />
-            Bridge-IQ Platform
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 border-2 border-emerald-300 text-emerald-950 text-xs font-black mb-3 tracking-wider uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-700 animate-pulse" />
+            Portal Access
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-950 tracking-tight">
             {mode === 'forgot'
               ? 'Reset Password'
               : mode === 'signup'
               ? 'Create Your Account'
               : 'Welcome Back'}
           </h2>
-          <p className="text-slate-400 text-xs sm:text-sm mt-1.5 font-medium">
+          <p className="text-slate-600 text-xs sm:text-sm mt-1.5 font-medium">
             {mode === 'forgot'
               ? 'Enter your registered email to receive reset instructions'
               : mode === 'signup'
@@ -180,28 +176,28 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
         {/* Role Selector Tabs (Only in Sign Up Mode) */}
         {mode === 'signup' && (
           <div className="mb-6">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 px-1 flex justify-between items-center">
+            <div className="text-xs font-black uppercase tracking-wider text-slate-700 mb-2 px-1 flex justify-between items-center">
               <span>Select Account Role</span>
-              <span className="text-[#B8E3E9] font-semibold lowercase">
+              <span className="text-emerald-800 font-bold lowercase">
                 {role === 'candidate' ? 'Personal Career Track' : 'Company Hiring Track'}
               </span>
             </div>
             
-            <div className="grid grid-cols-2 gap-2 p-1.5 bg-[#0c0e17] rounded-2xl border border-[#1f2742]">
+            <div className="grid grid-cols-2 gap-2 p-1.5 bg-slate-100 rounded-2xl border-2 border-slate-200">
               <button
                 type="button"
                 onClick={() => setRole('candidate')}
-                className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-xl transition-all duration-200 text-center ${
+                className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-xl transition-all duration-200 text-center cursor-pointer ${
                   role === 'candidate'
-                    ? 'bg-gradient-to-r from-[#B298E7] to-[#F5B8D5] text-[#0c0e17] font-black shadow-md shadow-[#B298E7]/30'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-[#161c30] font-medium'
+                    ? 'bg-emerald-700 text-white font-black shadow-xs'
+                    : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200 font-bold'
                 }`}
               >
-                <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold">
+                <div className="flex items-center gap-1.5 text-xs sm:text-sm font-black">
                   <span>🎯</span>
                   <span>Candidate</span>
                 </div>
-                <span className={`text-[10px] mt-0.5 ${role === 'candidate' ? 'text-[#0c0e17]' : 'text-slate-400'}`}>
+                <span className={`text-[10px] mt-0.5 ${role === 'candidate' ? 'text-emerald-100 font-medium' : 'text-slate-600'}`}>
                   Skill Gap & Growth
                 </span>
               </button>
@@ -209,17 +205,17 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
               <button
                 type="button"
                 onClick={() => setRole('employer')}
-                className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-xl transition-all duration-200 text-center ${
+                className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-xl transition-all duration-200 text-center cursor-pointer ${
                   role === 'employer'
-                    ? 'bg-gradient-to-r from-[#B298E7] to-[#F5B8D5] text-[#0c0e17] font-black shadow-md shadow-[#B298E7]/30'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-[#161c30] font-medium'
+                    ? 'bg-emerald-700 text-white font-black shadow-xs'
+                    : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200 font-bold'
                 }`}
               >
-                <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold">
+                <div className="flex items-center gap-1.5 text-xs sm:text-sm font-black">
                   <span>🏢</span>
                   <span>Employer</span>
                 </div>
-                <span className={`text-[10px] mt-0.5 ${role === 'employer' ? 'text-[#0c0e17]' : 'text-slate-400'}`}>
+                <span className={`text-[10px] mt-0.5 ${role === 'employer' ? 'text-emerald-100 font-medium' : 'text-slate-600'}`}>
                   Recruit & Benchmark
                 </span>
               </button>
@@ -234,7 +230,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
               type="button"
               onClick={handleGoogleSignIn}
               disabled={loading}
-              className="w-full py-3 px-4 bg-[#0c0e17] hover:bg-[#161c30] border border-[#1f2742] hover:border-[#B298E7]/40 text-slate-200 hover:text-white font-semibold text-sm rounded-xl flex items-center justify-center gap-3 transition-all duration-200 shadow-sm active:scale-[0.99] disabled:opacity-50"
+              className="w-full py-3 px-4 bg-white hover:bg-slate-50 border-2 border-slate-300 hover:border-slate-400 text-slate-800 font-bold text-sm rounded-xl flex items-center justify-center gap-3 transition-all duration-200 shadow-xs active:scale-[0.99] disabled:opacity-50 cursor-pointer"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path
@@ -258,9 +254,9 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
             </button>
 
             <div className="flex items-center gap-3">
-              <div className="flex-1 h-px bg-[#1f2742]" />
-              <span className="text-[11px] font-bold text-[#B8E3E9] uppercase tracking-widest">or email</span>
-              <div className="flex-1 h-px bg-[#1f2742]" />
+              <div className="flex-1 h-0.5 bg-slate-200" />
+              <span className="text-xs font-black text-slate-500 uppercase tracking-widest">or email</span>
+              <div className="flex-1 h-0.5 bg-slate-200" />
             </div>
           </div>
         )}
@@ -268,7 +264,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
         {/* Main Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1.5 tracking-wide">
+            <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
               Email Address
             </label>
             <input
@@ -277,21 +273,21 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={role === 'employer' ? 'hiring@company.com' : 'you@example.com'}
-              className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7] transition-all text-sm font-medium"
+              className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 transition-all text-sm font-medium"
             />
           </div>
 
           {mode !== 'forgot' && (
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-xs font-bold text-slate-300 tracking-wide">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800">
                   Password
                 </label>
                 {mode === 'login' && (
                   <button
                     type="button"
                     onClick={() => handleModeSwitch('forgot')}
-                    className="text-xs text-[#B298E7] hover:text-[#B8E3E9] font-semibold transition-colors"
+                    className="text-xs text-emerald-700 hover:text-emerald-900 font-bold transition-colors cursor-pointer"
                   >
                     Forgot Password?
                   </button>
@@ -305,12 +301,12 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   minLength={6}
-                  className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7] transition-all text-sm font-medium pr-10"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 transition-all text-sm font-medium pr-12"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 text-xs px-1 font-semibold"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-900 text-xs px-1 font-bold cursor-pointer"
                   aria-label="Toggle password visibility"
                 >
                   {showPassword ? 'Hide' : 'Show'}
@@ -321,15 +317,15 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
 
           {/* Feedback Banners */}
           {errorMessage && (
-            <div className="p-3 bg-red-950/60 border border-red-800/80 text-red-200 rounded-xl text-xs font-semibold animate-in fade-in flex items-center gap-2">
-              <span className="text-red-400">⚠️</span>
+            <div className="p-3 bg-red-50 border-2 border-red-300 text-red-900 rounded-xl text-xs font-bold animate-in fade-in flex items-center gap-2">
+              <span className="text-red-600">⚠️</span>
               <span>{errorMessage}</span>
             </div>
           )}
 
           {successMessage && (
-            <div className="p-3 bg-emerald-950/60 border border-emerald-800/80 text-emerald-200 rounded-xl text-xs font-semibold animate-in fade-in flex items-center gap-2">
-              <span className="text-emerald-400">✓</span>
+            <div className="p-3 bg-emerald-50 border-2 border-emerald-300 text-emerald-900 rounded-xl text-xs font-bold animate-in fade-in flex items-center gap-2">
+              <span className="text-emerald-700">✓</span>
               <span>{successMessage}</span>
             </div>
           )}
@@ -338,11 +334,11 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#F9BEDD] hover:from-[#B8E3E9] hover:to-[#B298E7] text-[#0c0e17] font-black rounded-xl shadow-lg shadow-[#B298E7]/25 hover:shadow-[#F5B8D5]/35 transition-all active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2 text-sm mt-2 cursor-pointer"
+            className="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black rounded-xl shadow-md shadow-emerald-700/25 transition-all active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2 text-sm mt-2 cursor-pointer"
           >
             {loading ? (
               <>
-                <svg className="animate-spin h-4 w-4 text-[#0c0e17]" fill="none" viewBox="0 0 24 24">
+                <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
@@ -359,12 +355,12 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
         </form>
 
         {/* Footer Navigation */}
-        <div className="mt-6 text-center text-xs text-slate-400 font-medium">
+        <div className="mt-6 text-center text-xs text-slate-600 font-medium">
           {mode === 'forgot' ? (
             <button
               type="button"
               onClick={() => handleModeSwitch('login')}
-              className="text-[#B298E7] hover:text-[#B8E3E9] font-bold transition-colors inline-flex items-center gap-1"
+              className="text-emerald-700 hover:text-emerald-900 font-black transition-colors inline-flex items-center gap-1 cursor-pointer"
             >
               <span>←</span>
               <span>Back to Sign In</span>
@@ -375,7 +371,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
               <button
                 type="button"
                 onClick={() => handleModeSwitch('signup')}
-                className="text-[#B298E7] hover:text-[#B8E3E9] font-bold underline decoration-[#B298E7]/50 underline-offset-4 transition-colors"
+                className="text-emerald-700 hover:text-emerald-900 font-black underline underline-offset-4 transition-colors cursor-pointer"
               >
                 Register here
               </button>
@@ -386,7 +382,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
               <button
                 type="button"
                 onClick={() => handleModeSwitch('login')}
-                className="text-[#B298E7] hover:text-[#B8E3E9] font-bold underline decoration-[#B298E7]/50 underline-offset-4 transition-colors"
+                className="text-emerald-700 hover:text-emerald-900 font-black underline underline-offset-4 transition-colors cursor-pointer"
               >
                 Sign in
               </button>

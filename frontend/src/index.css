@@ -2,56 +2,57 @@
 
 @layer base {
   :root {
-    --bg-page: #0c0e17;
-    --card-surface: #121626;
-    --card-surface-elevated: #161c30;
-    --border-subtle: #1f2742;
-    --pastel-lavender: #B298E7;
-    --pastel-aqua: #B8E3E9;
-    --pastel-rose: #F5B8D5;
-    --pastel-blush: #F9BEDD;
+    --bg-page: #FAFCF8;
+    --card-surface: #FFFFFF;
+    --card-surface-elevated: #F2F8F1;
+    --border-subtle: #E2EDE0;
+    --border-hover: #BADBA2;
+    --accent-emerald: #15803D;
+    --accent-lime: #42D674;
+    --accent-cream: #E3F0A3;
+    --accent-sage: #BADBA2;
   }
 
   * {
-    border-color: #1f2742;
+    border-color: #E2EDE0;
   }
 
   body {
-    background-color: #0c0e17;
-    color: #f8fafc;
+    background-color: #FAFCF8;
+    color: #0F172A;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Sleek modern scrollbars with pastel lavender thumb */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: #020617;
+    font-weight: 800;
+  }
+
+  /* Sleek modern scrollbars with emerald glow thumb */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
   ::-webkit-scrollbar-track {
-    background: #0c0e17;
+    background: #FAFCF8;
   }
   ::-webkit-scrollbar-thumb {
-    background: #252f50;
+    background: #CBD5E1;
     border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #B298E7;
+    background: #15803D;
   }
 }
 
 @theme {
-  --color-lavender: #B298E7;
-  --color-aqua: #B8E3E9;
-  --color-rose: #F5B8D5;
-  --color-blush: #F9BEDD;
-  --color-slate-950: #0c0e17;
-  --color-slate-900: #121626;
-  --color-slate-850: #161c30;
-  --color-slate-800: #1f2742;
-  --color-slate-700: #333f63;
+  --color-emerald-custom: #15803D;
+  --color-lime-custom: #42D674;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
   --animate-marquee: marquee 25s linear infinite;
 
   @keyframes marquee {
@@ -63,4 +64,3 @@
     }
   }
 }
-

@@ -71,8 +71,8 @@ export default function Dashboard({ session: propSession, userProfile: propProfi
   if (loading) {
     return (
       <div className="py-24 flex flex-col items-center justify-center space-y-4 text-center">
-        <div className="w-12 h-12 border-4 border-[#B298E7]/20 border-t-[#B298E7] rounded-full animate-spin" />
-        <p className="text-slate-400 font-bold text-sm">Loading your personalized dashboard...</p>
+        <div className="w-12 h-12 border-4 border-emerald-600/20 border-t-emerald-600 rounded-full animate-spin" />
+        <p className="text-slate-700 font-bold text-sm">Loading your personalized dashboard...</p>
       </div>
     );
   }
@@ -86,11 +86,11 @@ export default function Dashboard({ session: propSession, userProfile: propProfi
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-end">
         <button
           onClick={handleToggleRolePreview}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#121626] hover:bg-[#161c30] border border-slate-700/80 text-slate-300 hover:text-white text-xs font-semibold shadow-sm transition-all active:scale-95 cursor-pointer"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white hover:bg-slate-50 border-2 border-slate-200 text-slate-800 text-xs font-bold shadow-sm transition-all active:scale-95 cursor-pointer"
           title="Toggle between Candidate and Employer role views"
         >
           <span className="text-xs">🔄</span>
-          <span>View as: <strong className="text-[#B8E3E9] capitalize">{profile?.role || 'candidate'}</strong> (Click to switch)</span>
+          <span>View as: <strong className="text-emerald-800 capitalize font-black">{profile?.role || 'candidate'}</strong> (Click to switch)</span>
         </button>
       </div>
 

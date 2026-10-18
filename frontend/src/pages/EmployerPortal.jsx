@@ -281,17 +281,17 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
       
       {/* 1. Master Employer Header Banner */}
-      <div className="rounded-3xl bg-gradient-to-r from-[#121626] via-[#161c30] to-[#121626] border border-[#B298E7]/30 p-6 sm:p-8 shadow-2xl relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="rounded-3xl bg-white border-2 border-slate-200 p-6 sm:p-8 shadow-sm relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B298E7]/15 border border-[#B298E7]/35 text-[#B298E7] text-xs font-bold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-300 text-emerald-950 text-xs font-bold uppercase tracking-wider">
             <span>🏢</span>
             <span>Enterprise Recruitment Workspace</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
             {companyName}
           </h1>
-          <p className="text-slate-400 text-xs sm:text-sm font-medium">
-            Recruiter Portal • Managed by <strong className="text-slate-200">{recruiterName}</strong>
+          <p className="text-slate-600 text-xs sm:text-sm font-medium">
+            Recruiter Portal • Managed by <strong className="text-slate-900 font-bold">{recruiterName}</strong>
           </p>
         </div>
 
@@ -300,7 +300,7 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
           <button
             type="button"
             onClick={() => setActiveTab('post-job')}
-            className="px-6 py-3.5 bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#B8E3E9] text-[#0c0e17] font-black text-xs uppercase tracking-wider rounded-xl shadow-lg hover:brightness-105 transition-all cursor-pointer flex items-center gap-2"
+            className="px-6 py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition-all cursor-pointer flex items-center gap-2"
           >
             <span>+ Post a New Role</span>
           </button>
@@ -308,7 +308,7 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
       </div>
 
       {/* 2. Top Employer Navigation Tabs Bar */}
-      <div className="bg-[#121626] rounded-2xl p-2 border border-slate-800 shadow-xl flex flex-wrap gap-2">
+      <div className="bg-white rounded-2xl p-2 border-2 border-slate-200 shadow-sm flex flex-wrap gap-2">
         {[
           { id: 'overview', label: '📊 Overview', desc: 'KPIs & Summary' },
           { id: 'jobs', label: `📢 Job Postings (${jobs.length})`, desc: 'Manage Roles' },
@@ -324,12 +324,12 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 min-w-[140px] px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex flex-col items-center sm:items-start ${
                 isActive
-                  ? 'bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17] font-black shadow-md'
-                  : 'text-slate-400 hover:text-white hover:bg-[#0c0e17]'
+                  ? 'bg-emerald-700 text-white font-black shadow-sm'
+                  : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
               }`}
             >
               <span>{tab.label}</span>
-              <span className={`text-[10px] hidden sm:block ${isActive ? 'text-[#0c0e17]/80' : 'text-slate-500'}`}>
+              <span className={`text-[10px] hidden sm:block ${isActive ? 'text-white/80' : 'text-slate-500'}`}>
                 {tab.desc}
               </span>
             </button>
@@ -345,42 +345,42 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
           
           {/* KPI Cards Grid */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            <div className="bg-[#121626] border border-[#1f2742] rounded-2xl p-5 shadow-lg">
-              <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-1">Active Positions</span>
-              <div className="text-3xl font-black text-white">{activePostingsCount}</div>
-              <span className="text-[11px] text-[#B8E3E9] font-medium mt-1 block">Live across network</span>
+            <div className="bg-white border-2 border-slate-200 rounded-2xl p-5 shadow-sm">
+              <span className="text-slate-600 text-xs font-black uppercase tracking-wider block mb-1">Active Positions</span>
+              <div className="text-3xl font-black text-slate-950">{activePostingsCount}</div>
+              <span className="text-[11px] text-emerald-800 font-bold mt-1 block">Live across network</span>
             </div>
 
-            <div className="bg-[#121626] border border-[#1f2742] rounded-2xl p-5 shadow-lg">
-              <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-1">Total Pipeline</span>
-              <div className="text-3xl font-black text-white">{totalApplicants}</div>
-              <span className="text-[11px] text-emerald-400 font-medium mt-1 block">+4 new this week</span>
+            <div className="bg-white border-2 border-slate-200 rounded-2xl p-5 shadow-sm">
+              <span className="text-slate-600 text-xs font-black uppercase tracking-wider block mb-1">Total Pipeline</span>
+              <div className="text-3xl font-black text-slate-950">{totalApplicants}</div>
+              <span className="text-[11px] text-emerald-800 font-bold mt-1 block">+4 new this week</span>
             </div>
 
-            <div className="bg-[#121626] border border-[#1f2742] rounded-2xl p-5 shadow-lg">
-              <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-1">Top Verified Matches</span>
-              <div className="text-3xl font-black text-white">{verifiedTalentCount}</div>
-              <span className="text-[11px] text-[#B298E7] font-medium mt-1 block">Score &ge; 88% Match</span>
+            <div className="bg-white border-2 border-slate-200 rounded-2xl p-5 shadow-sm">
+              <span className="text-slate-600 text-xs font-black uppercase tracking-wider block mb-1">Top Verified Matches</span>
+              <div className="text-3xl font-black text-slate-950">{verifiedTalentCount}</div>
+              <span className="text-[11px] text-emerald-800 font-bold mt-1 block">Score &ge; 88% Match</span>
             </div>
 
-            <div className="bg-[#121626] border border-[#1f2742] rounded-2xl p-5 shadow-lg">
-              <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-1">Shortlisted</span>
-              <div className="text-3xl font-black text-white">{shortlistedIds.size}</div>
-              <span className="text-[11px] text-[#F5B8D5] font-medium mt-1 block">Ready for interview</span>
+            <div className="bg-white border-2 border-slate-200 rounded-2xl p-5 shadow-sm">
+              <span className="text-slate-600 text-xs font-black uppercase tracking-wider block mb-1">Shortlisted</span>
+              <div className="text-3xl font-black text-slate-950">{shortlistedIds.size}</div>
+              <span className="text-[11px] text-rose-700 font-bold mt-1 block">Ready for interview</span>
             </div>
           </div>
 
           {/* Quick Active Jobs Preview */}
-          <div className="bg-[#121626] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-4">
+          <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-black text-white">Active Requisitions</h3>
-                <p className="text-xs text-slate-400">Recent openings managed by your team</p>
+                <h3 className="text-lg font-black text-slate-950">Active Requisitions</h3>
+                <p className="text-xs text-slate-600 font-medium">Recent openings managed by your team</p>
               </div>
               <button
                 type="button"
                 onClick={() => setActiveTab('jobs')}
-                className="text-xs font-bold text-[#B8E3E9] hover:underline cursor-pointer"
+                className="text-xs font-bold text-emerald-700 hover:underline cursor-pointer"
               >
                 View All ({jobs.length}) →
               </button>
@@ -388,13 +388,13 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {jobs.slice(0, 4).map((j) => (
-                <div key={j.id} className="p-4 rounded-2xl bg-[#0c0e17] border border-slate-800 flex items-center justify-between">
+                <div key={j.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                   <div className="min-w-0 pr-4">
-                    <h4 className="text-sm font-bold text-white truncate">{j.title}</h4>
-                    <p className="text-xs text-slate-400 mt-0.5">{j.department || 'Engineering'} • {j.workplace} • {j.location}</p>
+                    <h4 className="text-sm font-black text-slate-950 truncate">{j.title}</h4>
+                    <p className="text-xs text-slate-600 font-medium mt-0.5">{j.department || 'Engineering'} • {j.workplace} • {j.location}</p>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <span className="px-2.5 py-1 rounded-lg bg-[#B298E7]/15 border border-[#B298E7]/30 text-[#B298E7] text-xs font-black">
+                    <span className="px-2.5 py-1 rounded-lg bg-emerald-100 border border-emerald-300 text-emerald-950 text-xs font-black">
                       {j.applicant_count || 0} Applicants
                     </span>
                   </div>
@@ -404,16 +404,16 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
           </div>
 
           {/* Top Candidates Quick Preview */}
-          <div className="bg-[#121626] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-4">
+          <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-black text-white">Top Scored Candidates</h3>
-                <p className="text-xs text-slate-400">Pre-assessed against platform benchmarks</p>
+                <h3 className="text-lg font-black text-slate-950">Top Scored Candidates</h3>
+                <p className="text-xs text-slate-600 font-medium">Pre-assessed against platform benchmarks</p>
               </div>
               <button
                 type="button"
                 onClick={() => setActiveTab('candidates')}
-                className="text-xs font-bold text-[#B8E3E9] hover:underline cursor-pointer"
+                className="text-xs font-bold text-emerald-700 hover:underline cursor-pointer"
               >
                 Explore Talent Pool →
               </button>
@@ -421,23 +421,23 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {candidates.slice(0, 3).map((cand) => (
-                <div key={cand.id} className="p-4 rounded-2xl bg-[#0c0e17] border border-slate-800 space-y-3">
+                <div key={cand.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="w-10 h-10 rounded-xl bg-[#B298E7]/20 text-[#B298E7] flex items-center justify-center font-black">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-950 flex items-center justify-center font-black">
                       {cand.full_name?.charAt(0) || 'C'}
                     </div>
-                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 text-xs font-black">
+                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-950 text-xs font-black">
                       {cand.match_percentage}% Match
                     </span>
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-white truncate">{cand.full_name}</h4>
-                    <p className="text-xs text-slate-400 truncate">{cand.target_role}</p>
+                    <h4 className="text-sm font-black text-slate-950 truncate">{cand.full_name}</h4>
+                    <p className="text-xs text-slate-600 font-medium truncate">{cand.target_role}</p>
                   </div>
                   <button
                     type="button"
                     onClick={() => handleInviteToAssessment(cand)}
-                    className="w-full py-1.5 bg-[#161c30] border border-[#B8E3E9]/30 text-[#B8E3E9] hover:bg-[#1f2742] text-xs font-bold rounded-lg transition-all cursor-pointer"
+                    className="w-full py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-lg transition-all cursor-pointer"
                   >
                     Send Assessment ↗
                   </button>
@@ -453,16 +453,16 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
       {/* TAB 2: JOB POSTINGS MANAGEMENT                                      */}
       {/* =================================================================== */}
       {activeTab === 'jobs' && (
-        <div className="bg-[#121626] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6 animate-in fade-in duration-200">
+        <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 animate-in fade-in duration-200">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h3 className="text-xl font-black text-white">Active Job Postings ({jobs.length})</h3>
-              <p className="text-xs text-slate-400">Manage requisitions, review candidates per role, and update listings</p>
+              <h3 className="text-xl font-black text-slate-950">Active Job Postings ({jobs.length})</h3>
+              <p className="text-xs text-slate-600 font-medium">Manage requisitions, review candidates per role, and update listings</p>
             </div>
             <button
               type="button"
               onClick={() => setActiveTab('post-job')}
-              className="px-4 py-2.5 bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17] font-black text-xs rounded-xl shadow cursor-pointer hover:brightness-105"
+              className="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs rounded-xl shadow cursor-pointer"
             >
               + Create New Opening
             </button>
@@ -470,21 +470,21 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
 
           <div className="space-y-4">
             {jobs.map((job) => (
-              <div key={job.id} className="p-5 rounded-2xl bg-[#0c0e17] border border-slate-800 hover:border-[#B298E7]/40 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div key={job.id} className="p-5 rounded-2xl bg-slate-50 border border-slate-200 hover:border-emerald-500 hover:shadow-sm transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div className="space-y-1.5 min-w-0 max-w-xl">
                   <div className="flex items-center gap-2">
-                    <h4 className="text-base font-bold text-white">{job.title}</h4>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                    <h4 className="text-base font-black text-slate-950">{job.title}</h4>
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-950 border border-emerald-300">
                       {job.status || 'Active'}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-slate-600 font-medium">
                     {job.department || 'Engineering'} • {job.workplace} • {job.location} • {job.salary || '$90k - $130k'}
                   </p>
                   {job.required_skills && (
                     <div className="flex flex-wrap gap-1.5 pt-1">
                       {(Array.isArray(job.required_skills) ? job.required_skills : job.required_skills.split(',')).map((sk) => (
-                        <span key={sk} className="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-300 font-semibold">
+                        <span key={sk} className="px-2 py-0.5 rounded bg-white border border-slate-200 text-[10px] text-slate-800 font-bold">
                           {sk.trim()}
                         </span>
                       ))}
@@ -494,7 +494,7 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
 
                 <div className="flex items-center gap-3 w-full md:w-auto justify-end">
                   <div className="text-right pr-2">
-                    <span className="text-lg font-black text-white block">{job.applicant_count || 0}</span>
+                    <span className="text-lg font-black text-slate-950 block">{job.applicant_count || 0}</span>
                     <span className="text-[10px] text-slate-500 uppercase font-bold">Applicants</span>
                   </div>
                   <button
@@ -503,7 +503,7 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
                       setCandidateSearch(job.title.split(' ')[0]);
                       setActiveTab('candidates');
                     }}
-                    className="px-4 py-2 bg-[#161c30] border border-[#B8E3E9]/30 text-[#B8E3E9] text-xs font-bold rounded-xl hover:bg-[#1f2742] cursor-pointer"
+                    className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl cursor-pointer"
                   >
                     View Matching Talent →
                   </button>
@@ -521,24 +521,24 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
         <div className="space-y-6 animate-in fade-in duration-200">
           
           {/* Search & Filter Bar */}
-          <div className="bg-[#121626] rounded-2xl p-4 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="bg-white rounded-2xl p-4 border-2 border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex-1 w-full relative">
-              <span className="absolute left-3.5 top-2.5 text-slate-500 text-sm">🔍</span>
+              <span className="absolute left-3.5 top-2.5 text-slate-400 text-sm">🔍</span>
               <input
                 type="text"
                 placeholder="Search candidates by name, specialization, or skill tags..."
                 value={candidateSearch}
                 onChange={(e) => setCandidateSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 bg-[#0c0e17] border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:border-[#B298E7] outline-none"
+                className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:border-emerald-600 focus:bg-white outline-none font-medium"
               />
             </div>
 
             <div className="flex items-center gap-2 w-full sm:w-auto">
-              <span className="text-xs font-bold text-slate-400 whitespace-nowrap">Skill Filter:</span>
+              <span className="text-xs font-bold text-slate-700 whitespace-nowrap">Skill Filter:</span>
               <select
                 value={candidateSkillFilter}
                 onChange={(e) => setCandidateSkillFilter(e.target.value)}
-                className="bg-[#0c0e17] border border-slate-800 text-xs font-bold text-slate-200 rounded-xl px-3 py-2 outline-none focus:border-[#B298E7]"
+                className="bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 rounded-xl px-3 py-2 outline-none focus:border-emerald-600 cursor-pointer"
               >
                 <option value="all">All Skills</option>
                 <option value="React">React</option>
@@ -558,32 +558,32 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
               const skills = Array.isArray(cand.skills) ? cand.skills : (cand.skills ? String(cand.skills).split(',') : []);
 
               return (
-                <div key={cand.id} className="p-5 rounded-3xl bg-[#121626] border border-slate-800 hover:border-[#B298E7]/40 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-lg">
+                <div key={cand.id} className="p-5 rounded-3xl bg-white border-2 border-slate-200 hover:border-emerald-600 hover:shadow-md transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-sm">
                   <div className="flex items-start gap-4 min-w-0">
-                    <div className="w-12 h-12 rounded-2xl bg-[#0c0e17] border border-slate-800 text-[#B298E7] flex items-center justify-center text-lg font-black flex-shrink-0 shadow-inner">
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 flex items-center justify-center text-lg font-black flex-shrink-0 shadow-sm">
                       {cand.full_name?.charAt(0) || 'C'}
                     </div>
 
                     <div className="min-w-0">
                       <div className="flex items-center gap-2.5">
-                        <h4 className="text-base font-bold text-white truncate">{cand.full_name}</h4>
-                        <span className="px-2 py-0.5 rounded text-[10px] font-black bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                        <h4 className="text-base font-black text-slate-950 truncate">{cand.full_name}</h4>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300">
                           {cand.match_percentage}% Match
                         </span>
                         {cand.l1_score && (
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#B8E3E9]/15 text-[#B8E3E9] border border-[#B8E3E9]/30">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-sky-100 text-sky-900 border border-sky-300">
                             L1 Score: {cand.l1_score}%
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-slate-400 mt-0.5">
+                      <p className="text-xs text-slate-600 font-medium mt-0.5">
                         {cand.target_role} • {cand.experience_level || 'Mid-Level'} • {cand.location || 'Remote'}
                       </p>
 
                       {/* Skill Badges */}
                       <div className="flex flex-wrap gap-1.5 pt-2">
                         {skills.map((sk) => (
-                          <span key={sk} className="px-2 py-0.5 rounded-md bg-[#0c0e17] border border-slate-800 text-[10px] text-slate-300 font-semibold">
+                          <span key={sk} className="px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-[10px] text-slate-800 font-bold">
                             {sk}
                           </span>
                         ))}
@@ -598,8 +598,8 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
                       onClick={() => handleToggleShortlist(cand)}
                       className={`px-3.5 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
                         isShortlisted
-                          ? 'bg-[#F5B8D5]/20 border-[#F5B8D5] text-[#F5B8D5]'
-                          : 'bg-[#0c0e17] border-slate-800 text-slate-400 hover:text-white'
+                          ? 'bg-rose-50 border-rose-300 text-rose-700 font-bold'
+                          : 'bg-slate-50 border-slate-300 text-slate-700 hover:text-slate-950'
                       }`}
                     >
                       {isShortlisted ? '⭐ Shortlisted' : '☆ Shortlist'}
@@ -608,7 +608,7 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
                     <button
                       type="button"
                       onClick={() => handleInviteToAssessment(cand)}
-                      className="px-4 py-2 bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17] font-black text-xs rounded-xl shadow cursor-pointer hover:brightness-105"
+                      className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs rounded-xl shadow cursor-pointer"
                     >
                       Invite to MCQ Test ↗
                     </button>
@@ -625,18 +625,18 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
       {/* TAB 4: POST A JOB FORM                                              */}
       {/* =================================================================== */}
       {activeTab === 'post-job' && (
-        <div className="bg-[#121626] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl max-w-3xl mx-auto space-y-6 animate-in fade-in duration-200">
+        <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm max-w-3xl mx-auto space-y-6 animate-in fade-in duration-200">
           <div>
-            <h3 className="text-2xl font-black text-white">Create New Job Requisition</h3>
-            <p className="text-xs text-slate-400 mt-1">
+            <h3 className="text-2xl font-black text-slate-950">Create New Job Requisition</h3>
+            <p className="text-xs text-slate-600 font-medium mt-1">
               Publish your requirements to the Bridge-IQ network. Candidates will be automatically benchmarked.
             </p>
           </div>
 
           <form onSubmit={handlePostJobSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                Job Title <span className="text-[#F5B8D5]">*</span>
+              <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                Job Title <span className="text-rose-600">*</span>
               </label>
               <input
                 type="text"
@@ -644,13 +644,13 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
                 placeholder="e.g. Senior Full-Stack Engineer"
                 value={newJob.title}
                 onChange={(e) => setNewJob({ ...newJob, title: e.target.value })}
-                className="w-full px-4 py-3 bg-[#0c0e17] border border-slate-800 rounded-xl text-white text-xs outline-none focus:border-[#B298E7]"
+                className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-slate-900 text-xs font-semibold outline-none focus:border-emerald-600 focus:bg-white placeholder-slate-400"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
                   Department
                 </label>
                 <input
@@ -658,18 +658,18 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
                   placeholder="e.g. Core Engineering"
                   value={newJob.department}
                   onChange={(e) => setNewJob({ ...newJob, department: e.target.value })}
-                  className="w-full px-4 py-3 bg-[#0c0e17] border border-slate-800 rounded-xl text-white text-xs outline-none focus:border-[#B298E7]"
+                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-slate-900 text-xs font-semibold outline-none focus:border-emerald-600 focus:bg-white placeholder-slate-400"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
                   Workplace Mode
                 </label>
                 <select
                   value={newJob.workplace}
                   onChange={(e) => setNewJob({ ...newJob, workplace: e.target.value })}
-                  className="w-full px-4 py-3 bg-[#0c0e17] border border-slate-800 rounded-xl text-white text-xs outline-none focus:border-[#B298E7]"
+                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-slate-900 text-xs font-bold outline-none focus:border-emerald-600 focus:bg-white cursor-pointer"
                 >
                   <option value="Remote">🌐 Remote</option>
                   <option value="Hybrid">🔄 Hybrid</option>
@@ -680,7 +680,7 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
                   Location
                 </label>
                 <input
@@ -688,18 +688,18 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
                   placeholder="e.g. Bengaluru, India or Remote"
                   value={newJob.location}
                   onChange={(e) => setNewJob({ ...newJob, location: e.target.value })}
-                  className="w-full px-4 py-3 bg-[#0c0e17] border border-slate-800 rounded-xl text-white text-xs outline-none focus:border-[#B298E7]"
+                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-slate-900 text-xs font-semibold outline-none focus:border-emerald-600 focus:bg-white placeholder-slate-400"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
                   Employment Type
                 </label>
                 <select
                   value={newJob.type}
                   onChange={(e) => setNewJob({ ...newJob, type: e.target.value })}
-                  className="w-full px-4 py-3 bg-[#0c0e17] border border-slate-800 rounded-xl text-white text-xs outline-none focus:border-[#B298E7]"
+                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-slate-900 text-xs font-bold outline-none focus:border-emerald-600 focus:bg-white cursor-pointer"
                 >
                   <option value="Full-Time">Full-Time</option>
                   <option value="Contract">Contract</option>
@@ -710,8 +710,8 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                Required Benchmark Skills (comma-separated) <span className="text-[#F5B8D5]">*</span>
+              <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                Required Benchmark Skills (comma-separated) <span className="text-rose-600">*</span>
               </label>
               <input
                 type="text"
@@ -719,12 +719,12 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
                 placeholder="React, TypeScript, Node.js, PostgreSQL, Docker"
                 value={newJob.requiredSkills}
                 onChange={(e) => setNewJob({ ...newJob, requiredSkills: e.target.value })}
-                className="w-full px-4 py-3 bg-[#0c0e17] border border-slate-800 rounded-xl text-white text-xs outline-none focus:border-[#B298E7]"
+                className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-slate-900 text-xs font-semibold outline-none focus:border-emerald-600 focus:bg-white placeholder-slate-400"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+              <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
                 Role Description & Expectations
               </label>
               <textarea
@@ -732,14 +732,14 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
                 required
                 value={newJob.description}
                 onChange={(e) => setNewJob({ ...newJob, description: e.target.value })}
-                className="w-full px-4 py-3 bg-[#0c0e17] border border-slate-800 rounded-xl text-white text-xs outline-none focus:border-[#B298E7]"
+                className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-slate-900 text-xs font-normal outline-none focus:border-emerald-600 focus:bg-white placeholder-slate-400"
               />
             </div>
 
             <button
               type="submit"
               disabled={submittingJob}
-              className="w-full py-3.5 bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#B8E3E9] text-[#0c0e17] font-black text-xs uppercase tracking-wider rounded-xl shadow-lg hover:brightness-105 transition-all cursor-pointer"
+              className="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition-all cursor-pointer"
             >
               {submittingJob ? 'Publishing Opening...' : 'Publish Job Opening Now ✓'}
             </button>
@@ -755,47 +755,47 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
             {/* Chart 1: Talent Match Distribution */}
-            <div className="bg-[#121626] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-4">
-              <h3 className="text-base font-black text-white">Talent Match Distribution</h3>
-              <p className="text-xs text-slate-400">Match score breakdown of current applicant pool</p>
+            <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+              <h3 className="text-base font-black text-slate-950">Talent Match Distribution</h3>
+              <p className="text-xs text-slate-600 font-medium">Match score breakdown of current applicant pool</p>
 
               <div className="space-y-3 pt-2">
                 <div>
-                  <div className="flex justify-between text-xs font-bold text-slate-300 mb-1">
+                  <div className="flex justify-between text-xs font-bold text-slate-800 mb-1">
                     <span>High Match (90%+)</span>
-                    <span className="text-emerald-400">42% of candidates</span>
+                    <span className="text-emerald-800 font-black">42% of candidates</span>
                   </div>
-                  <div className="w-full bg-[#0c0e17] h-2 rounded-full overflow-hidden">
-                    <div className="bg-emerald-400 h-full rounded-full" style={{ width: '42%' }}></div>
+                  <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden border border-slate-200">
+                    <div className="bg-emerald-600 h-full rounded-full" style={{ width: '42%' }}></div>
                   </div>
                 </div>
 
                 <div>
-                  <div className="flex justify-between text-xs font-bold text-slate-300 mb-1">
+                  <div className="flex justify-between text-xs font-bold text-slate-800 mb-1">
                     <span>Mid-High Match (75% - 89%)</span>
-                    <span className="text-[#B8E3E9]">38% of candidates</span>
+                    <span className="text-sky-800 font-black">38% of candidates</span>
                   </div>
-                  <div className="w-full bg-[#0c0e17] h-2 rounded-full overflow-hidden">
-                    <div className="bg-[#B8E3E9] h-full rounded-full" style={{ width: '38%' }}></div>
+                  <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden border border-slate-200">
+                    <div className="bg-sky-600 h-full rounded-full" style={{ width: '38%' }}></div>
                   </div>
                 </div>
 
                 <div>
-                  <div className="flex justify-between text-xs font-bold text-slate-300 mb-1">
+                  <div className="flex justify-between text-xs font-bold text-slate-800 mb-1">
                     <span>Developing Match (&lt;75%)</span>
-                    <span className="text-slate-400">20% of candidates</span>
+                    <span className="text-slate-600 font-bold">20% of candidates</span>
                   </div>
-                  <div className="w-full bg-[#0c0e17] h-2 rounded-full overflow-hidden">
-                    <div className="bg-slate-600 h-full rounded-full" style={{ width: '20%' }}></div>
+                  <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden border border-slate-200">
+                    <div className="bg-slate-400 h-full rounded-full" style={{ width: '20%' }}></div>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Chart 2: Top Skills in Pool */}
-            <div className="bg-[#121626] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-4">
-              <h3 className="text-base font-black text-white">Most Prevalent Candidate Skills</h3>
-              <p className="text-xs text-slate-400">Top verified proficiencies across your talent network</p>
+            <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+              <h3 className="text-base font-black text-slate-950">Most Prevalent Candidate Skills</h3>
+              <p className="text-xs text-slate-600 font-medium">Top verified proficiencies across your talent network</p>
 
               <div className="space-y-3 pt-2">
                 {[
@@ -806,12 +806,12 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
                   { skill: 'PostgreSQL / SQL', pct: '52%' }
                 ].map((sk) => (
                   <div key={sk.skill}>
-                    <div className="flex justify-between text-xs font-bold text-slate-300 mb-1">
+                    <div className="flex justify-between text-xs font-bold text-slate-800 mb-1">
                       <span>{sk.skill}</span>
-                      <span className="text-[#B298E7]">{sk.pct}</span>
+                      <span className="text-emerald-800 font-black">{sk.pct}</span>
                     </div>
-                    <div className="w-full bg-[#0c0e17] h-2 rounded-full overflow-hidden">
-                      <div className="bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] h-full rounded-full" style={{ width: sk.pct }}></div>
+                    <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden border border-slate-200">
+                      <div className="bg-emerald-700 h-full rounded-full" style={{ width: sk.pct }}></div>
                     </div>
                   </div>
                 ))}

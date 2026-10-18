@@ -167,42 +167,39 @@ export default function CandidateSignUp({ onAuthSuccess, onOpenSignIn }) {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12 bg-[#0c0e17]">
-      {/* Background ambient lighting in 4 pastel colors */}
-      <div className="absolute top-20 left-1/2 -translate-x-1/2 w-full max-w-4xl h-96 bg-gradient-to-tr from-[#B298E7]/20 via-[#F5B8D5]/15 to-[#B8E3E9]/15 blur-3xl pointer-events-none -z-10" />
-
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12 bg-[#FAFCF8]">
       <div className="w-full max-w-xl">
         {/* Card Surface */}
-        <div className="bg-[#121626] border border-[#1f2742] rounded-2xl shadow-2xl p-6 sm:p-10 relative overflow-hidden backdrop-blur-xl">
+        <div className="bg-white border-2 border-slate-200 rounded-3xl shadow-sm p-6 sm:p-10 relative overflow-hidden">
           
-          {/* Top indicator bar using the 4-color palette */}
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#B8E3E9]" />
+          {/* Top indicator bar */}
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-emerald-600" />
 
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B298E7]/15 border border-[#B298E7]/35 text-[#B298E7] text-xs font-bold tracking-wider mb-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#B8E3E9] animate-pulse" />
-              Candidate Portal
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100 border-2 border-emerald-300 text-emerald-950 text-xs font-black tracking-wider uppercase mb-3">
+              <span className="w-2 h-2 rounded-full bg-emerald-700 animate-pulse" />
+              Candidate Registration
             </div>
-            <h1 className="text-3xl font-black text-slate-100 tracking-tight">
-              Create account
+            <h1 className="text-3xl font-black text-slate-950 tracking-tight">
+              Create Account
             </h1>
-            <p className="text-slate-400 text-sm mt-2 font-medium">
-              Register as a college candidate to access your panel.
+            <p className="text-slate-600 text-sm mt-2 font-medium">
+              Register as a candidate to access customized assessments & learning tracks.
             </p>
           </div>
 
           {/* Feedback messages */}
           {errorMessage && (
-            <div className="mb-6 p-4 rounded-xl bg-red-950/60 border border-red-800/80 text-red-200 text-xs font-semibold flex items-center gap-2.5 animate-in fade-in">
-              <span className="text-base text-red-400">⚠️</span>
+            <div className="mb-6 p-4 rounded-xl bg-red-50 border-2 border-red-300 text-red-900 text-xs font-bold flex items-center gap-2.5 animate-in fade-in">
+              <span className="text-base text-red-600">⚠️</span>
               <span>{errorMessage}</span>
             </div>
           )}
 
           {successMessage && (
-            <div className="mb-6 p-4 rounded-xl bg-emerald-950/60 border border-emerald-800/80 text-emerald-200 text-xs font-semibold flex items-center gap-2.5 animate-in fade-in">
-              <span className="text-base text-emerald-400">✓</span>
+            <div className="mb-6 p-4 rounded-xl bg-emerald-50 border-2 border-emerald-300 text-emerald-900 text-xs font-bold flex items-center gap-2.5 animate-in fade-in">
+              <span className="text-base text-emerald-700">✓</span>
               <span>{successMessage}</span>
             </div>
           )}
@@ -213,8 +210,8 @@ export default function CandidateSignUp({ onAuthSuccess, onOpenSignIn }) {
             {/* First Name & Last Name */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                  First name <span className="text-[#F5B8D5]">*</span>
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                  First name <span className="text-emerald-700">*</span>
                 </label>
                 <input
                   type="text"
@@ -223,13 +220,13 @@ export default function CandidateSignUp({ onAuthSuccess, onOpenSignIn }) {
                   value={formData.firstName}
                   onChange={handleChange}
                   placeholder="e.g. Anu"
-                  className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7] text-sm transition-all"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 text-sm font-medium transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                  Last name <span className="text-[#F5B8D5]">*</span>
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                  Last name <span className="text-emerald-700">*</span>
                 </label>
                 <input
                   type="text"
@@ -238,15 +235,15 @@ export default function CandidateSignUp({ onAuthSuccess, onOpenSignIn }) {
                   value={formData.lastName}
                   onChange={handleChange}
                   placeholder="e.g. M"
-                  className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7] text-sm transition-all"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 text-sm font-medium transition-all"
                 />
               </div>
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                Email <span className="text-[#F5B8D5]">*</span>
+              <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                Email <span className="text-emerald-700">*</span>
               </label>
               <input
                 type="email"
@@ -255,14 +252,14 @@ export default function CandidateSignUp({ onAuthSuccess, onOpenSignIn }) {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="you@example.com"
-                className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7] text-sm transition-all"
+                className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 text-sm font-medium transition-all"
               />
             </div>
 
             {/* Phone */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                Phone <span className="text-[#F5B8D5]">*</span>
+              <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                Phone <span className="text-emerald-700">*</span>
               </label>
               <input
                 type="tel"
@@ -272,15 +269,15 @@ export default function CandidateSignUp({ onAuthSuccess, onOpenSignIn }) {
                 onChange={handleChange}
                 placeholder="e.g. 9876543210"
                 maxLength={15}
-                className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7] text-sm transition-all"
+                className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 text-sm font-medium transition-all"
               />
             </div>
 
             {/* Password & Confirm Password */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                  Password <span className="text-[#F5B8D5]">*</span>
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                  Password <span className="text-emerald-700">*</span>
                 </label>
                 <input
                   type="password"
@@ -290,13 +287,13 @@ export default function CandidateSignUp({ onAuthSuccess, onOpenSignIn }) {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7] text-sm transition-all"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 text-sm font-medium transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                  Confirm password <span className="text-[#F5B8D5]">*</span>
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                  Confirm password <span className="text-emerald-700">*</span>
                 </label>
                 <input
                   type="password"
@@ -306,7 +303,7 @@ export default function CandidateSignUp({ onAuthSuccess, onOpenSignIn }) {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7] text-sm transition-all"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 text-sm font-medium transition-all"
                 />
               </div>
             </div>
@@ -316,11 +313,11 @@ export default function CandidateSignUp({ onAuthSuccess, onOpenSignIn }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#F9BEDD] hover:from-[#B8E3E9] hover:to-[#B298E7] text-[#0c0e17] font-black rounded-xl shadow-lg shadow-[#B298E7]/25 hover:shadow-[#F5B8D5]/35 transition-all text-sm active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black rounded-xl shadow-md shadow-emerald-700/25 transition-all text-sm active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
               >
                 {loading ? (
                   <>
-                    <svg className="animate-spin h-4 w-4 text-[#0c0e17]" fill="none" viewBox="0 0 24 24">
+                    <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                     </svg>
@@ -336,10 +333,10 @@ export default function CandidateSignUp({ onAuthSuccess, onOpenSignIn }) {
           {/* Social Divider */}
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[#1f2742]" />
+              <div className="w-full border-t-2 border-slate-200" />
             </div>
-            <div className="relative flex justify-center text-xs uppercase tracking-wider font-bold">
-              <span className="bg-[#121626] px-3 text-[#B8E3E9]">
+            <div className="relative flex justify-center text-xs uppercase tracking-wider font-black">
+              <span className="bg-white px-3 text-slate-500">
                 Or continue with
               </span>
             </div>
@@ -352,7 +349,7 @@ export default function CandidateSignUp({ onAuthSuccess, onOpenSignIn }) {
               type="button"
               onClick={() => handleSocialAuth('google')}
               disabled={loading}
-              className="w-full py-3 px-4 bg-[#0c0e17] hover:bg-[#161c30] border border-[#1f2742] hover:border-[#B298E7]/40 text-slate-200 text-xs font-bold rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-sm active:scale-95 disabled:opacity-50"
+              className="w-full py-3 px-4 bg-white hover:bg-slate-50 border-2 border-slate-300 hover:border-slate-400 text-slate-800 text-xs font-bold rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-xs active:scale-95 disabled:opacity-50 cursor-pointer"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path
@@ -380,9 +377,9 @@ export default function CandidateSignUp({ onAuthSuccess, onOpenSignIn }) {
               type="button"
               onClick={() => handleSocialAuth('github')}
               disabled={loading}
-              className="w-full py-3 px-4 bg-[#0c0e17] hover:bg-[#161c30] border border-[#1f2742] hover:border-[#B298E7]/40 text-slate-200 text-xs font-bold rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-sm active:scale-95 disabled:opacity-50"
+              className="w-full py-3 px-4 bg-white hover:bg-slate-50 border-2 border-slate-300 hover:border-slate-400 text-slate-800 text-xs font-bold rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-xs active:scale-95 disabled:opacity-50 cursor-pointer"
             >
-              <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 fill-slate-900" viewBox="0 0 24 24">
                 <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
               </svg>
               <span>GitHub</span>
@@ -390,7 +387,7 @@ export default function CandidateSignUp({ onAuthSuccess, onOpenSignIn }) {
           </div>
 
           {/* Footer */}
-          <div className="mt-8 text-center text-xs text-slate-400 font-medium">
+          <div className="mt-8 text-center text-xs text-slate-600 font-medium">
             Already registered?{' '}
             <button
               type="button"
@@ -401,7 +398,7 @@ export default function CandidateSignUp({ onAuthSuccess, onOpenSignIn }) {
                   navigate('/');
                 }
               }}
-              className="text-[#B298E7] hover:text-[#B8E3E9] font-bold underline underline-offset-4 transition-colors"
+              className="text-emerald-700 hover:text-emerald-900 font-black underline underline-offset-4 transition-colors cursor-pointer"
             >
               Sign in
             </button>

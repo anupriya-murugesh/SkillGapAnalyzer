@@ -403,34 +403,29 @@ export default function CandidateProfile() {
       {/* =================================================================== */}
       {/* A. TOP PROFILE OVERVIEW CARD                                        */}
       {/* =================================================================== */}
-      <div className="bg-[#121626] border border-[#1f2742] rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-        
-        {/* Glow ambient background with pastel accents */}
-        <div className="absolute top-0 right-0 w-80 h-80 bg-[#B298E7]/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#F5B8D5]/15 rounded-full blur-3xl pointer-events-none" />
-
+      <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           
           {/* User Details */}
           <div className="flex items-center gap-5">
-            <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-[#B298E7] via-[#F5B8D5] to-[#B8E3E9] text-[#0c0e17] font-black text-3xl flex items-center justify-center shadow-xl shadow-[#B298E7]/25 border-2 border-[#1f2742] flex-shrink-0">
+            <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-2xl bg-emerald-700 text-white font-black text-3xl flex items-center justify-center shadow-md shadow-emerald-700/25 flex-shrink-0">
               {initialLetter}
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl sm:text-3xl font-black text-slate-100 tracking-tight">
+                <h1 className="text-2xl sm:text-3xl font-black text-slate-950 tracking-tight">
                   {fullNameDisplay}
                 </h1>
-                <span className="px-2.5 py-0.5 rounded-full bg-[#B298E7]/15 border border-[#B298E7]/35 text-[#B298E7] text-[10px] font-bold uppercase tracking-wider">
-                  College Candidate
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-950 text-xs font-black uppercase tracking-wider">
+                  Candidate
                 </span>
               </div>
-              <p className="text-slate-400 text-sm font-medium mt-1">
+              <p className="text-slate-600 text-sm font-medium mt-1">
                 {formData.email}
               </p>
-              <div className="flex items-center gap-2 mt-2 text-xs text-slate-400">
-                <span>🎯 Target Role:</span>
-                <span className="text-[#B8E3E9] font-bold bg-[#B8E3E9]/15 px-2 py-0.5 rounded border border-[#B8E3E9]/30">
+              <div className="flex items-center gap-2 mt-2 text-xs text-slate-700 font-semibold">
+                <span>🎯 Target Track:</span>
+                <span className="text-emerald-950 font-black bg-emerald-100 px-2 py-0.5 rounded border border-emerald-300">
                   {formData.target_role || 'Not specified'}
                 </span>
               </div>
@@ -438,24 +433,23 @@ export default function CandidateProfile() {
           </div>
 
           {/* Dynamic Profile Completion Bar */}
-          <div className="w-full md:w-80 bg-[#0c0e17] p-4 rounded-2xl border border-[#1f2742] shadow-inner">
+          <div className="w-full md:w-80 bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 shadow-xs">
             <div className="flex items-center justify-between text-xs font-bold mb-2">
-              <span className="text-slate-300">Profile Completion</span>
-              <span className="text-[#B298E7] font-black">
+              <span className="text-slate-700">Profile Completion</span>
+              <span className="text-emerald-800 font-black">
                 {completionPercentage}%
               </span>
             </div>
 
             {/* Progress Bar Container */}
-            <div className="w-full h-3 bg-[#121626] rounded-full overflow-hidden border border-[#1f2742] p-0.5">
+            <div className="w-full h-3 bg-slate-200 rounded-full overflow-hidden border border-slate-300 p-0.5">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#B8E3E9] transition-all duration-500 shadow-sm shadow-[#B298E7]/40"
+                className="h-full rounded-full bg-emerald-600 transition-all duration-500 shadow-xs"
                 style={{ width: `${Math.min(100, Math.max(0, completionPercentage))}%` }}
               />
             </div>
 
-            {/* Exact displays format: "{X}% completed ({Y} of 18 fields filled)" */}
-            <p className="text-[11px] text-slate-400 mt-2 font-medium">
+            <p className="text-xs text-slate-600 mt-2 font-medium">
               {completionPercentage}% completed ({filledCount} of 18 fields filled)
             </p>
           </div>
@@ -469,9 +463,9 @@ export default function CandidateProfile() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* Left Sub-Navigation Menu (Vertical Navigation Tabs) */}
-        <div className="lg:col-span-4 bg-[#121626] border border-[#1f2742] rounded-2xl p-2.5 shadow-xl space-y-1">
-          <div className="px-3 py-2 border-b border-[#1f2742] mb-1">
-            <span className="text-[11px] font-black uppercase tracking-wider text-[#B8E3E9]">
+        <div className="lg:col-span-4 bg-white border-2 border-slate-200 rounded-2xl p-2.5 shadow-sm space-y-1">
+          <div className="px-3 py-2 border-b-2 border-slate-100 mb-1">
+            <span className="text-xs font-black uppercase tracking-wider text-slate-800">
               Profile Sections
             </span>
           </div>
@@ -483,16 +477,16 @@ export default function CandidateProfile() {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-xs sm:text-sm font-bold transition-all ${
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-[#B298E7]/15 text-[#B298E7] border border-[#B298E7]/35 shadow-md shadow-[#B298E7]/10'
-                    : 'text-slate-400 hover:text-slate-100 hover:bg-[#161c30]'
+                    ? 'bg-emerald-700 text-white shadow-sm font-black'
+                    : 'text-slate-800 hover:text-emerald-800 hover:bg-emerald-50'
                 }`}
               >
                 <span className="text-base">{tab.icon}</span>
                 <span className="flex-1 truncate">{tab.label}</span>
                 {isActive && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#B8E3E9] animate-pulse" />
+                  <span className="w-2 h-2 rounded-full bg-white" />
                 )}
               </button>
             );
@@ -500,14 +494,14 @@ export default function CandidateProfile() {
         </div>
 
         {/* Right Form Render Area (Switching content per tab) */}
-        <div className="lg:col-span-8 bg-[#121626] border border-[#1f2742] rounded-2xl p-6 sm:p-8 shadow-xl relative">
+        <div className="lg:col-span-8 bg-white border-2 border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm relative">
           
           {/* TAB 1: Personal Information */}
           {activeTab === 0 && (
             <div className="space-y-6 animate-in fade-in duration-200">
-              <div className="border-b border-[#1f2742] pb-4">
-                <h2 className="text-lg font-bold text-slate-100">Personal Information</h2>
-                <p className="text-xs text-slate-400 mt-0.5">
+              <div className="border-b-2 border-slate-100 pb-4">
+                <h2 className="text-lg font-black text-slate-950">Personal Information</h2>
+                <p className="text-xs text-slate-600 font-medium mt-0.5">
                   Update your identity details and official university contact numbers.
                 </p>
               </div>
@@ -515,8 +509,8 @@ export default function CandidateProfile() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* 1. First Name */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                    First Name <span className="text-[#F5B8D5]">*</span>
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                    First Name <span className="text-emerald-700">*</span>
                   </label>
                   <input
                     type="text"
@@ -524,14 +518,14 @@ export default function CandidateProfile() {
                     value={formData.first_name || ''}
                     onChange={handleInputChange}
                     placeholder="e.g. Anu"
-                    className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                    className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                   />
                 </div>
 
                 {/* 2. Last Name */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                    Last Name <span className="text-[#F5B8D5]">*</span>
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                    Last Name <span className="text-emerald-700">*</span>
                   </label>
                   <input
                     type="text"
@@ -539,14 +533,14 @@ export default function CandidateProfile() {
                     value={formData.last_name || ''}
                     onChange={handleInputChange}
                     placeholder="e.g. M"
-                    className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                    className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                   />
                 </div>
               </div>
 
               {/* 3. Email (Read-Only) */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
                   Email (Read-only)
                 </label>
                 <input
@@ -554,9 +548,9 @@ export default function CandidateProfile() {
                   name="email"
                   readOnly
                   value={formData.email || ''}
-                  className="w-full px-4 py-3 bg-[#0c0e17]/60 border border-[#1f2742] rounded-xl text-slate-400 cursor-not-allowed text-sm"
+                  className="w-full px-4 py-3 bg-slate-100 border-2 border-slate-200 rounded-xl text-slate-600 cursor-not-allowed text-sm font-medium"
                 />
-                <span className="text-[11px] text-slate-500 mt-1 block">
+                <span className="text-xs text-slate-500 mt-1 block font-medium">
                   Email is locked to your Supabase Auth credentials.
                 </span>
               </div>
@@ -564,8 +558,8 @@ export default function CandidateProfile() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* 4. Contact Number (10-digit input) */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                    Contact Number (10 digits) <span className="text-[#F5B8D5]">*</span>
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                    Contact Number (10 digits) <span className="text-emerald-700">*</span>
                   </label>
                   <input
                     type="tel"
@@ -574,38 +568,38 @@ export default function CandidateProfile() {
                     value={formData.contact_number || ''}
                     onChange={handleInputChange}
                     placeholder="9876543210"
-                    className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                    className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                   />
                 </div>
 
                 {/* 5. Date of Birth (Calendar input) */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                    Date of Birth <span className="text-[#F5B8D5]">*</span>
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                    Date of Birth <span className="text-emerald-700">*</span>
                   </label>
                   <input
                     type="date"
                     name="dob"
                     value={formData.dob || ''}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                    className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                   />
                 </div>
               </div>
 
               {/* 6. Gender (Radio options: Male, Female, Other) */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
-                  Gender <span className="text-[#F5B8D5]">*</span>
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-2">
+                  Gender <span className="text-emerald-700">*</span>
                 </label>
                 <div className="grid grid-cols-3 gap-3">
                   {['Male', 'Female', 'Other'].map((option) => (
                     <label
                       key={option}
-                      className={`flex items-center justify-center gap-2 p-3 rounded-xl border cursor-pointer text-xs font-bold transition-all ${
+                      className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer text-xs font-bold transition-all ${
                         formData.gender === option
-                          ? 'bg-[#B298E7]/15 border-[#B298E7] text-[#F9BEDD] shadow-sm'
-                          : 'bg-[#0c0e17] border-[#1f2742] text-slate-400 hover:border-[#B298E7]/30'
+                          ? 'bg-emerald-50 border-emerald-600 text-emerald-950 font-black shadow-xs'
+                          : 'bg-slate-50 border-slate-200 text-slate-800 hover:border-slate-300'
                       }`}
                     >
                       <input
@@ -627,17 +621,17 @@ export default function CandidateProfile() {
           {/* TAB 2: Address */}
           {activeTab === 1 && (
             <div className="space-y-6 animate-in fade-in duration-200">
-              <div className="border-b border-[#1f2742] pb-4">
-                <h2 className="text-lg font-bold text-slate-100">Residential Address</h2>
-                <p className="text-xs text-slate-400 mt-0.5">
+              <div className="border-b-2 border-slate-100 pb-4">
+                <h2 className="text-lg font-black text-slate-950">Residential Address</h2>
+                <p className="text-xs text-slate-600 font-medium mt-0.5">
                   Institutional communications and physical badges are dispatched to this address.
                 </p>
               </div>
 
               {/* 7. Address Line 1 */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                  Address Line 1 <span className="text-[#F5B8D5]">*</span>
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                  Address Line 1 <span className="text-emerald-700">*</span>
                 </label>
                 <input
                   type="text"
@@ -645,13 +639,13 @@ export default function CandidateProfile() {
                   value={formData.address_line1 || ''}
                   onChange={handleInputChange}
                   placeholder="House / Flat No., Apartment, Street"
-                  className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                 />
               </div>
 
               {/* 8. Address Line 2 */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
                   Address Line 2
                 </label>
                 <input
@@ -660,15 +654,15 @@ export default function CandidateProfile() {
                   value={formData.address_line2 || ''}
                   onChange={handleInputChange}
                   placeholder="Area, Landmark, Sector"
-                  className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* 9. City */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                    City <span className="text-[#F5B8D5]">*</span>
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                    City <span className="text-emerald-700">*</span>
                   </label>
                   <input
                     type="text"
@@ -676,14 +670,14 @@ export default function CandidateProfile() {
                     value={formData.city || ''}
                     onChange={handleInputChange}
                     placeholder="e.g. Bengaluru"
-                    className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                    className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                   />
                 </div>
 
                 {/* 10. State */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                    State <span className="text-[#F5B8D5]">*</span>
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                    State <span className="text-emerald-700">*</span>
                   </label>
                   <input
                     type="text"
@@ -691,7 +685,7 @@ export default function CandidateProfile() {
                     value={formData.state || ''}
                     onChange={handleInputChange}
                     placeholder="e.g. Karnataka"
-                    className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                    className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                   />
                 </div>
               </div>
@@ -699,8 +693,8 @@ export default function CandidateProfile() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* 11. ZIP / Postal Code */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                    ZIP / Postal Code <span className="text-[#F5B8D5]">*</span>
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                    ZIP / Postal Code <span className="text-emerald-700">*</span>
                   </label>
                   <input
                     type="text"
@@ -708,14 +702,14 @@ export default function CandidateProfile() {
                     value={formData.zip_code || ''}
                     onChange={handleInputChange}
                     placeholder="e.g. 560001"
-                    className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                    className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                   />
                 </div>
 
                 {/* 12. Country */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                    Country <span className="text-[#F5B8D5]">*</span>
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                    Country <span className="text-emerald-700">*</span>
                   </label>
                   <input
                     type="text"
@@ -723,7 +717,7 @@ export default function CandidateProfile() {
                     value={formData.country || ''}
                     onChange={handleInputChange}
                     placeholder="e.g. India"
-                    className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                    className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                   />
                 </div>
               </div>
@@ -733,17 +727,17 @@ export default function CandidateProfile() {
           {/* TAB 3: Education */}
           {activeTab === 2 && (
             <div className="space-y-6 animate-in fade-in duration-200">
-              <div className="border-b border-[#1f2742] pb-4">
-                <h2 className="text-lg font-bold text-slate-100">Academic Background</h2>
-                <p className="text-xs text-slate-400 mt-0.5">
+              <div className="border-b-2 border-slate-100 pb-4">
+                <h2 className="text-lg font-black text-slate-950">Academic Background</h2>
+                <p className="text-xs text-slate-600 font-medium mt-0.5">
                   Verify your university credentials for corporate assessment eligibility.
                 </p>
               </div>
 
               {/* 13. College / University Name */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                  College / University Name <span className="text-[#F5B8D5]">*</span>
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                  College / University Name <span className="text-emerald-700">*</span>
                 </label>
                 <input
                   type="text"
@@ -751,15 +745,15 @@ export default function CandidateProfile() {
                   value={formData.college_name || ''}
                   onChange={handleInputChange}
                   placeholder="e.g. National Institute of Technology"
-                  className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* 14. Degree */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                    Degree <span className="text-[#F5B8D5]">*</span>
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                    Degree <span className="text-emerald-700">*</span>
                   </label>
                   <input
                     type="text"
@@ -767,14 +761,14 @@ export default function CandidateProfile() {
                     value={formData.degree || ''}
                     onChange={handleInputChange}
                     placeholder="e.g. B.Tech / B.E."
-                    className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                    className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                   />
                 </div>
 
                 {/* 15. Branch / Department */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                    Branch / Department <span className="text-[#F5B8D5]">*</span>
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                    Branch / Department <span className="text-emerald-700">*</span>
                   </label>
                   <input
                     type="text"
@@ -782,7 +776,7 @@ export default function CandidateProfile() {
                     value={formData.branch || ''}
                     onChange={handleInputChange}
                     placeholder="e.g. Computer Science and Engineering"
-                    className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                    className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                   />
                 </div>
               </div>
@@ -790,8 +784,8 @@ export default function CandidateProfile() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* 16. Graduation Year */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                    Graduation Year <span className="text-[#F5B8D5]">*</span>
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                    Graduation Year <span className="text-emerald-700">*</span>
                   </label>
                   <input
                     type="text"
@@ -799,14 +793,14 @@ export default function CandidateProfile() {
                     value={formData.grad_year || ''}
                     onChange={handleInputChange}
                     placeholder="e.g. 2025"
-                    className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                    className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                   />
                 </div>
 
                 {/* 17. CGPA / Percentage */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                    CGPA / Percentage <span className="text-[#F5B8D5]">*</span>
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
+                    CGPA / Percentage <span className="text-emerald-700">*</span>
                   </label>
                   <input
                     type="text"
@@ -814,7 +808,7 @@ export default function CandidateProfile() {
                     value={formData.cgpa || ''}
                     onChange={handleInputChange}
                     placeholder="e.g. 8.92 or 89%"
-                    className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                    className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                   />
                 </div>
               </div>
@@ -824,9 +818,9 @@ export default function CandidateProfile() {
           {/* TAB 4: Professional Information */}
           {activeTab === 3 && (
             <div className="space-y-6 animate-in fade-in duration-200">
-              <div className="border-b border-[#1f2742] pb-4">
-                <h2 className="text-lg font-bold text-slate-100">Professional Information</h2>
-                <p className="text-xs text-slate-400 mt-0.5">
+              <div className="border-b-2 border-slate-100 pb-4">
+                <h2 className="text-lg font-black text-slate-950">Professional Information</h2>
+                <p className="text-xs text-slate-600 font-medium mt-0.5">
                   Configure your target engineering tracks to populate Level 1, 2, and 3 assessments.
                 </p>
               </div>
@@ -834,9 +828,9 @@ export default function CandidateProfile() {
               {/* Multi-Target Job Roles */}
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5 flex items-center justify-between">
-                    <span>Target Career Roles <span className="text-[#F5B8D5]">*</span></span>
-                    <span className="text-[11px] text-[#B8E3E9] font-normal">You can add multiple target roles!</span>
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5 flex items-center justify-between">
+                    <span>Target Career Roles <span className="text-emerald-700">*</span></span>
+                    <span className="text-xs text-emerald-800 font-bold">You can add multiple target tracks</span>
                   </label>
                   
                   {/* Add Role Input */}
@@ -847,12 +841,12 @@ export default function CandidateProfile() {
                       onChange={(e) => setNewRoleInput(e.target.value)}
                       onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddRole(); } }}
                       placeholder="e.g. Full-Stack Developer, AI Engineer, Cloud Specialist..."
-                      className="flex-1 px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                      className="flex-1 px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                     />
                     <button
                       type="button"
                       onClick={() => handleAddRole()}
-                      className="px-5 py-3 bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17] font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer hover:brightness-105 transition-all shadow-md"
+                      className="px-5 py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer transition-all shadow-sm"
                     >
                       + Add Role
                     </button>
@@ -861,8 +855,8 @@ export default function CandidateProfile() {
 
                 {/* Active Target Roles List */}
                 {Array.isArray(formData.target_roles) && formData.target_roles.length > 0 && (
-                  <div className="space-y-2 bg-[#0c0e17] p-3.5 rounded-2xl border border-[#1f2742]">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                  <div className="space-y-2 bg-slate-50 p-3.5 rounded-2xl border-2 border-slate-200">
+                    <span className="text-xs font-black text-slate-700 uppercase tracking-wider block">
                       Configured Target Specializations:
                     </span>
                     <div className="flex flex-wrap gap-2">
@@ -871,23 +865,23 @@ export default function CandidateProfile() {
                         return (
                           <div
                             key={role}
-                            className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all ${
+                            className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border-2 text-xs font-bold transition-all ${
                               isPrimary
-                                ? 'bg-[#B298E7]/20 border-[#B298E7] text-white shadow-sm'
-                                : 'bg-[#121626] border-slate-800 text-slate-300 hover:border-slate-700'
+                                ? 'bg-emerald-700 text-white border-emerald-700 shadow-xs'
+                                : 'bg-white border-slate-200 text-slate-800 hover:border-slate-300'
                             }`}
                           >
                             <span>{isPrimary ? '⭐' : '💼'}</span>
                             <span>{role}</span>
                             {isPrimary ? (
-                              <span className="text-[9px] uppercase px-1.5 py-0.5 rounded-md bg-[#B298E7] text-[#0c0e17] font-black">
+                              <span className="text-[10px] uppercase px-1.5 py-0.5 rounded-md bg-white/20 text-white font-black">
                                 Primary
                               </span>
                             ) : (
                               <button
                                 type="button"
                                 onClick={() => handleSetPrimaryRole(role)}
-                                className="text-[10px] text-[#B8E3E9] hover:underline cursor-pointer"
+                                className="text-xs text-emerald-800 font-bold hover:underline cursor-pointer"
                               >
                                 Set Primary
                               </button>
@@ -895,7 +889,7 @@ export default function CandidateProfile() {
                             <button
                               type="button"
                               onClick={() => handleRemoveRole(role)}
-                              className="text-slate-500 hover:text-red-400 cursor-pointer ml-1 text-xs"
+                              className="text-slate-500 hover:text-red-700 cursor-pointer ml-1 text-xs font-bold"
                               title="Remove role"
                             >
                               ✕
@@ -909,7 +903,7 @@ export default function CandidateProfile() {
 
                 {/* Popular Role Quick-Add Suggestions */}
                 <div className="space-y-1.5">
-                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                  <span className="text-xs font-black text-slate-700 uppercase tracking-wider block">
                     Quick-Add Popular Specializations:
                   </span>
                   <div className="flex flex-wrap gap-1.5">
@@ -926,7 +920,7 @@ export default function CandidateProfile() {
                         key={sRole}
                         type="button"
                         onClick={() => handleAddRole(sRole)}
-                        className="px-2.5 py-1 text-[11px] font-bold rounded-lg border border-slate-800 bg-[#0c0e17] text-slate-400 hover:text-white hover:border-[#B298E7]/50 transition-all cursor-pointer"
+                        className="px-2.5 py-1 text-xs font-bold rounded-lg border-2 border-slate-200 bg-white text-slate-800 hover:text-emerald-900 hover:border-emerald-600 transition-all cursor-pointer"
                       >
                         + {sRole}
                       </button>
@@ -937,14 +931,14 @@ export default function CandidateProfile() {
 
               {/* Experience Level */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
                   Experience Level
                 </label>
                 <select
                   name="experience_level"
                   value={formData.experience_level || 'Fresher / Entry-Level'}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 text-sm focus:outline-none focus:border-emerald-600 font-medium"
                 >
                   <option value="Fresher / Entry-Level">Fresher / Entry-Level (0 - 1 years)</option>
                   <option value="Junior Engineer">Junior Engineer (1 - 2 years)</option>
@@ -955,7 +949,7 @@ export default function CandidateProfile() {
 
               {/* Core Skills (comma-separated) */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
                   Core Skills (comma-separated)
                 </label>
                 <textarea
@@ -964,7 +958,7 @@ export default function CandidateProfile() {
                   value={formData.core_skills || ''}
                   onChange={handleInputChange}
                   placeholder="React, TypeScript, Node.js, Python, PostgreSQL, Docker"
-                  className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 font-medium"
                 />
               </div>
             </div>
@@ -973,15 +967,15 @@ export default function CandidateProfile() {
           {/* TAB 5: Social Profiles */}
           {activeTab === 4 && (
             <div className="space-y-6 animate-in fade-in duration-200">
-              <div className="border-b border-[#1f2742] pb-4">
-                <h2 className="text-lg font-bold text-slate-100">Social Profiles</h2>
-                <p className="text-xs text-slate-400 mt-0.5">
+              <div className="border-b-2 border-slate-100 pb-4">
+                <h2 className="text-lg font-black text-slate-950">Social Profiles</h2>
+                <p className="text-xs text-slate-600 font-medium mt-0.5">
                   Link public code repositories and professional career pages.
                 </p>
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
                   GitHub URL
                 </label>
                 <input
@@ -990,12 +984,12 @@ export default function CandidateProfile() {
                   value={formData.github_url || ''}
                   onChange={handleInputChange}
                   placeholder="https://github.com/username"
-                  className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
                   LinkedIn URL
                 </label>
                 <input
@@ -1004,12 +998,12 @@ export default function CandidateProfile() {
                   value={formData.linkedin_url || ''}
                   onChange={handleInputChange}
                   placeholder="https://linkedin.com/in/username"
-                  className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
                   Portfolio / Website URL
                 </label>
                 <input
@@ -1018,7 +1012,7 @@ export default function CandidateProfile() {
                   value={formData.portfolio_url || ''}
                   onChange={handleInputChange}
                   placeholder="https://yourportfolio.dev"
-                  className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                 />
               </div>
             </div>
@@ -1027,9 +1021,9 @@ export default function CandidateProfile() {
           {/* TAB 6: Resume */}
           {activeTab === 5 && (
             <div className="space-y-6 animate-in fade-in duration-200">
-              <div className="border-b border-[#1f2742] pb-4">
-                <h2 className="text-lg font-bold text-slate-100">Resume Document</h2>
-                <p className="text-xs text-slate-400 mt-0.5">
+              <div className="border-b-2 border-slate-100 pb-4">
+                <h2 className="text-lg font-black text-slate-950">Resume Document</h2>
+                <p className="text-xs text-slate-600 font-medium mt-0.5">
                   Upload your official PDF resume. Files are saved directly to Supabase storage.
                 </p>
               </div>
@@ -1042,8 +1036,8 @@ export default function CandidateProfile() {
                 onClick={() => fileInputRef.current?.click()}
                 className={`border-2 border-dashed rounded-2xl p-8 sm:p-12 text-center cursor-pointer transition-all ${
                   isDragging
-                    ? 'border-[#B298E7] bg-[#B298E7]/15 scale-[1.01]'
-                    : 'border-[#1f2742] bg-[#0c0e17] hover:border-[#B298E7]/50'
+                    ? 'border-emerald-600 bg-emerald-50 scale-[1.01]'
+                    : 'border-slate-300 bg-slate-50 hover:border-emerald-600'
                 }`}
               >
                 <input
@@ -1058,28 +1052,28 @@ export default function CandidateProfile() {
                   }}
                 />
 
-                <div className="w-16 h-16 mx-auto rounded-2xl bg-[#B298E7]/15 border border-[#B298E7]/30 text-[#B298E7] flex items-center justify-center text-3xl mb-4 shadow-inner">
+                <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-100 border border-emerald-300 text-emerald-900 flex items-center justify-center text-3xl mb-4 shadow-xs">
                   📄
                 </div>
 
-                <div className="text-sm font-bold text-slate-200">
-                  Drag & Drop PDF Resume here, or <span className="text-[#B298E7] underline">Browse</span>
+                <div className="text-sm font-black text-slate-950">
+                  Drag & Drop PDF Resume here, or <span className="text-emerald-700 underline">Browse</span>
                 </div>
-                <p className="text-xs text-slate-400 mt-1.5">
+                <p className="text-xs text-slate-600 mt-1.5 font-medium">
                   PDF format up to 10MB supported
                 </p>
               </div>
 
               {/* Upload Progress Bar */}
               {isUploading && (
-                <div className="space-y-2 p-4 rounded-xl bg-[#0c0e17] border border-[#1f2742]">
-                  <div className="flex justify-between text-xs font-bold text-slate-300">
+                <div className="space-y-2 p-4 rounded-xl bg-slate-50 border-2 border-slate-200">
+                  <div className="flex justify-between text-xs font-bold text-slate-800">
                     <span>Uploading to Supabase Storage (resumes)...</span>
-                    <span className="text-[#B298E7]">{uploadProgress}%</span>
+                    <span className="text-emerald-800 font-black">{uploadProgress}%</span>
                   </div>
-                  <div className="w-full h-2 bg-[#121626] rounded-full overflow-hidden">
+                  <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#B8E3E9] transition-all duration-300"
+                      className="h-full bg-emerald-600 transition-all duration-300"
                       style={{ width: `${uploadProgress}%` }}
                     />
                   </div>
@@ -1088,14 +1082,14 @@ export default function CandidateProfile() {
 
               {/* Current Resume Banner */}
               {formData.resume_url && (
-                <div className="p-4 rounded-xl bg-[#0c0e17] border border-[#1f2742] flex items-center justify-between">
+                <div className="p-4 rounded-xl bg-emerald-50 border-2 border-emerald-200 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl text-[#B298E7]">📄</span>
+                    <span className="text-2xl text-emerald-700">📄</span>
                     <div>
-                      <div className="text-sm font-bold text-slate-200">
+                      <div className="text-sm font-black text-slate-950">
                         {formData.resume_filename || 'Candidate_Resume.pdf'}
                       </div>
-                      <span className="text-[11px] text-[#B8E3E9] font-semibold">
+                      <span className="text-xs text-emerald-800 font-bold">
                         ✓ Synced with profile
                       </span>
                     </div>
@@ -1104,7 +1098,7 @@ export default function CandidateProfile() {
                     href={formData.resume_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-3.5 py-1.5 rounded-lg bg-[#161c30] hover:bg-[#1f2742] text-xs font-bold text-[#B8E3E9] border border-[#1f2742] transition-colors"
+                    className="px-3.5 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-xs font-bold text-white transition-colors"
                   >
                     View PDF
                   </a>
@@ -1116,15 +1110,15 @@ export default function CandidateProfile() {
           {/* TAB 7: Password & Security */}
           {activeTab === 6 && (
             <form onSubmit={handlePasswordUpdate} className="space-y-6 animate-in fade-in duration-200">
-              <div className="border-b border-[#1f2742] pb-4">
-                <h2 className="text-lg font-bold text-slate-100">Password & Security</h2>
-                <p className="text-xs text-slate-400 mt-0.5">
+              <div className="border-b-2 border-slate-100 pb-4">
+                <h2 className="text-lg font-black text-slate-950">Password & Security</h2>
+                <p className="text-xs text-slate-600 font-medium mt-0.5">
                   Update your account credentials using Supabase Auth security protocols.
                 </p>
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
                   Current Password
                 </label>
                 <input
@@ -1132,13 +1126,13 @@ export default function CandidateProfile() {
                   value={passwordData.currentPassword}
                   onChange={(e) => setPasswordData((p) => ({ ...p, currentPassword: e.target.value }))}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
                     New Password
                   </label>
                   <input
@@ -1148,12 +1142,12 @@ export default function CandidateProfile() {
                     value={passwordData.newPassword}
                     onChange={(e) => setPasswordData((p) => ({ ...p, newPassword: e.target.value }))}
                     placeholder="••••••••"
-                    className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                    className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-1.5">
                     Confirm New Password
                   </label>
                   <input
@@ -1163,7 +1157,7 @@ export default function CandidateProfile() {
                     value={passwordData.confirmPassword}
                     onChange={(e) => setPasswordData((p) => ({ ...p, confirmPassword: e.target.value }))}
                     placeholder="••••••••"
-                    className="w-full px-4 py-3 bg-[#0c0e17] border border-[#1f2742] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B298E7]/40 focus:border-[#B298E7]"
+                    className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-950 placeholder-slate-400 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 font-medium"
                   />
                 </div>
               </div>
@@ -1172,7 +1166,7 @@ export default function CandidateProfile() {
                 <button
                   type="submit"
                   disabled={passwordUpdating}
-                  className="px-6 py-3 bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#F9BEDD] hover:from-[#B8E3E9] hover:to-[#B298E7] text-[#0c0e17] font-black text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-[#B298E7]/25 transition-all active:scale-95 disabled:opacity-50"
+                  className="px-6 py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md shadow-emerald-700/25 transition-all active:scale-95 disabled:opacity-50"
                 >
                   {passwordUpdating ? 'Updating Password...' : 'Update Password'}
                 </button>
@@ -1182,8 +1176,8 @@ export default function CandidateProfile() {
 
           {/* GLOBAL SAVE CHANGES BAR (For Tabs 1 through 5) */}
           {activeTab !== 6 && (
-            <div className="mt-8 pt-6 border-t border-[#1f2742] flex items-center justify-between">
-              <span className="text-xs text-slate-400 font-medium">
+            <div className="mt-8 pt-6 border-t-2 border-slate-100 flex items-center justify-between">
+              <span className="text-xs text-slate-600 font-medium">
                 Changes sync directly to Supabase public.profiles
               </span>
 
@@ -1191,11 +1185,11 @@ export default function CandidateProfile() {
                 type="button"
                 onClick={handleSaveChanges}
                 disabled={saving}
-                className="px-7 py-3.5 bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#F9BEDD] hover:from-[#B8E3E9] hover:to-[#B298E7] text-[#0c0e17] font-black text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-[#B298E7]/25 hover:shadow-[#F5B8D5]/35 transition-all flex items-center gap-2 cursor-pointer active:scale-95 disabled:opacity-50"
+                className="px-7 py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md shadow-emerald-700/25 transition-all flex items-center gap-2 cursor-pointer active:scale-95 disabled:opacity-50"
               >
                 {saving ? (
                   <>
-                    <svg className="animate-spin h-4 w-4 text-[#0c0e17]" fill="none" viewBox="0 0 24 24">
+                    <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                     </svg>

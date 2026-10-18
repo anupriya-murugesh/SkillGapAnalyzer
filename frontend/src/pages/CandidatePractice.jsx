@@ -184,26 +184,26 @@ export default function CandidatePractice() {
     <div className="space-y-8 animate-in fade-in duration-300 max-w-5xl mx-auto pb-16">
       
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-[#1f2742]">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b-2 border-slate-200">
         <div className="space-y-1.5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B8E3E9]/15 border border-[#B8E3E9]/35 text-[#B8E3E9] text-xs font-bold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 border-2 border-emerald-300 text-emerald-950 text-xs font-black uppercase tracking-wider">
             <span>🎯</span>
             <span>Technical Assessment Center</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-            Skill Practice & <span className="bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#B8E3E9] bg-clip-text text-transparent">Assessment Quizzes</span>
+          <h1 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
+            Skill Practice & <span className="text-emerald-700">Assessment Quizzes</span>
           </h1>
-          <p className="text-slate-400 text-sm max-w-2xl leading-relaxed">
+          <p className="text-slate-700 font-medium text-sm max-w-2xl leading-relaxed">
             Test your proficiency with standardized MCQs. Your scores automatically sync with Level 1, 2, and 3 progress benchmarks on your dashboard.
           </p>
         </div>
 
         {/* Level Badges */}
         <div className="flex items-center gap-2">
-          <span className="px-3 py-1.5 rounded-xl bg-[#0c0e17] border border-[#B8E3E9]/30 text-xs font-bold text-[#B8E3E9]">
+          <span className="px-3 py-1.5 rounded-xl bg-white border-2 border-slate-300 text-xs font-black text-slate-900 shadow-xs">
             L1 Foundational
           </span>
-          <span className="px-3 py-1.5 rounded-xl bg-[#0c0e17] border border-[#B298E7]/30 text-xs font-bold text-[#B298E7]">
+          <span className="px-3 py-1.5 rounded-xl bg-white border-2 border-slate-300 text-xs font-black text-slate-900 shadow-xs">
             L2 Competency
           </span>
         </div>
@@ -211,25 +211,25 @@ export default function CandidatePractice() {
 
       {/* QUIZ INTERACTIVE VIEW (When Active) */}
       {isQuizActive ? (
-        <div className="bg-[#121626] border border-[#B298E7]/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 animate-in zoom-in-95 duration-200">
+        <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 animate-in zoom-in-95 duration-200">
           
           {/* Top Status Bar: Skill, Level, Question Progress, Timer */}
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-800">
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b-2 border-slate-100">
             <div className="flex items-center gap-3">
-              <span className="w-10 h-10 rounded-xl bg-[#B298E7]/20 text-[#B298E7] flex items-center justify-center font-black text-base">
+              <span className="w-10 h-10 rounded-xl bg-emerald-100 border-2 border-emerald-300 text-emerald-950 flex items-center justify-center font-black text-base">
                 {selectedSkill.charAt(0)}
               </span>
               <div>
-                <h3 className="text-base font-bold text-white">{selectedSkill} Assessment</h3>
-                <span className="text-xs text-slate-400">{selectedLevel}</span>
+                <h3 className="text-base font-black text-slate-950">{selectedSkill} Assessment</h3>
+                <span className="text-xs text-slate-600 font-bold">{selectedLevel}</span>
               </div>
             </div>
 
             <div className="flex items-center gap-4">
-              <span className="px-3 py-1 rounded-xl bg-[#0c0e17] border border-slate-800 text-xs font-bold text-slate-300">
+              <span className="px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-300 text-xs font-bold text-slate-800">
                 Question {currentIdx + 1} of {questions.length}
               </span>
-              <span className="px-3 py-1 rounded-xl bg-amber-500/15 border border-amber-500/30 text-xs font-mono font-bold text-amber-300">
+              <span className="px-3 py-1.5 rounded-xl bg-amber-100 border border-amber-300 text-xs font-mono font-black text-amber-950">
                 ⏱ {formatTime(timerSeconds)}
               </span>
             </div>
@@ -238,11 +238,11 @@ export default function CandidatePractice() {
           {/* Question & Options Area */}
           {!quizSubmitted ? (
             <div className="space-y-6">
-              <div className="p-5 rounded-2xl bg-[#0c0e17] border border-slate-800">
-                <span className="text-[11px] font-bold text-[#B8E3E9] uppercase tracking-wider block mb-2">
+              <div className="p-5 rounded-2xl bg-slate-50 border-2 border-slate-200">
+                <span className="text-xs font-black text-emerald-800 uppercase tracking-wider block mb-2">
                   Question #{currentIdx + 1}
                 </span>
-                <p className="text-base sm:text-lg font-bold text-slate-100 leading-relaxed">
+                <p className="text-base sm:text-lg font-black text-slate-950 leading-relaxed">
                   {questions[currentIdx]?.q || questions[currentIdx]?.question}
                 </p>
               </div>
@@ -257,14 +257,14 @@ export default function CandidatePractice() {
                       key={optIdx}
                       type="button"
                       onClick={() => handleSelectOption(option)}
-                      className={`w-full p-4 rounded-2xl border text-left flex items-center gap-3.5 transition-all cursor-pointer ${
+                      className={`w-full p-4 rounded-2xl border-2 text-left flex items-center gap-3.5 transition-all cursor-pointer ${
                         isSelected
-                          ? 'bg-[#B298E7]/20 border-[#B298E7] text-white shadow-md'
-                          : 'bg-[#0c0e17] border-slate-800 text-slate-300 hover:border-slate-700 hover:text-white'
+                          ? 'bg-emerald-50 border-emerald-600 text-emerald-950 font-bold shadow-xs'
+                          : 'bg-white border-slate-200 text-slate-900 hover:border-emerald-600 hover:bg-emerald-50/40'
                       }`}
                     >
                       <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs ${
-                        isSelected ? 'bg-[#B298E7] text-[#0c0e17]' : 'bg-slate-800 text-slate-400'
+                        isSelected ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-800 border border-slate-200'
                       }`}>
                         {letter}
                       </span>
@@ -275,12 +275,12 @@ export default function CandidatePractice() {
               </div>
 
               {/* Bottom Navigation Buttons */}
-              <div className="flex items-center justify-between pt-4 border-t border-slate-800">
+              <div className="flex items-center justify-between pt-4 border-t-2 border-slate-100">
                 <button
                   type="button"
                   disabled={currentIdx === 0}
                   onClick={() => setCurrentIdx(prev => prev - 1)}
-                  className="px-4 py-2 bg-[#0c0e17] border border-slate-800 text-slate-400 hover:text-white text-xs font-bold rounded-xl disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                  className="px-4 py-2 bg-white border-2 border-slate-300 text-slate-700 hover:text-slate-950 text-xs font-bold rounded-xl disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
                 >
                   ← Previous
                 </button>
@@ -290,7 +290,7 @@ export default function CandidatePractice() {
                     <button
                       type="button"
                       onClick={() => setCurrentIdx(prev => prev + 1)}
-                      className="px-6 py-2.5 bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17] font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer hover:brightness-105 shadow"
+                      className="px-6 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-md shadow-emerald-700/25"
                     >
                       Next Question →
                     </button>
@@ -298,7 +298,7 @@ export default function CandidatePractice() {
                     <button
                       type="button"
                       onClick={handleSubmitQuiz}
-                      className="px-6 py-2.5 bg-gradient-to-r from-emerald-400 to-teal-400 text-[#0c0e17] font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer hover:brightness-105 shadow-md"
+                      className="px-6 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-md shadow-emerald-700/25"
                     >
                       Submit Assessment ✓
                     </button>
@@ -311,30 +311,30 @@ export default function CandidatePractice() {
             <div className="space-y-6 animate-in fade-in duration-300">
               
               {/* Scorecard Hero */}
-              <div className="text-center p-8 rounded-3xl bg-gradient-to-br from-[#161c30] to-[#0c0e17] border border-slate-800 space-y-3">
+              <div className="text-center p-8 rounded-3xl bg-slate-50 border-2 border-slate-200 space-y-3">
                 <span className="text-4xl">{scoreData?.passed ? '🎉' : '📈'}</span>
-                <h3 className="text-2xl font-black text-white">
+                <h3 className="text-2xl font-black text-slate-950">
                   {scoreData?.passed ? 'Assessment Passed!' : 'Assessment Completed'}
                 </h3>
-                <div className="text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#B8E3E9]">
+                <div className="text-4xl sm:text-5xl font-black text-emerald-700">
                   {scoreData?.percentage}%
                 </div>
-                <p className="text-xs text-slate-400 font-medium">
-                  You answered <strong className="text-white">{scoreData?.score} of {scoreData?.total}</strong> correctly in {formatTime(scoreData?.timeTaken || 0)}.
+                <p className="text-xs text-slate-600 font-medium">
+                  You answered <strong className="text-slate-950 font-black">{scoreData?.score} of {scoreData?.total}</strong> correctly in {formatTime(scoreData?.timeTaken || 0)}.
                 </p>
 
                 <div className="flex justify-center gap-3 pt-3">
                   <button
                     type="button"
                     onClick={handleStartQuiz}
-                    className="px-5 py-2.5 bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17] font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer hover:brightness-105"
+                    className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-sm"
                   >
                     Retake Quiz ↻
                   </button>
                   <button
                     type="button"
                     onClick={() => setIsQuizActive(false)}
-                    className="px-5 py-2.5 bg-[#0c0e17] border border-slate-800 text-slate-300 hover:text-white text-xs font-bold rounded-xl cursor-pointer"
+                    className="px-5 py-2.5 bg-white border-2 border-slate-300 text-slate-800 hover:text-slate-950 text-xs font-bold rounded-xl cursor-pointer"
                   >
                     Finish & Close
                   </button>
@@ -343,24 +343,24 @@ export default function CandidatePractice() {
 
               {/* Step-by-Step Question Review with Explanations */}
               <div className="space-y-4">
-                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">
+                <h4 className="text-xs font-black text-slate-700 uppercase tracking-widest">
                   Detailed Answer Review
                 </h4>
                 {questions.map((q, idx) => {
                   const userAns = userAnswers[idx];
                   const isCorrect = userAns === q.answer;
                   return (
-                    <div key={idx} className={`p-4 rounded-2xl border ${isCorrect ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-rose-500/10 border-rose-500/30'} space-y-2`}>
+                    <div key={idx} className={`p-4 rounded-2xl border-2 ${isCorrect ? 'bg-emerald-50 border-emerald-300' : 'bg-rose-50 border-rose-300'} space-y-2`}>
                       <div className="flex items-start justify-between gap-2">
-                        <span className="text-xs font-bold text-white">#{idx + 1}. {q.q || q.question}</span>
-                        <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded ${isCorrect ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
+                        <span className="text-xs font-black text-slate-950">#{idx + 1}. {q.q || q.question}</span>
+                        <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded ${isCorrect ? 'bg-emerald-200 text-emerald-950' : 'bg-rose-200 text-rose-950'}`}>
                           {isCorrect ? 'Correct' : 'Incorrect'}
                         </span>
                       </div>
-                      <div className="text-xs space-y-1 text-slate-300">
-                        <p>Your Answer: <strong className={isCorrect ? 'text-emerald-300' : 'text-rose-300'}>{userAns || 'Skipped'}</strong></p>
-                        {!isCorrect && <p>Correct Answer: <strong className="text-emerald-300">{q.answer}</strong></p>}
-                        {q.explanation && <p className="text-[11px] text-slate-400 pt-1 italic">💡 {q.explanation}</p>}
+                      <div className="text-xs space-y-1 text-slate-800 font-medium">
+                        <p>Your Answer: <strong className={isCorrect ? 'text-emerald-800' : 'text-rose-800'}>{userAns || 'Skipped'}</strong></p>
+                        {!isCorrect && <p>Correct Answer: <strong className="text-emerald-800">{q.answer}</strong></p>}
+                        {q.explanation && <p className="text-xs text-slate-600 pt-1 italic font-medium">💡 {q.explanation}</p>}
                       </div>
                     </div>
                   );
@@ -376,14 +376,14 @@ export default function CandidatePractice() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
           {/* Left: Test Configuration Form */}
-          <div className="lg:col-span-2 bg-[#121626] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
-            <h3 className="text-lg font-black text-white flex items-center gap-2">
+          <div className="lg:col-span-2 bg-white border-2 border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+            <h3 className="text-lg font-black text-slate-950 flex items-center gap-2">
               <span>⚡</span> Configure Technical Assessment
             </h3>
 
             {/* Select Skill */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+              <label className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">
                 Select Skill Category
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -392,10 +392,10 @@ export default function CandidatePractice() {
                     key={sk}
                     type="button"
                     onClick={() => setSelectedSkill(sk)}
-                    className={`px-3 py-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer text-center ${
+                    className={`px-3 py-2.5 rounded-xl border-2 text-xs font-bold transition-all cursor-pointer text-center ${
                       selectedSkill === sk
-                        ? 'bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17] border-transparent font-black shadow-md'
-                        : 'bg-[#0c0e17] border-slate-800 text-slate-400 hover:border-slate-700 hover:text-white'
+                        ? 'bg-emerald-700 text-white border-emerald-700 font-black shadow-sm'
+                        : 'bg-slate-50 border-slate-200 text-slate-800 hover:border-emerald-600 hover:text-emerald-950'
                     }`}
                   >
                     {sk}
@@ -406,7 +406,7 @@ export default function CandidatePractice() {
 
             {/* Select Level */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+              <label className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">
                 Assessment Level
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -419,10 +419,10 @@ export default function CandidatePractice() {
                     key={lvl.id}
                     type="button"
                     onClick={() => setSelectedLevel(lvl.id)}
-                    className={`p-3 rounded-xl border text-xs font-bold text-left transition-all cursor-pointer ${
+                    className={`p-3 rounded-xl border-2 text-xs font-bold text-left transition-all cursor-pointer ${
                       selectedLevel === lvl.id
-                        ? 'bg-[#B298E7]/20 border-[#B298E7] text-white shadow'
-                        : 'bg-[#0c0e17] border-slate-800 text-slate-400 hover:text-white'
+                        ? 'bg-emerald-50 border-emerald-600 text-emerald-950 font-black shadow-xs'
+                        : 'bg-slate-50 border-slate-200 text-slate-700 hover:text-slate-950'
                     }`}
                   >
                     {lvl.label}
@@ -435,17 +435,17 @@ export default function CandidatePractice() {
               type="button"
               onClick={handleStartQuiz}
               disabled={quizLoading}
-              className="w-full py-3.5 bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#B8E3E9] text-[#0c0e17] font-black text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-[#B298E7]/25 hover:brightness-105 transition-all cursor-pointer disabled:opacity-50"
+              className="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-sm uppercase tracking-wider rounded-xl shadow-md shadow-emerald-700/25 transition-all cursor-pointer disabled:opacity-50"
             >
               {quizLoading ? 'Generating Questions with AI...' : `Start ${selectedSkill} MCQ Assessment →`}
             </button>
           </div>
 
           {/* Right: Assessment Scorecards & Recent Results */}
-          <div className="bg-[#121626] border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
-            <h3 className="text-base font-black text-white flex items-center justify-between">
+          <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
+            <h3 className="text-base font-black text-slate-950 flex items-center justify-between">
               <span>Past Scorecards</span>
-              <span className="text-xs font-normal text-slate-400">({historyResults.length})</span>
+              <span className="text-xs font-bold text-slate-600">({historyResults.length})</span>
             </h3>
 
             {historyResults.length === 0 ? (
@@ -455,13 +455,13 @@ export default function CandidatePractice() {
             ) : (
               <div className="space-y-2.5 max-h-96 overflow-y-auto pr-1">
                 {historyResults.map((rec, rIdx) => (
-                  <div key={rec.id || rIdx} className="p-3 rounded-xl bg-[#0c0e17] border border-slate-800 flex items-center justify-between">
+                  <div key={rec.id || rIdx} className="p-3 rounded-xl bg-slate-50 border-2 border-slate-200 flex items-center justify-between">
                     <div>
-                      <h4 className="text-xs font-bold text-white">{rec.skill} Assessment</h4>
-                      <p className="text-[10px] text-slate-500">{new Date(rec.date).toLocaleDateString()} • {rec.level}</p>
+                      <h4 className="text-xs font-black text-slate-950">{rec.skill} Assessment</h4>
+                      <p className="text-[10px] text-slate-600 font-semibold">{new Date(rec.date).toLocaleDateString()} • {rec.level}</p>
                     </div>
                     <div className="text-right">
-                      <span className={`px-2 py-0.5 rounded text-[11px] font-black ${rec.passed ? 'bg-emerald-500/15 text-emerald-400' : 'bg-amber-500/15 text-amber-300'}`}>
+                      <span className={`px-2 py-0.5 rounded text-[11px] font-black border ${rec.passed ? 'bg-emerald-100 border-emerald-300 text-emerald-950' : 'bg-amber-100 border-amber-300 text-amber-950'}`}>
                         {rec.percentage}%
                       </span>
                     </div>

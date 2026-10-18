@@ -547,14 +547,14 @@ export default function LiveJobSearch() {
   const getExpBadgeColor = (level) => {
     switch (level) {
       case 'Entry-Level':
-        return 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30';
+        return 'bg-emerald-100 text-emerald-900 border-emerald-300';
       case 'Senior / Lead':
-        return 'bg-[#B298E7]/20 text-[#B298E7] border-[#B298E7]/40';
+        return 'bg-purple-100 text-purple-900 border-purple-300';
       case 'Executive / Lead':
-        return 'bg-rose-500/15 text-rose-300 border-rose-500/30';
+        return 'bg-rose-100 text-rose-900 border-rose-300';
       case 'Mid-Level':
       default:
-        return 'bg-[#B8E3E9]/15 text-[#B8E3E9] border-[#B8E3E9]/30';
+        return 'bg-sky-100 text-sky-900 border-sky-300';
     }
   };
 
@@ -565,20 +565,20 @@ export default function LiveJobSearch() {
       {/* 1. HERO HEADER WITH LIVE MARKET INTELLIGENCE                        */}
       {/* =================================================================== */}
       <div className="mb-8 text-center max-w-3xl mx-auto pt-4">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#B8E3E9]/30 bg-[#B8E3E9]/10 text-[#B8E3E9] font-mono text-[11px] font-bold uppercase tracking-widest mb-3 shadow-sm">
-          <span className="w-2 h-2 rounded-full bg-[#B8E3E9] animate-pulse"></span>
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-300 bg-emerald-50 text-emerald-950 font-mono text-[11px] font-bold uppercase tracking-widest mb-3 shadow-sm">
+          <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
           Live Market Intelligence • Dual-Source Engine Active
         </div>
-        <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-3">
-          Explore Live <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#B8E3E9]">Opportunities.</span>
+        <h1 className="text-3xl md:text-5xl font-black text-slate-950 tracking-tight mb-3">
+          Explore Live <span className="text-emerald-700">Opportunities.</span>
         </h1>
-        <p className="text-slate-400 font-medium text-sm sm:text-base leading-relaxed">
+        <p className="text-slate-700 font-medium text-sm sm:text-base leading-relaxed">
           Search real-time global jobs, filter by stack, salary, and experience, benchmark skill gaps, and bookmark target roles.
         </p>
 
         {/* Popular Preset Searches Chips */}
         <div className="flex flex-wrap items-center justify-center gap-2 mt-5">
-          <span className="text-xs font-bold text-slate-400 flex items-center gap-1">
+          <span className="text-xs font-bold text-slate-700 flex items-center gap-1">
             🔥 Trending:
           </span>
           {searchPresets.map((preset) => (
@@ -588,8 +588,8 @@ export default function LiveJobSearch() {
               onClick={() => handlePresetClick(preset)}
               className={`px-3 py-1 text-xs rounded-full border transition-all cursor-pointer font-bold ${
                 query === preset.query
-                  ? 'bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17] border-transparent shadow-md'
-                  : 'bg-[#121626] text-slate-300 border-slate-800 hover:border-[#B298E7]/50 hover:text-white'
+                  ? 'bg-emerald-700 text-white border-emerald-700 shadow-md'
+                  : 'bg-white text-slate-700 border-2 border-slate-200 hover:border-emerald-600 hover:text-slate-950 shadow-sm'
               }`}
             >
               {preset.label}
@@ -599,18 +599,18 @@ export default function LiveJobSearch() {
       </div>
 
       {/* Mobile Filter Toggle Button */}
-      <div className="lg:hidden mb-4 flex items-center justify-between bg-[#121626] p-3 rounded-2xl border border-slate-800">
-        <div className="text-xs font-bold text-slate-300">
-          Showing <span className="text-[#B8E3E9] font-black">{filteredAndSortedJobs.length}</span> positions
+      <div className="lg:hidden mb-4 flex items-center justify-between bg-white p-3 rounded-2xl border-2 border-slate-200 shadow-sm">
+        <div className="text-xs font-bold text-slate-700">
+          Showing <span className="text-emerald-700 font-black">{filteredAndSortedJobs.length}</span> positions
         </div>
         <button
           type="button"
           onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
-          className="px-4 py-2 bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17] font-bold text-xs rounded-xl flex items-center gap-2 shadow-sm"
+          className="px-4 py-2 bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center gap-2 shadow-sm hover:bg-emerald-800 cursor-pointer"
         >
           <span>⚙️ Filters & Options</span>
           {activeFiltersCount > 0 && (
-            <span className="w-5 h-5 rounded-full bg-[#0c0e17] text-[#B8E3E9] text-[10px] flex items-center justify-center font-black">
+            <span className="w-5 h-5 rounded-full bg-white text-emerald-900 text-[10px] flex items-center justify-center font-black">
               {activeFiltersCount}
             </span>
           )}
@@ -626,13 +626,13 @@ export default function LiveJobSearch() {
         {/* LEFT COLUMN: MULTI-FACET FILTER SIDEBAR                           */}
         {/* ================================================================= */}
         <aside className={`w-full lg:w-[320px] flex-shrink-0 ${mobileFiltersOpen ? 'block' : 'hidden lg:block'}`}>
-          <div className="bg-[#121626] rounded-3xl p-6 border border-slate-800 shadow-xl lg:sticky lg:top-20 space-y-6 max-h-[calc(100vh-6rem)] overflow-y-auto custom-scrollbar">
+          <div className="bg-white rounded-3xl p-6 border-2 border-slate-200 shadow-sm lg:sticky lg:top-20 space-y-6 max-h-[calc(100vh-6rem)] overflow-y-auto custom-scrollbar">
             
             {/* Sidebar Title & Reset */}
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
               <div className="flex items-center gap-2">
                 <span className="text-base">🎯</span>
-                <h3 className="text-xs font-black text-slate-200 uppercase tracking-widest">
+                <h3 className="text-xs font-black text-slate-950 uppercase tracking-widest">
                   Filters & Search
                 </h3>
               </div>
@@ -640,7 +640,7 @@ export default function LiveJobSearch() {
                 <button
                   type="button"
                   onClick={handleResetFilters}
-                  className="text-[11px] font-bold text-[#F5B8D5] hover:underline cursor-pointer"
+                  className="text-[11px] font-bold text-rose-600 hover:underline cursor-pointer"
                 >
                   Reset All ({activeFiltersCount})
                 </button>
@@ -650,16 +650,16 @@ export default function LiveJobSearch() {
             {/* Core Search Form */}
             <form onSubmit={handleSearchSubmit} className="space-y-4">
               <div>
-                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">
+                <label className="block text-[11px] font-black text-slate-800 uppercase tracking-widest mb-1.5">
                   Job Role / Skill Keyword
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3.5 top-3.5 text-slate-500 text-sm">💼</span>
+                  <span className="absolute left-3.5 top-3.5 text-slate-400 text-sm">💼</span>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Software Developer"
-                    className="w-full pl-10 pr-4 py-2.5 bg-[#0c0e17] border border-slate-800 rounded-xl focus:border-[#B298E7] outline-none transition-all text-xs font-medium text-white placeholder-slate-500"
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-emerald-600 focus:bg-white outline-none transition-all text-xs font-semibold text-slate-900 placeholder-slate-400"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                   />
@@ -667,15 +667,15 @@ export default function LiveJobSearch() {
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">
+                <label className="block text-[11px] font-black text-slate-800 uppercase tracking-widest mb-1.5">
                   Location / Region
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3.5 top-3.5 text-slate-500 text-sm">📍</span>
+                  <span className="absolute left-3.5 top-3.5 text-slate-400 text-sm">📍</span>
                   <input
                     type="text"
                     placeholder="e.g. India, Remote, Germany"
-                    className="w-full pl-10 pr-4 py-2.5 bg-[#0c0e17] border border-slate-800 rounded-xl focus:border-[#B298E7] outline-none transition-all text-xs font-medium text-white placeholder-slate-500"
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-emerald-600 focus:bg-white outline-none transition-all text-xs font-semibold text-slate-900 placeholder-slate-400"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                   />
@@ -685,20 +685,20 @@ export default function LiveJobSearch() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#B8E3E9] text-[#0c0e17] font-black text-xs uppercase tracking-wider rounded-xl hover:brightness-105 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer active:scale-98"
+                className="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer active:scale-98"
               >
                 {loading ? 'Fetching Fresh Jobs...' : 'Query Live Market'}
               </button>
             </form>
 
-            <div className="h-px bg-slate-800/80 my-4" />
+            <div className="h-px bg-slate-200 my-4" />
 
             {/* FILTER 1: Workplace Mode */}
             <div>
-              <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center justify-between">
+              <label className="block text-[11px] font-black text-slate-800 uppercase tracking-widest mb-2 flex items-center justify-between">
                 <span>Workplace Mode</span>
                 {workplaceFilter !== 'all' && (
-                  <span className="text-[10px] text-[#B8E3E9] font-bold cursor-pointer" onClick={() => setWorkplaceFilter('all')}>Clear</span>
+                  <span className="text-[10px] text-emerald-700 font-bold cursor-pointer" onClick={() => setWorkplaceFilter('all')}>Clear</span>
                 )}
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -714,8 +714,8 @@ export default function LiveJobSearch() {
                     onClick={() => setWorkplaceFilter(mode.id)}
                     className={`px-3 py-2 text-xs font-bold rounded-xl border text-center transition-all cursor-pointer ${
                       workplaceFilter === mode.id
-                        ? 'bg-[#B298E7]/20 border-[#B298E7] text-[#B298E7] shadow-sm'
-                        : 'bg-[#0c0e17] text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white'
+                        ? 'bg-emerald-700 border-emerald-700 text-white shadow-sm'
+                        : 'bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 hover:text-slate-950'
                     }`}
                   >
                     {mode.label}
@@ -726,10 +726,10 @@ export default function LiveJobSearch() {
 
             {/* FILTER 2: Experience Level */}
             <div>
-              <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center justify-between">
+              <label className="block text-[11px] font-black text-slate-800 uppercase tracking-widest mb-2 flex items-center justify-between">
                 <span>Experience Level</span>
                 {experienceFilter !== 'all' && (
-                  <span className="text-[10px] text-[#B8E3E9] font-bold cursor-pointer" onClick={() => setExperienceFilter('all')}>Clear</span>
+                  <span className="text-[10px] text-emerald-700 font-bold cursor-pointer" onClick={() => setExperienceFilter('all')}>Clear</span>
                 )}
               </label>
               <div className="space-y-1.5">
@@ -746,8 +746,8 @@ export default function LiveJobSearch() {
                     onClick={() => setExperienceFilter(lvl.id)}
                     className={`w-full px-3 py-2 text-xs font-bold rounded-xl border text-left transition-all cursor-pointer flex items-center justify-between ${
                       experienceFilter === lvl.id
-                        ? 'bg-[#B8E3E9]/20 border-[#B8E3E9] text-[#B8E3E9] shadow-sm'
-                        : 'bg-[#0c0e17] text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white'
+                        ? 'bg-emerald-700 border-emerald-700 text-white shadow-sm'
+                        : 'bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 hover:text-slate-950'
                     }`}
                   >
                     <span>{lvl.label}</span>
@@ -759,10 +759,10 @@ export default function LiveJobSearch() {
 
             {/* FILTER 3: Employment Type */}
             <div>
-              <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center justify-between">
+              <label className="block text-[11px] font-black text-slate-800 uppercase tracking-widest mb-2 flex items-center justify-between">
                 <span>Employment Type</span>
                 {employmentFilter !== 'all' && (
-                  <span className="text-[10px] text-[#B8E3E9] font-bold cursor-pointer" onClick={() => setEmploymentFilter('all')}>Clear</span>
+                  <span className="text-[10px] text-emerald-700 font-bold cursor-pointer" onClick={() => setEmploymentFilter('all')}>Clear</span>
                 )}
               </label>
               <div className="flex flex-wrap gap-2">
@@ -779,8 +779,8 @@ export default function LiveJobSearch() {
                     onClick={() => setEmploymentFilter(emp.id)}
                     className={`px-3 py-1.5 text-xs font-bold rounded-lg border transition-all cursor-pointer ${
                       employmentFilter === emp.id
-                        ? 'bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17] border-transparent font-black shadow-sm'
-                        : 'bg-[#0c0e17] text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white'
+                        ? 'bg-emerald-700 text-white border-emerald-700 font-black shadow-sm'
+                        : 'bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 hover:text-slate-950'
                     }`}
                   >
                     {emp.label}
@@ -791,10 +791,10 @@ export default function LiveJobSearch() {
 
             {/* FILTER 4: Salary Filter */}
             <div>
-              <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center justify-between">
+              <label className="block text-[11px] font-black text-slate-800 uppercase tracking-widest mb-2 flex items-center justify-between">
                 <span>Compensation Transparency</span>
                 {salaryFilter !== 'all' && (
-                  <span className="text-[10px] text-[#B8E3E9] font-bold cursor-pointer" onClick={() => setSalaryFilter('all')}>Clear</span>
+                  <span className="text-[10px] text-emerald-700 font-bold cursor-pointer" onClick={() => setSalaryFilter('all')}>Clear</span>
                 )}
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -810,8 +810,8 @@ export default function LiveJobSearch() {
                     onClick={() => setSalaryFilter(sal.id)}
                     className={`px-2.5 py-1.5 text-[11px] font-bold rounded-xl border text-center transition-all cursor-pointer ${
                       salaryFilter === sal.id
-                        ? 'bg-[#F5B8D5]/20 border-[#F5B8D5] text-[#F5B8D5]'
-                        : 'bg-[#0c0e17] text-slate-400 border-slate-800 hover:text-white'
+                        ? 'bg-amber-600 border-amber-600 text-white font-bold shadow-sm'
+                        : 'bg-slate-50 text-slate-700 border border-slate-200 hover:text-slate-950'
                     }`}
                   >
                     {sal.label}
@@ -822,10 +822,10 @@ export default function LiveJobSearch() {
 
             {/* FILTER 5: Date Posted */}
             <div>
-              <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center justify-between">
+              <label className="block text-[11px] font-black text-slate-800 uppercase tracking-widest mb-2 flex items-center justify-between">
                 <span>Date Posted</span>
                 {dateFilter !== 'all' && (
-                  <span className="text-[10px] text-[#B8E3E9] font-bold cursor-pointer" onClick={() => setDateFilter('all')}>Clear</span>
+                  <span className="text-[10px] text-emerald-700 font-bold cursor-pointer" onClick={() => setDateFilter('all')}>Clear</span>
                 )}
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -841,8 +841,8 @@ export default function LiveJobSearch() {
                     onClick={() => setDateFilter(df.id)}
                     className={`px-2.5 py-1.5 text-[11px] font-bold rounded-xl border text-center transition-all cursor-pointer ${
                       dateFilter === df.id
-                        ? 'bg-[#B298E7]/20 border-[#B298E7] text-[#B298E7]'
-                        : 'bg-[#0c0e17] text-slate-400 border-slate-800 hover:text-white'
+                        ? 'bg-emerald-700 border-emerald-700 text-white font-bold shadow-sm'
+                        : 'bg-slate-50 text-slate-700 border border-slate-200 hover:text-slate-950'
                     }`}
                   >
                     {df.label}
@@ -854,10 +854,10 @@ export default function LiveJobSearch() {
             {/* FILTER 6: Tech Stack / Skills Cloud */}
             {availableSkills.length > 0 && (
               <div>
-                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center justify-between">
+                <label className="block text-[11px] font-black text-slate-800 uppercase tracking-widest mb-2 flex items-center justify-between">
                   <span>Skills / Tech Stack</span>
                   {selectedSkills.length > 0 && (
-                    <span className="text-[10px] text-[#B8E3E9] font-bold cursor-pointer" onClick={() => setSelectedSkills([])}>
+                    <span className="text-[10px] text-emerald-700 font-bold cursor-pointer" onClick={() => setSelectedSkills([])}>
                       Clear ({selectedSkills.length})
                     </span>
                   )}
@@ -872,12 +872,12 @@ export default function LiveJobSearch() {
                         onClick={(e) => toggleSkillFilter(skill, e)}
                         className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border transition-all cursor-pointer flex items-center gap-1.5 ${
                           isSelected
-                            ? 'bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17] border-transparent font-black shadow-sm'
-                            : 'bg-[#0c0e17] text-slate-400 border-slate-800 hover:border-slate-700 hover:text-slate-200'
+                            ? 'bg-emerald-700 text-white border-emerald-700 font-black shadow-sm'
+                            : 'bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 hover:text-slate-950'
                         }`}
                       >
                         <span>{skill}</span>
-                        <span className={`text-[9px] px-1 py-0.2 rounded-full ${isSelected ? 'bg-black/30 text-[#0c0e17]' : 'bg-slate-800 text-slate-400'}`}>
+                        <span className={`text-[9px] px-1 py-0.2 rounded-full ${isSelected ? 'bg-emerald-900 text-white' : 'bg-slate-200 text-slate-700'}`}>
                           {count}
                         </span>
                       </button>
@@ -888,8 +888,8 @@ export default function LiveJobSearch() {
             )}
 
             {/* FILTER 7: Data Source & Wishlist */}
-            <div className="pt-2 border-t border-slate-800 space-y-2">
-              <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">
+            <div className="pt-2 border-t border-slate-200 space-y-2">
+              <label className="block text-[11px] font-black text-slate-800 uppercase tracking-widest mb-1.5">
                 Market Providers
               </label>
               <div className="flex gap-2">
@@ -904,8 +904,8 @@ export default function LiveJobSearch() {
                     onClick={() => setSourceFilter(src.id)}
                     className={`flex-1 px-2.5 py-1 text-[11px] font-bold rounded-lg border transition-all ${
                       sourceFilter === src.id
-                        ? 'bg-[#B8E3E9]/20 border-[#B8E3E9] text-[#B8E3E9]'
-                        : 'bg-[#0c0e17] text-slate-400 border-slate-800'
+                        ? 'bg-emerald-700 border-emerald-700 text-white'
+                        : 'bg-slate-50 text-slate-700 border border-slate-200 hover:text-slate-950'
                     }`}
                   >
                     {src.label}
@@ -923,23 +923,23 @@ export default function LiveJobSearch() {
         <div className="flex-1 w-full min-w-0 space-y-4">
           
           {/* Top Control Bar: Quick Search within results + Sort Dropdown + View Switcher */}
-          <div className="bg-[#121626] rounded-2xl p-4 border border-slate-800 shadow-xl flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+          <div className="bg-white rounded-2xl p-4 border-2 border-slate-200 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
             
             {/* In-Result Quick Filter Input */}
             <div className="flex-1 min-w-[200px] relative">
-              <span className="absolute left-3.5 top-2.5 text-slate-500 text-sm">🔍</span>
+              <span className="absolute left-3.5 top-2.5 text-slate-400 text-sm">🔍</span>
               <input
                 type="text"
                 placeholder="Filter loaded jobs by company, skill, or keyword..."
                 value={inResultSearch}
                 onChange={(e) => setInResultSearch(e.target.value)}
-                className="w-full pl-9 pr-8 py-2 bg-[#0c0e17] border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:border-[#B298E7] outline-none transition-all"
+                className="w-full pl-9 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:border-emerald-600 focus:bg-white outline-none transition-all font-medium"
               />
               {inResultSearch && (
                 <button
                   type="button"
                   onClick={() => setInResultSearch('')}
-                  className="absolute right-3 top-2.5 text-slate-400 hover:text-white text-xs cursor-pointer"
+                  className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-800 text-xs cursor-pointer"
                 >
                   ✕
                 </button>
@@ -951,11 +951,11 @@ export default function LiveJobSearch() {
               
               {/* SORT DROPDOWN */}
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-slate-400 whitespace-nowrap">Sort:</span>
+                <span className="text-xs font-bold text-slate-700 whitespace-nowrap">Sort:</span>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="bg-[#0c0e17] border border-slate-800 text-xs font-bold text-slate-200 rounded-xl px-3 py-2 outline-none focus:border-[#B298E7] cursor-pointer"
+                  className="bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 rounded-xl px-3 py-2 outline-none focus:border-emerald-600 cursor-pointer"
                 >
                   <option value="relevance">⚡ Most Relevant (Default)</option>
                   <option value="date_desc">🕒 Newest / Recently Posted</option>
@@ -970,15 +970,15 @@ export default function LiveJobSearch() {
               </div>
 
               {/* VIEW SWITCHER: Grid vs List */}
-              <div className="flex items-center bg-[#0c0e17] p-1 rounded-xl border border-slate-800">
+              <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
                 <button
                   type="button"
                   onClick={() => setViewMode('grid')}
                   title="Grid View"
                   className={`p-1.5 rounded-lg text-sm transition-all cursor-pointer ${
                     viewMode === 'grid'
-                      ? 'bg-[#B298E7] text-[#0c0e17] font-bold shadow-sm'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-emerald-700 text-white font-bold shadow-sm'
+                      : 'text-slate-600 hover:text-slate-950'
                   }`}
                 >
                   🔲
@@ -989,8 +989,8 @@ export default function LiveJobSearch() {
                   title="Compact List View"
                   className={`p-1.5 rounded-lg text-sm transition-all cursor-pointer ${
                     viewMode === 'list'
-                      ? 'bg-[#B298E7] text-[#0c0e17] font-bold shadow-sm'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-emerald-700 text-white font-bold shadow-sm'
+                      : 'text-slate-600 hover:text-slate-950'
                   }`}
                 >
                   ☰
@@ -1002,15 +1002,15 @@ export default function LiveJobSearch() {
 
           {/* Quick Filter Pill Chips Row */}
           <div className="flex flex-wrap items-center gap-2 pt-1">
-            <span className="text-xs font-bold text-slate-400">Quick Toggles:</span>
+            <span className="text-xs font-bold text-slate-700">Quick Toggles:</span>
             
             <button
               type="button"
               onClick={() => setWorkplaceFilter(workplaceFilter === 'remote' ? 'all' : 'remote')}
               className={`px-3 py-1 rounded-lg text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
                 workplaceFilter === 'remote'
-                  ? 'bg-[#B298E7]/25 text-[#B298E7] border-[#B298E7]'
-                  : 'bg-[#121626] text-slate-400 border-slate-800 hover:text-white'
+                  ? 'bg-emerald-700 text-white border-emerald-700'
+                  : 'bg-white text-slate-700 border border-slate-300 hover:text-slate-950 shadow-sm'
               }`}
             >
               <span>🌐 Remote Only</span>
@@ -1022,8 +1022,8 @@ export default function LiveJobSearch() {
               onClick={() => setEmploymentFilter(employmentFilter === 'fulltime' ? 'all' : 'fulltime')}
               className={`px-3 py-1 rounded-lg text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
                 employmentFilter === 'fulltime'
-                  ? 'bg-[#B8E3E9]/25 text-[#B8E3E9] border-[#B8E3E9]'
-                  : 'bg-[#121626] text-slate-400 border-slate-800 hover:text-white'
+                  ? 'bg-emerald-700 text-white border-emerald-700'
+                  : 'bg-white text-slate-700 border border-slate-300 hover:text-slate-950 shadow-sm'
               }`}
             >
               <span>💼 Full-Time</span>
@@ -1035,8 +1035,8 @@ export default function LiveJobSearch() {
               onClick={() => setSalaryFilter(salaryFilter === 'disclosed' ? 'all' : 'disclosed')}
               className={`px-3 py-1 rounded-lg text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
                 salaryFilter === 'disclosed'
-                  ? 'bg-[#F5B8D5]/25 text-[#F5B8D5] border-[#F5B8D5]'
-                  : 'bg-[#121626] text-slate-400 border-slate-800 hover:text-white'
+                  ? 'bg-amber-600 text-white border-amber-600'
+                  : 'bg-white text-slate-700 border border-slate-300 hover:text-slate-950 shadow-sm'
               }`}
             >
               <span>💰 Salary Listed</span>
@@ -1048,8 +1048,8 @@ export default function LiveJobSearch() {
               onClick={() => setExperienceFilter(experienceFilter === 'entry' ? 'all' : 'entry')}
               className={`px-3 py-1 rounded-lg text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
                 experienceFilter === 'entry'
-                  ? 'bg-emerald-500/25 text-emerald-400 border-emerald-500'
-                  : 'bg-[#121626] text-slate-400 border-slate-800 hover:text-white'
+                  ? 'bg-emerald-700 text-white border-emerald-700'
+                  : 'bg-white text-slate-700 border border-slate-300 hover:text-slate-950 shadow-sm'
               }`}
             >
               <span>🌱 Entry-Level</span>
@@ -1061,8 +1061,8 @@ export default function LiveJobSearch() {
               onClick={() => setBookmarkedOnly(!bookmarkedOnly)}
               className={`px-3 py-1 rounded-lg text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
                 bookmarkedOnly
-                  ? 'bg-[#F5B8D5] text-[#0c0e17] border-transparent font-black shadow-sm'
-                  : 'bg-[#121626] text-slate-400 border-slate-800 hover:text-[#F5B8D5]'
+                  ? 'bg-rose-600 text-white border-rose-600 font-bold'
+                  : 'bg-white text-slate-700 border border-slate-300 hover:text-rose-700 shadow-sm'
               }`}
             >
               <span>⭐ Saved Wishlist ({savedJobIds.size})</span>
@@ -1070,85 +1070,85 @@ export default function LiveJobSearch() {
             </button>
 
             {/* Results Count Summary */}
-            <div className="ml-auto text-xs font-bold text-slate-400">
-              Showing <span className="text-white font-black">{filteredAndSortedJobs.length}</span> of {jobs.length} jobs
+            <div className="ml-auto text-xs font-bold text-slate-600">
+              Showing <span className="text-slate-950 font-black">{filteredAndSortedJobs.length}</span> of {jobs.length} jobs
             </div>
           </div>
 
           {/* Active Applied Filters Chips Row (if any active) */}
           {activeFiltersCount > 0 && (
-            <div className="bg-[#121626]/60 p-2.5 rounded-2xl border border-slate-800/80 flex flex-wrap items-center gap-2">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+            <div className="bg-emerald-50 p-2.5 rounded-2xl border border-emerald-200 flex flex-wrap items-center gap-2">
+              <span className="text-[11px] font-bold text-emerald-950 uppercase tracking-wider">
                 Applied Filters:
               </span>
 
               {workplaceFilter !== 'all' && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#B298E7]/15 border border-[#B298E7]/40 text-[#B298E7] text-xs font-bold">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-emerald-300 text-emerald-950 text-xs font-bold shadow-sm">
                   Workplace: {workplaceFilter}
-                  <button type="button" onClick={() => setWorkplaceFilter('all')} className="hover:text-white cursor-pointer ml-1">✕</button>
+                  <button type="button" onClick={() => setWorkplaceFilter('all')} className="hover:text-rose-600 cursor-pointer ml-1">✕</button>
                 </span>
               )}
 
               {experienceFilter !== 'all' && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#B8E3E9]/15 border border-[#B8E3E9]/40 text-[#B8E3E9] text-xs font-bold">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-emerald-300 text-emerald-950 text-xs font-bold shadow-sm">
                   Level: {experienceFilter}
-                  <button type="button" onClick={() => setExperienceFilter('all')} className="hover:text-white cursor-pointer ml-1">✕</button>
+                  <button type="button" onClick={() => setExperienceFilter('all')} className="hover:text-rose-600 cursor-pointer ml-1">✕</button>
                 </span>
               )}
 
               {employmentFilter !== 'all' && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#F5B8D5]/15 border border-[#F5B8D5]/40 text-[#F5B8D5] text-xs font-bold">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-emerald-300 text-emerald-950 text-xs font-bold shadow-sm">
                   Type: {employmentFilter}
-                  <button type="button" onClick={() => setEmploymentFilter('all')} className="hover:text-white cursor-pointer ml-1">✕</button>
+                  <button type="button" onClick={() => setEmploymentFilter('all')} className="hover:text-rose-600 cursor-pointer ml-1">✕</button>
                 </span>
               )}
 
               {salaryFilter !== 'all' && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-500/15 border border-amber-500/40 text-amber-300 text-xs font-bold">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-amber-300 text-amber-950 text-xs font-bold shadow-sm">
                   Salary: {salaryFilter}
-                  <button type="button" onClick={() => setSalaryFilter('all')} className="hover:text-white cursor-pointer ml-1">✕</button>
+                  <button type="button" onClick={() => setSalaryFilter('all')} className="hover:text-rose-600 cursor-pointer ml-1">✕</button>
                 </span>
               )}
 
               {dateFilter !== 'all' && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-emerald-300 text-emerald-950 text-xs font-bold shadow-sm">
                   Date: {dateFilter}
-                  <button type="button" onClick={() => setDateFilter('all')} className="hover:text-white cursor-pointer ml-1">✕</button>
+                  <button type="button" onClick={() => setDateFilter('all')} className="hover:text-rose-600 cursor-pointer ml-1">✕</button>
                 </span>
               )}
 
               {sourceFilter !== 'all' && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-emerald-300 text-emerald-950 text-xs font-bold shadow-sm">
                   Source: {sourceFilter}
-                  <button type="button" onClick={() => setSourceFilter('all')} className="hover:text-white cursor-pointer ml-1">✕</button>
+                  <button type="button" onClick={() => setSourceFilter('all')} className="hover:text-rose-600 cursor-pointer ml-1">✕</button>
                 </span>
               )}
 
               {bookmarkedOnly && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#F5B8D5]/15 border border-[#F5B8D5]/40 text-[#F5B8D5] text-xs font-bold">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 border border-rose-300 text-rose-950 text-xs font-bold shadow-sm">
                   Wishlist Only
-                  <button type="button" onClick={() => setBookmarkedOnly(false)} className="hover:text-white cursor-pointer ml-1">✕</button>
+                  <button type="button" onClick={() => setBookmarkedOnly(false)} className="hover:text-rose-600 cursor-pointer ml-1">✕</button>
                 </span>
               )}
 
               {selectedSkills.map(sk => (
-                <span key={sk} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#B8E3E9]/20 border border-[#B8E3E9]/40 text-[#B8E3E9] text-xs font-bold">
+                <span key={sk} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-700 text-white text-xs font-bold shadow-sm">
                   Skill: {sk}
-                  <button type="button" onClick={(e) => toggleSkillFilter(sk, e)} className="hover:text-white cursor-pointer ml-1">✕</button>
+                  <button type="button" onClick={(e) => toggleSkillFilter(sk, e)} className="hover:opacity-75 cursor-pointer ml-1">✕</button>
                 </span>
               ))}
 
               {inResultSearch && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-slate-800 text-xs font-bold shadow-sm">
                   Keyword: "{inResultSearch}"
-                  <button type="button" onClick={() => setInResultSearch('')} className="hover:text-white cursor-pointer ml-1">✕</button>
+                  <button type="button" onClick={() => setInResultSearch('')} className="hover:text-rose-600 cursor-pointer ml-1">✕</button>
                 </span>
               )}
 
               <button
                 type="button"
                 onClick={handleResetFilters}
-                className="text-xs text-[#F5B8D5] font-black underline hover:text-white cursor-pointer ml-auto"
+                className="text-xs text-rose-600 font-bold hover:underline cursor-pointer ml-auto"
               >
                 Clear All
               </button>
@@ -1157,14 +1157,14 @@ export default function LiveJobSearch() {
 
           {/* Error Message */}
           {error && (
-            <div className="bg-[#F5B8D5]/10 text-[#F5B8D5] p-4 rounded-2xl border border-[#F5B8D5]/30 font-medium text-sm">
+            <div className="bg-rose-50 text-rose-900 p-4 rounded-2xl border border-rose-300 font-medium text-sm">
               ⚠️ {error}
             </div>
           )}
           
           {/* Warning Message */}
           {apiWarning && !error && (
-            <div className="bg-[#B298E7]/10 text-[#B298E7] p-4 rounded-2xl border border-[#B298E7]/30 font-medium text-sm flex items-start gap-3">
+            <div className="bg-amber-50 text-amber-950 p-4 rounded-2xl border border-amber-300 font-medium text-sm flex items-start gap-3">
               <span>💡</span>
               <div>{apiWarning}</div>
             </div>
@@ -1172,10 +1172,10 @@ export default function LiveJobSearch() {
 
           {/* Empty State */}
           {!loading && filteredAndSortedJobs.length === 0 && !error && (
-            <div className="bg-[#121626] rounded-3xl border border-slate-800 border-dashed p-12 text-center flex flex-col items-center justify-center min-h-[360px]">
-              <div className="w-16 h-16 bg-[#0c0e17] border border-slate-800 rounded-2xl flex items-center justify-center text-3xl mb-4">🔍</div>
-              <h3 className="text-xl font-black text-white mb-2 tracking-tight">No Matching Opportunities Found</h3>
-              <p className="text-sm font-medium text-slate-400 max-w-md mb-6 leading-relaxed">
+            <div className="bg-white rounded-3xl border-2 border-slate-300 border-dashed p-12 text-center flex flex-col items-center justify-center min-h-[360px] shadow-sm">
+              <div className="w-16 h-16 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-center text-3xl mb-4">🔍</div>
+              <h3 className="text-xl font-black text-slate-950 mb-2 tracking-tight">No Matching Opportunities Found</h3>
+              <p className="text-sm font-medium text-slate-600 max-w-md mb-6 leading-relaxed">
                 {activeFiltersCount > 0
                   ? `No roles matched your ${activeFiltersCount} active filter criteria. Try easing some filters or clear all filters to see all available roles.`
                   : "We couldn't find positions for that search term. Try adjusting your query or location."}
@@ -1184,7 +1184,7 @@ export default function LiveJobSearch() {
                 <button
                   type="button"
                   onClick={handleResetFilters}
-                  className="px-6 py-2.5 bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17] font-bold text-xs rounded-xl shadow-md cursor-pointer hover:brightness-105"
+                  className="px-6 py-2.5 bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md cursor-pointer hover:bg-emerald-800"
                 >
                   Reset All Filters
                 </button>
@@ -1196,21 +1196,21 @@ export default function LiveJobSearch() {
           {loading && (
             <div className={viewMode === 'grid' ? "grid grid-cols-1 xl:grid-cols-2 gap-6" : "space-y-4"}>
               {[1, 2, 3, 4].map((skeleton) => (
-                <div key={skeleton} className="bg-[#121626] rounded-3xl border border-slate-800 p-6 animate-pulse">
+                <div key={skeleton} className="bg-white rounded-3xl border-2 border-slate-200 p-6 animate-pulse">
                   <div className="flex gap-4 mb-4">
-                    <div className="w-12 h-12 bg-slate-800 rounded-xl"></div>
+                    <div className="w-12 h-12 bg-slate-200 rounded-xl"></div>
                     <div className="flex-1 space-y-2 py-1">
-                      <div className="h-4 bg-slate-800 rounded w-3/4"></div>
-                      <div className="h-3 bg-slate-800/60 rounded w-1/2"></div>
+                      <div className="h-4 bg-slate-200 rounded w-3/4"></div>
+                      <div className="h-3 bg-slate-100 rounded w-1/2"></div>
                     </div>
                   </div>
                   <div className="space-y-2 mb-6">
-                    <div className="h-3 bg-slate-800/40 rounded w-full"></div>
-                    <div className="h-3 bg-slate-800/40 rounded w-5/6"></div>
+                    <div className="h-3 bg-slate-100 rounded w-full"></div>
+                    <div className="h-3 bg-slate-100 rounded w-5/6"></div>
                   </div>
                   <div className="flex gap-2">
-                    <div className="h-10 bg-slate-800 rounded-xl w-1/2"></div>
-                    <div className="h-10 bg-slate-800/60 rounded-xl w-1/2"></div>
+                    <div className="h-10 bg-slate-200 rounded-xl w-1/2"></div>
+                    <div className="h-10 bg-slate-100 rounded-xl w-1/2"></div>
                   </div>
                 </div>
               ))}
@@ -1230,12 +1230,12 @@ export default function LiveJobSearch() {
                 return (
                   <div 
                     key={job.id || idx} 
-                    className="bg-[#121626] rounded-3xl border border-slate-800 p-6 shadow-xl hover:border-[#B298E7]/40 transition-all flex flex-col h-full group relative overflow-hidden"
+                    className="bg-white rounded-3xl border-2 border-slate-200 p-6 shadow-sm hover:border-emerald-600 hover:shadow-md transition-all flex flex-col h-full group relative overflow-hidden"
                   >
                     
                     {/* Top Section: Avatar / Title / Company */}
                     <div className="flex gap-4 items-start mb-3">
-                      <div className="w-12 h-12 flex-shrink-0 bg-[#0c0e17] border border-slate-800 rounded-2xl flex items-center justify-center text-lg font-black text-[#B298E7] shadow-inner group-hover:border-[#B298E7]/40 transition-colors">
+                      <div className="w-12 h-12 flex-shrink-0 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-center text-lg font-black text-emerald-800 shadow-sm group-hover:border-emerald-400 transition-colors">
                         {job.employer_logo ? (
                           <img src={job.employer_logo} alt={job.company} className="w-8 h-8 object-contain rounded-lg" onError={(e) => { e.target.style.display = 'none'; }} />
                         ) : (
@@ -1246,14 +1246,14 @@ export default function LiveJobSearch() {
                       <div className="flex-1 min-w-0 pr-8">
                         <h3 
                           onClick={() => setSelectedJobModal(job)}
-                          className="text-lg font-black text-white truncate tracking-tight hover:text-[#B298E7] cursor-pointer transition-colors" 
+                          className="text-lg font-black text-slate-950 truncate tracking-tight hover:text-emerald-700 cursor-pointer transition-colors" 
                           title={job.title}
                         >
                           {job.title}
                         </h3>
-                        <p className="text-xs font-semibold text-slate-400 truncate flex items-center gap-1.5 mt-0.5">
+                        <p className="text-xs font-bold text-slate-700 truncate flex items-center gap-1.5 mt-0.5">
                           <span>{job.company}</span>
-                          <span className="text-slate-600">•</span>
+                          <span className="text-slate-400">•</span>
                           <span className="text-[11px] text-slate-500">{job.relative_time}</span>
                         </p>
                       </div>
@@ -1261,10 +1261,10 @@ export default function LiveJobSearch() {
                       {/* Bookmark Icon Button */}
                       <button
                         onClick={(e) => handleBookmark(job, e)}
-                        className="absolute top-6 right-6 text-slate-500 hover:text-[#F5B8D5] transition-colors cursor-pointer p-1"
+                        className="absolute top-6 right-6 text-slate-400 hover:text-rose-600 transition-colors cursor-pointer p-1"
                         title={isBookmarked ? 'Remove wishlist' : 'Save to target wishlist'}
                       >
-                        <svg className={`w-6 h-6 ${isBookmarked ? 'text-[#F5B8D5] fill-current' : 'fill-none stroke-current stroke-2'}`} viewBox="0 0 24 24">
+                        <svg className={`w-6 h-6 ${isBookmarked ? 'text-rose-600 fill-current' : 'fill-none stroke-current stroke-2'}`} viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                         </svg>
                       </button>
@@ -1272,14 +1272,14 @@ export default function LiveJobSearch() {
 
                     {/* Metadata Badges: Location, Workplace, Experience, Salary */}
                     <div className="flex flex-wrap items-center gap-1.5 mb-3.5">
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-[#0c0e17] text-slate-300 rounded-lg text-xs font-bold border border-slate-800 shadow-sm">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-slate-100 text-slate-800 rounded-lg text-xs font-bold border border-slate-200 shadow-sm">
                         <span>{locBadge.icon}</span> {locBadge.text}
                       </span>
 
                       <span className={`text-xs font-bold px-2.5 py-1 rounded-lg border ${
                         job.workplace_type === 'Remote' 
-                          ? 'bg-[#B298E7]/15 text-[#B298E7] border-[#B298E7]/30' 
-                          : 'bg-[#0c0e17] text-slate-300 border-slate-800'
+                          ? 'bg-emerald-100 text-emerald-900 border-emerald-300' 
+                          : 'bg-slate-100 text-slate-800 border-slate-200'
                       }`}>
                         {job.workplace_type}
                       </span>
@@ -1289,25 +1289,25 @@ export default function LiveJobSearch() {
                       </span>
 
                       {job.salary_formatted && (
-                        <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                        <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900 border border-amber-300">
                           💰 {job.salary_formatted}
                         </span>
                       )}
 
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800/80 text-slate-400 border border-slate-700 ml-auto">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 ml-auto">
                         {job.source}
                       </span>
                     </div>
 
                     {/* Job Description Snippet */}
-                    <p className="text-xs text-slate-300 line-clamp-3 overflow-hidden text-ellipsis whitespace-normal mb-4 min-h-[48px]">
+                    <p className="text-xs text-slate-700 line-clamp-3 overflow-hidden text-ellipsis whitespace-normal mb-4 min-h-[48px] leading-relaxed">
                       {truncateText(job.description, 160)}
                     </p>
 
                     {/* Extracted Skills Chips (Clickable to Filter!) */}
                     {job.skills && job.skills.length > 0 && (
                       <div className="flex flex-wrap gap-1.5 mb-5">
-                        {job.skills.map((skill, sIdx) => {
+                        {job.skills.map((skill) => {
                           const isSelected = selectedSkills.includes(skill);
                           return (
                             <button
@@ -1317,10 +1317,8 @@ export default function LiveJobSearch() {
                               title={`Filter by ${skill}`}
                               className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border shadow-sm transition-all cursor-pointer ${
                                 isSelected
-                                  ? 'bg-[#B298E7] text-[#0c0e17] border-transparent font-black'
-                                  : sIdx % 2 === 0
-                                    ? 'bg-[#B8E3E9]/10 text-[#B8E3E9] border-[#B8E3E9]/25 hover:border-[#B8E3E9]'
-                                    : 'bg-[#F9BEDD]/10 text-[#F9BEDD] border-[#F9BEDD]/25 hover:border-[#F9BEDD]'
+                                  ? 'bg-emerald-700 text-white border-transparent font-black'
+                                  : 'bg-slate-50 text-slate-800 border border-slate-200 hover:border-emerald-500 hover:text-emerald-900'
                               }`}
                             >
                               {skill}
@@ -1331,10 +1329,10 @@ export default function LiveJobSearch() {
                     )}
                     
                     {/* Action Footer */}
-                    <div className="flex flex-col sm:flex-row gap-2.5 mt-auto pt-4 border-t border-slate-800">
+                    <div className="flex flex-col sm:flex-row gap-2.5 mt-auto pt-4 border-t border-slate-200">
                       <button 
                         onClick={() => navigate('/analyzer', { state: { jobTitle: job.title, jobDesc: job.description } })}
-                        className="flex-1 px-3.5 py-2.5 bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17] text-xs font-black rounded-xl hover:brightness-105 transition-all shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
+                        className="flex-1 px-3.5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-black rounded-xl transition-all shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
                       >
                         <span>🎯 Analyze Skill Gap</span>
                       </button>
@@ -1342,7 +1340,7 @@ export default function LiveJobSearch() {
                       <button
                         type="button"
                         onClick={() => setSelectedJobModal(job)}
-                        className="px-3.5 py-2.5 bg-[#0c0e17] border border-slate-800 text-slate-300 hover:text-white hover:border-[#B298E7]/50 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1"
+                        className="px-3.5 py-2.5 bg-slate-100 border border-slate-300 text-slate-900 hover:bg-slate-200 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1"
                       >
                         <span>Quick View</span>
                       </button>
@@ -1352,7 +1350,7 @@ export default function LiveJobSearch() {
                           href={job.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-3.5 py-2.5 bg-[#161c30] border border-[#B8E3E9]/30 text-[#B8E3E9] text-xs font-bold rounded-xl hover:border-[#B8E3E9] hover:bg-[#1f2742] transition-colors text-center shadow-sm flex items-center justify-center gap-1"
+                          className="px-3.5 py-2.5 bg-slate-900 text-white text-xs font-bold rounded-xl hover:bg-slate-800 transition-colors text-center shadow-sm flex items-center justify-center gap-1"
                         >
                           <span>Apply ↗</span>
                         </a>
@@ -1378,12 +1376,12 @@ export default function LiveJobSearch() {
                 return (
                   <div
                     key={job.id || idx}
-                    className="bg-[#121626] rounded-2xl border border-slate-800 p-4 hover:border-[#B298E7]/40 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 group"
+                    className="bg-white rounded-2xl border-2 border-slate-200 p-4 hover:border-emerald-600 hover:shadow-sm transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 group"
                   >
                     
                     {/* Left: Avatar + Title & Company */}
                     <div className="flex items-center gap-3.5 min-w-[280px] max-w-sm">
-                      <div className="w-10 h-10 flex-shrink-0 bg-[#0c0e17] border border-slate-800 rounded-xl flex items-center justify-center text-base font-black text-[#B298E7]">
+                      <div className="w-10 h-10 flex-shrink-0 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-center text-base font-black text-emerald-800">
                         {job.employer_logo ? (
                           <img src={job.employer_logo} alt={job.company} className="w-7 h-7 object-contain rounded-md" onError={(e) => { e.target.style.display = 'none'; }} />
                         ) : (
@@ -1393,14 +1391,14 @@ export default function LiveJobSearch() {
                       <div className="min-w-0">
                         <h4 
                           onClick={() => setSelectedJobModal(job)}
-                          className="text-sm font-black text-white truncate hover:text-[#B298E7] cursor-pointer transition-colors"
+                          className="text-sm font-black text-slate-950 truncate hover:text-emerald-700 cursor-pointer transition-colors"
                           title={job.title}
                         >
                           {job.title}
                         </h4>
-                        <div className="text-xs text-slate-400 truncate flex items-center gap-2 mt-0.5">
+                        <div className="text-xs text-slate-700 truncate flex items-center gap-2 mt-0.5">
                           <span className="font-semibold">{job.company}</span>
-                          <span className="text-slate-600">•</span>
+                          <span className="text-slate-400">•</span>
                           <span>{locBadge.icon} {locBadge.text}</span>
                         </div>
                       </div>
@@ -1410,8 +1408,8 @@ export default function LiveJobSearch() {
                     <div className="flex flex-wrap items-center gap-2">
                       <span className={`text-[11px] font-bold px-2 py-0.5 rounded-lg border ${
                         job.workplace_type === 'Remote' 
-                          ? 'bg-[#B298E7]/15 text-[#B298E7] border-[#B298E7]/30' 
-                          : 'bg-[#0c0e17] text-slate-300 border-slate-800'
+                          ? 'bg-emerald-100 text-emerald-900 border-emerald-300' 
+                          : 'bg-slate-100 text-slate-800 border-slate-200'
                       }`}>
                         {job.workplace_type}
                       </span>
@@ -1421,14 +1419,14 @@ export default function LiveJobSearch() {
                       </span>
 
                       {job.salary_formatted && (
-                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg bg-amber-100 text-amber-900 border border-amber-300">
                           {job.salary_formatted}
                         </span>
                       )}
 
                       {/* Top 2 Skill Tags */}
                       {job.skills && job.skills.slice(0, 2).map(sk => (
-                        <span key={sk} className="hidden sm:inline-block text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800/80 text-slate-300 border border-slate-700">
+                        <span key={sk} className="hidden sm:inline-block text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-800 border border-slate-200">
                           {sk}
                         </span>
                       ))}
@@ -1443,10 +1441,10 @@ export default function LiveJobSearch() {
                       <button
                         type="button"
                         onClick={(e) => handleBookmark(job, e)}
-                        className="p-2 rounded-xl bg-[#0c0e17] border border-slate-800 text-slate-400 hover:text-[#F5B8D5] transition-colors cursor-pointer"
+                        className="p-2 rounded-xl bg-slate-100 border border-slate-300 text-slate-500 hover:text-rose-600 transition-colors cursor-pointer"
                         title="Bookmark"
                       >
-                        <svg className={`w-4 h-4 ${isBookmarked ? 'text-[#F5B8D5] fill-current' : 'fill-none stroke-current stroke-2'}`} viewBox="0 0 24 24">
+                        <svg className={`w-4 h-4 ${isBookmarked ? 'text-rose-600 fill-current' : 'fill-none stroke-current stroke-2'}`} viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                         </svg>
                       </button>
@@ -1454,14 +1452,14 @@ export default function LiveJobSearch() {
                       <button
                         type="button"
                         onClick={() => setSelectedJobModal(job)}
-                        className="px-3 py-1.5 bg-[#0c0e17] border border-slate-800 text-xs font-bold text-slate-300 hover:text-white rounded-xl cursor-pointer"
+                        className="px-3 py-1.5 bg-slate-100 border border-slate-300 text-xs font-bold text-slate-900 hover:bg-slate-200 rounded-xl cursor-pointer"
                       >
                         View
                       </button>
 
                       <button 
                         onClick={() => navigate('/analyzer', { state: { jobTitle: job.title, jobDesc: job.description } })}
-                        className="px-3 py-1.5 bg-gradient-to-r from-[#B298E7] to-[#B8E3E9] text-[#0c0e17] text-xs font-black rounded-xl hover:brightness-105 transition-all shadow-sm cursor-pointer whitespace-nowrap"
+                        className="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-black rounded-xl transition-all shadow-sm cursor-pointer whitespace-nowrap"
                       >
                         Analyze Gap
                       </button>
@@ -1471,7 +1469,7 @@ export default function LiveJobSearch() {
                           href={job.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-3 py-1.5 bg-[#161c30] border border-[#B8E3E9]/30 text-[#B8E3E9] text-xs font-bold rounded-xl hover:border-[#B8E3E9] transition-all whitespace-nowrap"
+                          className="px-3 py-1.5 bg-slate-900 text-white text-xs font-bold rounded-xl hover:bg-slate-800 transition-all whitespace-nowrap"
                         >
                           Apply ↗
                         </a>
@@ -1492,17 +1490,17 @@ export default function LiveJobSearch() {
       {/* =================================================================== */}
       {selectedJobModal && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200"
           onClick={() => setSelectedJobModal(null)}
         >
           <div 
-            className="bg-[#121626] border border-slate-700 rounded-3xl max-w-2xl w-full p-6 sm:p-8 max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl relative"
+            className="bg-white border-2 border-slate-200 rounded-3xl max-w-2xl w-full p-6 sm:p-8 max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl relative text-slate-900"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="flex items-start justify-between gap-4 mb-5 pb-4 border-b border-slate-800">
+            <div className="flex items-start justify-between gap-4 mb-5 pb-4 border-b border-slate-200">
               <div className="flex gap-4 items-center">
-                <div className="w-14 h-14 rounded-2xl bg-[#0c0e17] border border-slate-800 flex items-center justify-center text-2xl font-black text-[#B298E7] shadow-inner">
+                <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-2xl font-black text-emerald-800 shadow-sm">
                   {selectedJobModal.employer_logo ? (
                     <img src={selectedJobModal.employer_logo} alt={selectedJobModal.company} className="w-10 h-10 object-contain rounded-xl" />
                   ) : (
@@ -1510,10 +1508,10 @@ export default function LiveJobSearch() {
                   )}
                 </div>
                 <div>
-                  <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight leading-snug">
+                  <h2 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight leading-snug">
                     {selectedJobModal.title}
                   </h2>
-                  <p className="text-sm font-semibold text-slate-400 mt-0.5">
+                  <p className="text-sm font-semibold text-slate-700 mt-0.5">
                     {selectedJobModal.company} • {selectedJobModal.location}
                   </p>
                 </div>
@@ -1522,7 +1520,7 @@ export default function LiveJobSearch() {
               <button
                 type="button"
                 onClick={() => setSelectedJobModal(null)}
-                className="w-8 h-8 rounded-full bg-[#0c0e17] border border-slate-800 text-slate-400 hover:text-white flex items-center justify-center text-sm font-bold cursor-pointer"
+                className="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-700 hover:text-slate-950 flex items-center justify-center text-sm font-bold cursor-pointer"
               >
                 ✕
               </button>
@@ -1530,24 +1528,24 @@ export default function LiveJobSearch() {
 
             {/* Badges Bar */}
             <div className="flex flex-wrap items-center gap-2 mb-6">
-              <span className="px-3 py-1 rounded-xl bg-[#0c0e17] border border-slate-800 text-xs font-bold text-slate-200">
+              <span className="px-3 py-1 rounded-xl bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800">
                 {getLocationBadge(selectedJobModal.location).icon} {selectedJobModal.location}
               </span>
-              <span className="px-3 py-1 rounded-xl bg-[#B298E7]/20 border border-[#B298E7]/40 text-xs font-bold text-[#B298E7]">
+              <span className="px-3 py-1 rounded-xl bg-emerald-100 border border-emerald-300 text-xs font-bold text-emerald-950">
                 {selectedJobModal.workplace_type}
               </span>
               <span className={`px-3 py-1 rounded-xl border text-xs font-bold ${getExpBadgeColor(selectedJobModal.experience_level)}`}>
                 {selectedJobModal.experience_level}
               </span>
-              <span className="px-3 py-1 rounded-xl bg-[#0c0e17] border border-slate-800 text-xs font-bold text-slate-300">
+              <span className="px-3 py-1 rounded-xl bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800">
                 {selectedJobModal.employment_type}
               </span>
               {selectedJobModal.salary_formatted && (
-                <span className="px-3 py-1 rounded-xl bg-amber-500/15 border border-amber-500/40 text-xs font-bold text-amber-300">
+                <span className="px-3 py-1 rounded-xl bg-amber-100 border border-amber-300 text-xs font-bold text-amber-950">
                   💰 {selectedJobModal.salary_formatted}
                 </span>
               )}
-              <span className="px-3 py-1 rounded-xl bg-slate-800 border border-slate-700 text-xs font-bold text-slate-400 ml-auto">
+              <span className="px-3 py-1 rounded-xl bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700 ml-auto">
                 {selectedJobModal.source}
               </span>
             </div>
@@ -1555,14 +1553,14 @@ export default function LiveJobSearch() {
             {/* Extracted Required Skills */}
             {selectedJobModal.skills && selectedJobModal.skills.length > 0 && (
               <div className="mb-6">
-                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2.5">
+                <h4 className="text-xs font-black text-slate-950 uppercase tracking-widest mb-2.5">
                   Extracted Tech Skills
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   {selectedJobModal.skills.map((skill) => (
                     <span 
                       key={skill}
-                      className="px-3 py-1 rounded-lg text-xs font-bold bg-[#B8E3E9]/15 border border-[#B8E3E9]/30 text-[#B8E3E9] uppercase tracking-wider"
+                      className="px-3 py-1 rounded-lg text-xs font-bold bg-emerald-50 border border-emerald-200 text-emerald-950 uppercase tracking-wider"
                     >
                       {skill}
                     </span>
@@ -1573,16 +1571,16 @@ export default function LiveJobSearch() {
 
             {/* Job Description */}
             <div className="mb-8">
-              <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">
+              <h4 className="text-xs font-black text-slate-950 uppercase tracking-widest mb-3">
                 Job Overview & Requirements
               </h4>
-              <div className="p-5 rounded-2xl bg-[#0c0e17] border border-slate-800 text-slate-300 text-xs sm:text-sm leading-relaxed whitespace-pre-line max-h-72 overflow-y-auto custom-scrollbar font-normal">
+              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-xs sm:text-sm leading-relaxed whitespace-pre-line max-h-72 overflow-y-auto custom-scrollbar font-normal">
                 {selectedJobModal.description || 'No extended description available for this role.'}
               </div>
             </div>
 
             {/* Modal Action Footer */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-slate-800">
+            <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-slate-200">
               <button
                 type="button"
                 onClick={() => {
@@ -1590,7 +1588,7 @@ export default function LiveJobSearch() {
                   setSelectedJobModal(null);
                   navigate('/analyzer', { state: { jobTitle: job.title, jobDesc: job.description } });
                 }}
-                className="flex-1 py-3 bg-gradient-to-r from-[#B298E7] via-[#F5B8D5] to-[#B8E3E9] text-[#0c0e17] font-black text-xs uppercase tracking-wider rounded-xl shadow-lg hover:brightness-105 transition-all cursor-pointer text-center"
+                className="flex-1 py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition-all cursor-pointer text-center"
               >
                 🎯 Analyze Skill Gap with My Resume
               </button>
@@ -1600,7 +1598,7 @@ export default function LiveJobSearch() {
                   href={selectedJobModal.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-5 py-3 bg-[#161c30] border border-[#B8E3E9]/40 text-[#B8E3E9] font-bold text-xs rounded-xl hover:bg-[#1f2742] transition-colors text-center"
+                  className="px-5 py-3 bg-slate-900 text-white font-bold text-xs rounded-xl hover:bg-slate-800 transition-colors text-center"
                 >
                   Apply Directly ↗
                 </a>
@@ -1609,7 +1607,7 @@ export default function LiveJobSearch() {
               <button
                 type="button"
                 onClick={(e) => handleBookmark(selectedJobModal, e)}
-                className="px-4 py-3 bg-[#0c0e17] border border-slate-800 text-slate-300 hover:text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
+                className="px-4 py-3 bg-slate-100 border border-slate-300 text-slate-800 hover:text-slate-950 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <span>{savedJobIds.has(selectedJobModal.id) ? '⭐ Saved' : '☆ Save Wishlist'}</span>
               </button>
@@ -1617,7 +1615,7 @@ export default function LiveJobSearch() {
               <button
                 type="button"
                 onClick={(e) => handleCopyLink(selectedJobModal, e)}
-                className="px-3 py-3 bg-[#0c0e17] border border-slate-800 text-slate-400 hover:text-white rounded-xl text-xs font-bold cursor-pointer"
+                className="px-3 py-3 bg-slate-100 border border-slate-300 text-slate-700 hover:text-slate-950 rounded-xl text-xs font-bold cursor-pointer"
                 title="Copy Link"
               >
                 🔗
