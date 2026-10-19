@@ -8,9 +8,26 @@ import google.generativeai as genai
 
 env_path = Path(__file__).resolve().parent.parent / ".env"
 
-def get_api_key():
+def get_api_keys() -> list:
     load_dotenv(dotenv_path=env_path, override=True)
-    return os.getenv("GEMINI_API_KEY", "").strip()
+    keys = []
+    # 1. Check GEMINI_API_KEYS or GEMINI_API_KEY (supports comma-separated list of keys)
+    raw = os.getenv("GEMINI_API_KEYS") or os.getenv("GEMINI_API_KEY") or ""
+    for k in raw.split(","):
+        k = k.strip()
+        if k and len(k) > 10 and not ("your_" in k.lower() or "placeholder" in k.lower()):
+            if k not in keys:
+                keys.append(k)
+    # 2. Check numbered keys GEMINI_API_KEY_1, GEMINI_API_KEY_2, GEMINI_API_KEY_3...
+    for i in range(1, 10):
+        k = os.getenv(f"GEMINI_API_KEY_{i}", "").strip()
+        if k and len(k) > 10 and k not in keys:
+            keys.append(k)
+    return keys
+
+def get_api_key() -> str:
+    keys = get_api_keys()
+    return keys[0] if keys else ""
 
 # =========================================================================
 # RICH 20-QUESTION HARD DIAGNOSTIC BANKS (WITH CODE SNIPPETS & 4 ARCHETYPES)
@@ -574,11 +591,11 @@ def randomize_and_format_questions(questions: list, count: int = 20) -> list:
 
 def generate_quiz_questions(skill: str, count: int = 20) -> list:
     cleaned_skill = skill.strip()
-    api_key = get_api_key()
+    api_keys = get_api_keys()
     curated = get_curated_mcqs(cleaned_skill)
 
-    # 1. Attempt dynamic generation with Google Gemini using supported model gemini-3.8-flash
-    if api_key and len(api_key) > 10 and not ("your_" in api_key.lower() or "placeholder" in api_key.lower()):
+    # 1. Attempt dynamic generation with Google Gemini using pool of keys (automatic failover)
+    if api_keys:
         random_focus = random.choice([
             "concurrency race conditions, memory allocators, and Big-O edge cases",
             "asynchronous event loops, microtask queues, and recursion limits",
@@ -615,21 +632,22 @@ def generate_quiz_questions(skill: str, count: int = 20) -> list:
           }}
         ]
         """
-        try:
-            genai.configure(api_key=api_key)
-            model = genai.GenerativeModel('gemini-3.8-flash')
-            response = model.generate_content(
-                prompt,
-                generation_config={"response_mime_type": "application/json"}
-            )
-            parsed = json.loads(response.text)
-            if isinstance(parsed, list) and len(parsed) >= count:
-                return randomize_and_format_questions(parsed, count)
-            elif isinstance(parsed, list) and len(parsed) > 0:
-                combined = parsed + curated
-                return randomize_and_format_questions(combined, count)
-        except Exception as err:
-            logging.warning(f"AI quiz generation note ({err}). Using randomized high-signal diagnostic bank.")
+        for idx, key in enumerate(api_keys):
+            try:
+                genai.configure(api_key=key)
+                model = genai.GenerativeModel('gemini-3.8-flash')
+                response = model.generate_content(
+                    prompt,
+                    generation_config={"response_mime_type": "application/json"}
+                )
+                parsed = json.loads(response.text)
+                if isinstance(parsed, list) and len(parsed) >= count:
+                    return randomize_and_format_questions(parsed, count)
+                elif isinstance(parsed, list) and len(parsed) > 0:
+                    combined = parsed + curated
+                    return randomize_and_format_questions(combined, count)
+            except Exception as err:
+                logging.warning(f"AI API key #{idx+1} note ({err}). Trying next key in pool if available.")
 
     # 2. Curated Bank with Random Sampling & Shuffled Options (Instant fallback when AI hits 429 quota or offline)
     while len(curated) < count:
