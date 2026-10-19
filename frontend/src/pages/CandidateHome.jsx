@@ -517,8 +517,8 @@ export default function CandidateHome() {
               {l1TestsCompleted > 0 ? 'Retake Practice Quiz ↗' : 'Start Level 1 Diagnostic ↗'}
             </button>
             <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
-              <span>Diagnostic Test: 3 Questions</span>
-              <span className="text-emerald-800 font-black">L1 Core</span>
+              <span>20 MCQs (35m) + 2 Coding (45m)</span>
+              <span className="text-emerald-800 font-black">6 Test Cases</span>
             </div>
           </div>
         </div>

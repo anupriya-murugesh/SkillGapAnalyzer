@@ -7,7 +7,8 @@ from services.gap_engine import calculate_skill_gap
 from services.resume_extractor import extract_skills_from_resume
 from services.job_search import search_live_jobs
 from services.roadmap_generator import generate_learning_roadmap
-from services.quiz_generator import generate_quiz_questions
+from services.quiz_generator import generate_quiz_questions, generate_coding_challenges
+from services.code_evaluator import evaluate_submission
 import logging
 import re
 
@@ -147,6 +148,39 @@ def generate_quiz(request: QuizRequest):
         "status": "success",
         "skill": request.skill,
         "questions": questions
+    }
+
+@app.post("/api/generate-coding-challenge")
+def generate_coding_challenge_api(request: QuizRequest):
+    challenges = generate_coding_challenges(request.skill)
+    return {
+        "status": "success",
+        "skill": request.skill,
+        "challenges": challenges
+    }
+
+class EvaluateCodeRequest(BaseModel):
+    skill: str
+    challenge_id: str
+    code: str
+    test_cases: list[dict]
+
+@app.post("/api/evaluate-coding-challenge")
+def evaluate_coding_challenge_api(request: EvaluateCodeRequest):
+    results = evaluate_submission(
+        skill=request.skill,
+        challenge_id=request.challenge_id,
+        code=request.code,
+        test_cases=request.test_cases
+    )
+    passed_count = sum(1 for r in results if r.get("passed"))
+    return {
+        "status": "success",
+        "challenge_id": request.challenge_id,
+        "results": results,
+        "passed_count": passed_count,
+        "total_count": len(results),
+        "all_passed": passed_count == len(results)
     }
 
 class RoadmapRequest(BaseModel):
