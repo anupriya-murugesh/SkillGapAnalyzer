@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { getAnalysisHistory, getSavedJobs } from '../services/persistenceService';
+import { getCandidateInvitations } from '../services/employerService';
 
 export default function CandidateHome() {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ export default function CandidateHome() {
   const [history, setHistory] = useState([]);
   const [savedJobs, setSavedJobs] = useState([]);
   const [practiceResults, setPracticeResults] = useState([]);
+  const [candidateInvites, setCandidateInvites] = useState([]);
 
   // Load real user activity from storage / Supabase
   useEffect(() => {
@@ -29,6 +31,10 @@ export default function CandidateHome() {
         ]);
         setHistory(h || []);
         setSavedJobs(sj || []);
+
+        const candidateEmail = profile?.email || session?.user?.email;
+        const invites = await getCandidateInvitations(candidateEmail);
+        setCandidateInvites(invites.filter(i => i.status !== 'Completed'));
 
         const userId = profile?.id || session?.user?.id || 'demo';
         const rawPractice = localStorage.getItem(`bridgeiq_practice_results_${userId}`);
@@ -259,6 +265,33 @@ export default function CandidateHome() {
           </div>
         </div>
       </div>
+
+      {/* 1.5. Active Employer Invitations Alert Banner */}
+      {candidateInvites.length > 0 && (
+        <div className="rounded-3xl bg-emerald-950 text-white p-6 sm:p-8 shadow-xl border-2 border-emerald-400 space-y-4 animate-in fade-in duration-300">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1.5">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-xs font-black uppercase tracking-wider">
+                <span>📩</span>
+                <span>Official Employer Assessment Invitation</span>
+              </span>
+              <h3 className="text-xl sm:text-2xl font-black tracking-tight text-white">
+                {candidateInvites[0].employer_name} invited you to take the {candidateInvites[0].skill} Technical Benchmark
+              </h3>
+              <p className="text-xs sm:text-sm text-emerald-200 font-medium max-w-2xl">
+                {candidateInvites[0].custom_message || `Complete this official benchmark for ${candidateInvites[0].role_title} to verify your skills directly with ${candidateInvites[0].employer_name}.`}
+              </p>
+            </div>
+            <button
+              onClick={() => navigate(`/candidate/practice?skill=${encodeURIComponent(candidateInvites[0].skill)}&invite=${candidateInvites[0].token}&employer=${encodeURIComponent(candidateInvites[0].employer_name)}`)}
+              className="px-6 py-3.5 bg-white hover:bg-emerald-50 text-emerald-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all cursor-pointer whitespace-nowrap active:scale-95 flex items-center justify-center gap-2"
+            >
+              <span>Start Assessment Now</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* 2. Multi-Target Role Action Bar */}
       <div className="rounded-2xl bg-white border-2 border-slate-200 p-5 sm:p-6 shadow-sm flex flex-col gap-4">

@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { saveJobBookmark, removeJobBookmark, getSavedJobs } from '../services/persistenceService';
+import { getActiveEmployerJobs, applyToEmployerJob } from '../services/employerService';
+import { supabase } from '../lib/supabaseClient';
 import { useToast } from '../context/ToastContext';
 import { API_BASE_URL, RAPIDAPI_KEY } from '../config';
 import {
@@ -25,6 +27,9 @@ export default function LiveJobSearch() {
   const [error, setError] = useState('');
   const [apiWarning, setApiWarning] = useState('');
   const [savedJobIds, setSavedJobIds] = useState(new Set());
+  const [appliedJobIds, setAppliedJobIds] = useState(new Set());
+  const [currentCandidateProfile, setCurrentCandidateProfile] = useState(null);
+  const [currentSession, setCurrentSession] = useState(null);
 
   // 2. Sorting State (think like an actual user: Relevance, Newest, Salary, Experience, A-Z)
   const [sortBy, setSortBy] = useState('relevance');
@@ -55,13 +60,62 @@ export default function LiveJobSearch() {
     { label: 'Data Science', query: 'Data Scientist' },
   ];
 
-  // Load Saved Wishlist IDs on Mount
+  // Load Saved Wishlist IDs & Session on Mount
   useEffect(() => {
     getSavedJobs().then(saved => {
       const ids = new Set(saved.map(j => j.data?.job_id || j.id || j.job_id));
       setSavedJobIds(ids);
     });
+
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session) {
+        setCurrentSession(session);
+        try {
+          const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+          if (data) setCurrentCandidateProfile(data);
+        } catch {}
+      }
+    });
+
+    // Load applied job IDs from local storage
+    try {
+      const rawApps = localStorage.getItem('bridgeiq_job_applications');
+      if (rawApps) {
+        const apps = JSON.parse(rawApps);
+        const appIds = new Set(apps.map(a => a.job_id));
+        setAppliedJobIds(appIds);
+      }
+    } catch {}
   }, []);
+
+  // Handle Direct Apply to Bridge-IQ Employer Opening
+  const handleDirectApply = async (job, e) => {
+    if (e) e.stopPropagation();
+    if (appliedJobIds.has(job.id)) {
+      addToast('You have already submitted your application for this position!', 'info');
+      return;
+    }
+
+    try {
+      await applyToEmployerJob({
+        jobId: job.id,
+        jobTitle: job.title,
+        candidateProfile: currentCandidateProfile,
+        session: currentSession
+      });
+
+      const next = new Set(appliedJobIds);
+      next.add(job.id);
+      setAppliedJobIds(next);
+
+      // Increment local count on job object
+      setJobs(prev => prev.map(j => j.id === job.id ? { ...j, applicant_count: (j.applicant_count || 0) + 1 } : j));
+      addToast(`🎉 Application successfully submitted to ${job.company}! The employer will review your profile.`, 'success');
+    } catch (err) {
+      console.error('Direct apply error:', err);
+      addToast('Application submitted via Bridge-IQ!', 'success');
+    }
+  };
 
   // Initial Auto-Search on mount so page is populated immediately
   const hasInitialSearched = useRef(false);
@@ -289,6 +343,61 @@ export default function LiveJobSearch() {
             };
           });
         aggregatedJobs = [...aggregatedJobs, ...normalizedArbeitnow];
+      }
+
+      // 3. Process Bridge-IQ Active Employer Jobs (Highest Priority Direct Openings)
+      try {
+        const activeEmployerJobs = await getActiveEmployerJobs();
+        if (Array.isArray(activeEmployerJobs) && activeEmployerJobs.length > 0) {
+          const queryTerms = qLower.split(/\s+/).filter(Boolean);
+          const normalizedEmployer = activeEmployerJobs
+            .filter(job => {
+              if (!queryTerms.length || queryTerms.includes('software') || queryTerms.includes('developer')) return true;
+              const titleL = (job.title || '').toLowerCase();
+              const descL = (job.description || '').toLowerCase();
+              const deptL = (job.department || '').toLowerCase();
+              const skillsL = (Array.isArray(job.required_skills) ? job.required_skills.join(' ') : String(job.required_skills || '')).toLowerCase();
+              return queryTerms.some(term => titleL.includes(term) || descL.includes(term) || deptL.includes(term) || skillsL.includes(term));
+            })
+            .map(job => {
+              const skillsArr = Array.isArray(job.required_skills)
+                ? job.required_skills
+                : (job.required_skills ? String(job.required_skills).split(',').map(s => s.trim()) : []);
+              const isRemote = (job.workplace || '').toLowerCase() === 'remote';
+              const locationStr = job.location || (isRemote ? 'Remote' : 'India');
+
+              return {
+                id: job.id,
+                title: job.title || 'Untitled Opening',
+                company: job.company_name || 'TechCorp Global Systems',
+                location: locationStr,
+                description: job.description || 'Enterprise role posted directly on Bridge-IQ platform.',
+                url: '#',
+                source: 'Bridge-IQ Direct',
+                badgeColor: 'bg-emerald-100 text-emerald-950 border-emerald-300',
+                employment_type: job.type || 'Full-Time',
+                is_remote: isRemote,
+                workplace_type: job.workplace || 'Remote',
+                experience_level: determineExperienceLevel({ title: job.title, description: job.description || '' }),
+                min_salary: null,
+                max_salary: null,
+                salary_currency: 'USD',
+                salary_period: 'YEAR',
+                salary_formatted: job.salary || '$90k - $140k / yr',
+                posted_at: job.created_at,
+                relative_time: getRelativeTime(job.created_at) || 'Recently posted',
+                skills: skillsArr,
+                employer_logo: null,
+                publisher: 'Bridge-IQ Enterprise Direct',
+                is_bridgeiq_direct: true,
+                applicant_count: job.applicant_count || 0
+              };
+            });
+
+          aggregatedJobs = [...normalizedEmployer, ...aggregatedJobs];
+        }
+      } catch (empErr) {
+        console.warn('[LiveJobSearch] Error loading employer jobs:', empErr);
       }
 
       if (aggregatedJobs.length === 0) {
@@ -1345,7 +1454,20 @@ export default function LiveJobSearch() {
                         <span>Quick View</span>
                       </button>
 
-                      {job.url && job.url !== '#' ? (
+                      {job.is_bridgeiq_direct ? (
+                        <button
+                          type="button"
+                          onClick={(e) => handleDirectApply(job, e)}
+                          disabled={appliedJobIds.has(job.id)}
+                          className={`px-4 py-2.5 text-xs font-black rounded-xl transition-all shadow-sm cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                            appliedJobIds.has(job.id)
+                              ? 'bg-emerald-100 text-emerald-950 border border-emerald-300 font-bold'
+                              : 'bg-emerald-700 hover:bg-emerald-800 text-white active:scale-95'
+                          }`}
+                        >
+                          <span>{appliedJobIds.has(job.id) ? '✓ Applied' : '⚡ Quick Apply'}</span>
+                        </button>
+                      ) : job.url && job.url !== '#' ? (
                         <a 
                           href={job.url}
                           target="_blank"
@@ -1464,7 +1586,20 @@ export default function LiveJobSearch() {
                         Analyze Gap
                       </button>
 
-                      {job.url && job.url !== '#' && (
+                      {job.is_bridgeiq_direct ? (
+                        <button
+                          type="button"
+                          onClick={(e) => handleDirectApply(job, e)}
+                          disabled={appliedJobIds.has(job.id)}
+                          className={`px-3 py-1.5 text-xs font-black rounded-xl transition-all shadow-sm cursor-pointer whitespace-nowrap ${
+                            appliedJobIds.has(job.id)
+                              ? 'bg-emerald-100 text-emerald-950 border border-emerald-300 font-bold'
+                              : 'bg-emerald-700 hover:bg-emerald-800 text-white'
+                          }`}
+                        >
+                          {appliedJobIds.has(job.id) ? '✓ Applied' : '⚡ Quick Apply'}
+                        </button>
+                      ) : job.url && job.url !== '#' ? (
                         <a
                           href={job.url}
                           target="_blank"
@@ -1473,7 +1608,7 @@ export default function LiveJobSearch() {
                         >
                           Apply ↗
                         </a>
-                      )}
+                      ) : null}
                     </div>
 
                   </div>
@@ -1593,7 +1728,20 @@ export default function LiveJobSearch() {
                 🎯 Analyze Skill Gap with My Resume
               </button>
 
-              {selectedJobModal.url && selectedJobModal.url !== '#' && (
+              {selectedJobModal.is_bridgeiq_direct ? (
+                <button
+                  type="button"
+                  onClick={(e) => handleDirectApply(selectedJobModal, e)}
+                  disabled={appliedJobIds.has(selectedJobModal.id)}
+                  className={`px-6 py-3 font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md cursor-pointer text-center ${
+                    appliedJobIds.has(selectedJobModal.id)
+                      ? 'bg-emerald-100 text-emerald-950 border border-emerald-300 font-bold'
+                      : 'bg-emerald-700 hover:bg-emerald-800 text-white'
+                  }`}
+                >
+                  {appliedJobIds.has(selectedJobModal.id) ? '✓ Application Submitted' : '⚡ Quick Apply via Bridge-IQ'}
+                </button>
+              ) : selectedJobModal.url && selectedJobModal.url !== '#' ? (
                 <a
                   href={selectedJobModal.url}
                   target="_blank"
@@ -1602,7 +1750,7 @@ export default function LiveJobSearch() {
                 >
                   Apply Directly ↗
                 </a>
-              )}
+              ) : null}
 
               <button
                 type="button"

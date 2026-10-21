@@ -11,6 +11,7 @@ from services.quiz_generator import generate_quiz_questions, generate_coding_cha
 from services.code_evaluator import evaluate_submission
 import logging
 import re
+import time
 
 app = FastAPI()
 
@@ -196,4 +197,91 @@ def generate_roadmap_api(request: RoadmapRequest):
         "target_role": request.target_role,
         "roadmap": roadmap
     }
+
+# =============================================================================
+# EMPLOYER PORTAL ENDPOINTS
+# =============================================================================
+
+class EmployerJobModel(BaseModel):
+    id: str = ""
+    title: str
+    department: str = "Engineering"
+    workplace: str = "Remote"
+    location: str = "Global / Remote"
+    type: str = "Full-Time"
+    salary: str = "$90k - $140k / yr"
+    required_skills: list[str] = []
+    description: str = ""
+    employer_id: str = "default_employer"
+    company_name: str = "TechCorp Global"
+    applicant_count: int = 0
+    status: str = "Active"
+
+@app.get("/api/employer/jobs")
+def get_employer_jobs_api():
+    if supabase is not None:
+        try:
+            res = supabase.table("employer_jobs").select("*").order("created_at", desc=True).execute()
+            if res.data:
+                return {"status": "success", "jobs": res.data}
+        except Exception as e:
+            logging.warning(f"Supabase employer_jobs fetch error: {e}")
+    return {"status": "success", "jobs": []}
+
+@app.post("/api/employer/jobs")
+def create_employer_job_api(job: EmployerJobModel):
+    job_dict = job.dict()
+    if not job_dict.get("id"):
+        job_dict["id"] = f"job-{int(time.time() * 1000)}" if 'time' in globals() else "job-new"
+    
+    if supabase is not None:
+        try:
+            supabase.table("employer_jobs").insert(job_dict).execute()
+        except Exception as e:
+            logging.warning(f"Supabase employer_jobs insert error: {e}")
+            
+    return {"status": "success", "job": job_dict}
+
+@app.put("/api/employer/jobs/{job_id}")
+def update_employer_job_api(job_id: str, updates: dict):
+    if supabase is not None:
+        try:
+            supabase.table("employer_jobs").update(updates).eq("id", job_id).execute()
+        except Exception as e:
+            logging.warning(f"Supabase employer_jobs update error: {e}")
+    return {"status": "success", "job_id": job_id, "updates": updates}
+
+@app.delete("/api/employer/jobs/{job_id}")
+def delete_employer_job_api(job_id: str):
+    if supabase is not None:
+        try:
+            supabase.table("employer_jobs").delete().eq("id", job_id).execute()
+        except Exception as e:
+            logging.warning(f"Supabase employer_jobs delete error: {e}")
+    return {"status": "success", "deleted_id": job_id}
+
+class AssessmentInviteModel(BaseModel):
+    candidate_id: str = ""
+    candidate_name: str
+    candidate_email: str
+    skill: str
+    difficulty: str = "Intermediate"
+    role_title: str = "Software Engineer"
+    employer_name: str = "TechCorp Global"
+    custom_message: str = ""
+
+@app.post("/api/employer/invite")
+def create_invite_api(invite: AssessmentInviteModel):
+    invite_dict = invite.dict()
+    invite_dict["token"] = f"inv-{invite.skill[:3].lower()}-{int(time.time() * 1000)}" if 'time' in globals() else "inv-demo"
+    invite_dict["status"] = "Pending"
+    
+    if supabase is not None:
+        try:
+            supabase.table("assessment_invitations").insert(invite_dict).execute()
+        except Exception as e:
+            logging.warning(f"Supabase assessment_invitations insert error: {e}")
+            
+    return {"status": "success", "invitation": invite_dict}
+
 

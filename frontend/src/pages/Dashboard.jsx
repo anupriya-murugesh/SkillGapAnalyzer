@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { getUserProfile } from '../lib/auth';
 import CandidateDashboard from '../components/CandidateDashboard';
-import EmployerDashboard from '../components/EmployerDashboard';
+import EmployerPortal from './EmployerPortal';
 import { useToast } from '../context/ToastContext';
 
 export default function Dashboard({ session: propSession, userProfile: propProfile }) {
@@ -96,8 +96,8 @@ export default function Dashboard({ session: propSession, userProfile: propProfi
 
       {/* Role-Based Dashboard View */}
       {isEmployer ? (
-        <EmployerDashboard 
-          profile={profile} 
+        <EmployerPortal 
+          userProfile={profile} 
           session={session} 
         />
       ) : (

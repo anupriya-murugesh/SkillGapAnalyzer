@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useLocation, useOutletContext } from 'react-router-dom';
 import { API_BASE_URL } from '../config';
 import { useToast } from '../context/ToastContext';
+import { markInvitationCompleted } from '../services/employerService';
 
 // Comprehensive catalog of supported languages and frameworks
 const LANGUAGE_CATALOG = [
@@ -521,6 +522,15 @@ export default function CandidatePractice() {
       const nextCount = curCount + 1;
       localStorage.setItem(todayKey, nextCount.toString());
       setDailyTestsCompleted(nextCount);
+    } catch {}
+
+    // If candidate attended via official employer invitation, mark it complete with score!
+    try {
+      const inviteToken = new URLSearchParams(location.search).get('invite');
+      if (inviteToken) {
+        const pctScore = Math.round((totalScore / 1000) * 100);
+        markInvitationCompleted(inviteToken, pctScore);
+      }
     } catch {}
 
     addToast(`Assessment Complete! You scored ${totalScore} / 1,000 Points (+${eloDelta} Elo).`, 'success');
