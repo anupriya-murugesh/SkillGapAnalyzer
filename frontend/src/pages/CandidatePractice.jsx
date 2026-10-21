@@ -4,6 +4,7 @@ import { useNavigate, useLocation, useOutletContext } from 'react-router-dom';
 import { API_BASE_URL } from '../config';
 import { useToast } from '../context/ToastContext';
 import { markInvitationCompleted } from '../services/employerService';
+import LanguageLogo from '../components/LanguageLogo';
 
 // Comprehensive catalog of supported languages and frameworks
 const LANGUAGE_CATALOG = [
@@ -289,8 +290,9 @@ export default function CandidatePractice() {
           className="bg-white border-2 border-slate-200 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative text-slate-900 space-y-5 animate-in zoom-in-95 duration-150"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="w-14 h-14 rounded-2xl bg-rose-100 border-2 border-rose-200 text-rose-700 flex items-center justify-center text-3xl font-black mx-auto">
-            ⚠️
+          <div className="w-16 h-16 rounded-2xl bg-slate-50 border-2 border-slate-200 flex items-center justify-center p-3 mx-auto shadow-xs relative">
+            <LanguageLogo skill={selectedLanguage} className="w-10 h-10" />
+            <span className="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full bg-rose-100 border border-rose-300 text-rose-700 flex items-center justify-center text-xs font-black shadow-xs">⚠️</span>
           </div>
 
           <div className="text-center space-y-2">
@@ -869,8 +871,8 @@ export default function CandidatePractice() {
         {unfinishedSession && (
           <div className="bg-amber-50 border-2 border-amber-300 rounded-3xl p-6 sm:p-7 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-300">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center text-2xl font-black shrink-0">
-                🔄
+              <div className="w-12 h-12 rounded-2xl bg-white border border-amber-300 text-amber-900 flex items-center justify-center p-2.5 shrink-0 shadow-xs">
+                <LanguageLogo skill={unfinishedSession.selectedLanguage} className="w-7 h-7" />
               </div>
               <div className="space-y-1">
                 <span className="text-[11px] font-black uppercase tracking-wider text-amber-900 bg-amber-200/70 border border-amber-300 px-2.5 py-0.5 rounded-full inline-block">
@@ -1020,14 +1022,16 @@ export default function CandidatePractice() {
                 <button
                   key={lang.id}
                   onClick={() => setSelectedLanguage(lang.name)}
-                  className={`p-4 rounded-2xl border-2 text-left transition-all cursor-pointer flex flex-col justify-between ${
+                  className={`p-4 rounded-2xl border-2 text-left transition-all cursor-pointer flex flex-col justify-between group ${
                     isSelected
                       ? 'bg-emerald-50 border-emerald-600 ring-2 ring-emerald-600/20 shadow-xs'
-                      : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                      : 'bg-white border-slate-200 hover:border-emerald-300 hover:bg-slate-50'
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-2xl">{lang.icon}</span>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center p-2 shadow-xs group-hover:scale-110 transition-transform">
+                      <LanguageLogo skill={lang.id} className="w-6 h-6" />
+                    </div>
                     {lang.popular && (
                       <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
                         Popular
@@ -1035,7 +1039,7 @@ export default function CandidatePractice() {
                     )}
                   </div>
                   <div>
-                    <h4 className="text-sm font-black text-slate-950">{lang.name}</h4>
+                    <h4 className="text-sm font-black text-slate-950 flex items-center gap-1.5">{lang.name}</h4>
                     <p className="text-[11px] font-medium text-slate-500 mt-0.5">{lang.category}</p>
                   </div>
                 </button>
@@ -1045,8 +1049,13 @@ export default function CandidatePractice() {
 
           {/* Launch Action Footer */}
           <div className="pt-6 border-t-2 border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="text-xs text-slate-700 font-medium">
-              Selected Track: <strong className="text-emerald-800 font-black">{selectedLanguage}</strong> (35m MCQs + 45m Coding)
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1.5 shadow-xs shrink-0">
+                <LanguageLogo skill={selectedLanguage} className="w-6 h-6" />
+              </div>
+              <div className="text-xs text-slate-700 font-medium">
+                Selected Track: <strong className="text-emerald-800 font-black text-sm">{selectedLanguage}</strong> (35m MCQs + 45m Coding)
+              </div>
             </div>
 
             <button
@@ -1084,16 +1093,21 @@ export default function CandidatePractice() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {historyResults.slice(0, 4).map((h, i) => (
                 <div key={h.id || i} className="p-4 rounded-2xl bg-slate-50 border-2 border-slate-200 flex items-center justify-between">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h4 className="text-sm font-black text-slate-950">{h.language || 'Technical Track'}</h4>
-                      <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.2 rounded-full">
-                        {h.tierBadge || 'Verified'}
-                      </span>
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1.5 shrink-0 shadow-2xs">
+                      <LanguageLogo skill={h.language} className="w-5 h-5" />
                     </div>
-                    <p className="text-xs text-slate-600 mt-1">
-                      Score: <strong className="text-slate-900">{h.totalScore || h.percentage || 750} / 1000</strong> ({h.percentage || 75}%)
-                    </p>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-sm font-black text-slate-950">{h.language || 'Technical Track'}</h4>
+                        <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.2 rounded-full">
+                          {h.tierBadge || 'Verified'}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-600 mt-0.5">
+                        Score: <strong className="text-slate-900">{h.totalScore || h.percentage || 750} / 1000</strong> ({h.percentage || 75}%)
+                      </p>
+                    </div>
                   </div>
                   <div className="text-right">
                     <span className="text-sm font-black text-slate-950 block">⚡ {h.eloRating || 1200}</span>
@@ -1125,10 +1139,13 @@ export default function CandidatePractice() {
         {/* Top Header & Telemetry */}
         <div className="bg-white border-2 border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center p-1.5 shadow-2xs shrink-0">
+              <LanguageLogo skill={selectedLanguage} className="w-5 h-5" />
+            </div>
             <span className="px-3 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-950 text-xs font-black">
               Stage 1 of 2: Diagnostics
             </span>
-            <span className="text-xs font-bold text-slate-700">
+            <span className="text-xs font-bold text-slate-800">
               {selectedLanguage} Track
             </span>
           </div>
@@ -1314,8 +1331,9 @@ export default function CandidatePractice() {
       <div className="fixed inset-0 z-[9990] bg-[#FAFCF8] overflow-y-auto px-4 sm:px-6 lg:px-8 py-12 flex items-center justify-center text-slate-900 font-sans">
         <div className="max-w-2xl w-full mx-auto space-y-6 animate-in zoom-in-95 duration-200">
           <div className="bg-white border-2 border-slate-200 rounded-3xl p-8 sm:p-12 text-center shadow-xl space-y-6">
-            <div className="w-16 h-16 rounded-2xl bg-emerald-100 border-2 border-emerald-300 text-emerald-900 flex items-center justify-center text-3xl mx-auto font-black">
-              ✓
+            <div className="w-16 h-16 rounded-2xl bg-slate-50 border-2 border-slate-200 flex items-center justify-center p-3 mx-auto shadow-sm relative">
+              <LanguageLogo skill={selectedLanguage} className="w-10 h-10" />
+              <span className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-black shadow-xs">✓</span>
             </div>
 
             <h2 className="text-2xl sm:text-3xl font-black text-slate-950">
@@ -1379,6 +1397,9 @@ export default function CandidatePractice() {
         {/* Top Header & Telemetry */}
         <div className="bg-white border-2 border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center p-1.5 shadow-2xs shrink-0">
+              <LanguageLogo skill={selectedLanguage} className="w-5 h-5" />
+            </div>
             <span className="px-3 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-950 text-xs font-black">
               Stage 2 of 2: Practical Coding
             </span>
@@ -1616,6 +1637,10 @@ export default function CandidatePractice() {
         
         {/* Header Celebratory Card */}
         <div className="bg-white border-2 border-slate-200 rounded-3xl p-8 sm:p-12 text-center shadow-sm space-y-6">
+          <div className="w-16 h-16 rounded-2xl bg-slate-50 border-2 border-slate-200 flex items-center justify-center p-3 mx-auto shadow-sm">
+            <LanguageLogo skill={sc.language} className="w-10 h-10" />
+          </div>
+
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100 border-2 border-emerald-300 text-emerald-950 text-xs font-black uppercase tracking-wider">
             <span>🛡️ Verified Assessment Scorecard</span>
           </div>
