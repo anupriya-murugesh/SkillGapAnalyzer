@@ -589,10 +589,25 @@ def randomize_and_format_questions(questions: list, count: int = 20) -> list:
         
     return formatted
 
-def generate_quiz_questions(skill: str, count: int = 20) -> list:
+def generate_quiz_questions(skill: str, count: int = 20, user_email: str = "") -> list:
     cleaned_skill = skill.strip()
-    api_keys = get_api_keys()
     curated = get_curated_mcqs(cleaned_skill)
+
+    # 0. Token Preservation Whitelist (Bypass Gemini for testing/developer accounts)
+    token_preservation_emails = [
+        "mvanupriya1907@gmail.com",
+        "anukarthika02@gmail.com"
+    ]
+    if user_email and user_email.strip().lower() in token_preservation_emails:
+        print("\n===========================================================")
+        print(f"[TOKEN PRESERVATION ACTIVE] User: {user_email}")
+        print(f"Serving {count} assessment questions directly from verified curated pool.")
+        print("Gemini API query bypassed to save 100% of tokens.")
+        print("===========================================================\n")
+        logging.info(f"[quiz_generator] Gemini query bypassed for {user_email} to preserve tokens.")
+        return randomize_and_format_questions(curated, count)
+
+    api_keys = get_api_keys()
 
     # 1. Attempt dynamic generation with Google Gemini using pool of keys (automatic failover)
     if api_keys:

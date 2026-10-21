@@ -141,10 +141,11 @@ def live_jobs(request: JobSearchRequest):
 
 class QuizRequest(BaseModel):
     skill: str
+    user_email: str = ""
 
 @app.post("/api/generate-quiz")
 def generate_quiz(request: QuizRequest):
-    questions = generate_quiz_questions(request.skill)
+    questions = generate_quiz_questions(request.skill, user_email=request.user_email)
     return {
         "status": "success",
         "skill": request.skill,

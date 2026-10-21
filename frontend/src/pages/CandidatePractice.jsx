@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate, useLocation, useOutletContext } from 'react-router-dom';
 import { API_BASE_URL } from '../config';
 import { useToast } from '../context/ToastContext';
@@ -93,6 +94,258 @@ export default function CandidatePractice() {
   // -------------------------------------------------------------------------
   const [scorecardData, setScorecardData] = useState(null);
   const [showExplanationModal, setShowExplanationModal] = useState(false);
+  const [showExitConfirmModal, setShowExitConfirmModal] = useState(false);
+  const [pendingNavTarget, setPendingNavTarget] = useState(null);
+
+  // Time Formatter (minutes:seconds)
+  const formatTimer = (secs) => {
+    const mins = Math.floor(secs / 60);
+    const rem = secs % 60;
+    return `${mins.toString().padStart(2, '0')}:${rem.toString().padStart(2, '0')}`;
+  };
+
+  // -------------------------------------------------------------------------
+  // UNFINISHED SESSION RECOVERY ENGINE
+  // -------------------------------------------------------------------------
+  const [unfinishedSession, setUnfinishedSession] = useState(() => {
+    try {
+      const raw = sessionStorage.getItem('bridgeiq_active_test_session');
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      // Ensure it is fresh (saved within last 2.5 hours) and has active content
+      if (Date.now() - parsed.savedAt < 2.5 * 60 * 60 * 1000 && (parsed.mcqQuestions?.length > 0 || parsed.codingChallenges?.length > 0)) {
+        return parsed;
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  });
+
+  const handleResumeSavedSession = () => {
+    if (!unfinishedSession) return;
+    setSelectedLanguage(unfinishedSession.selectedLanguage || 'Python');
+    setMcqQuestions(unfinishedSession.mcqQuestions || []);
+    setCurrentMcqIdx(unfinishedSession.currentMcqIdx || 0);
+    setUserMcqAnswers(unfinishedSession.userMcqAnswers || {});
+    setFlaggedMcqs(new Set(unfinishedSession.flaggedMcqs || []));
+    setCodingChallenges(unfinishedSession.codingChallenges || []);
+    setCurrentChallengeIdx(unfinishedSession.currentChallengeIdx || 0);
+    setUserCode(unfinishedSession.userCode || {});
+    setStage1SecondsLeft(unfinishedSession.stage1SecondsLeft || 35 * 60);
+    setStage2SecondsLeft(unfinishedSession.stage2SecondsLeft || 45 * 60);
+
+    if (unfinishedSession.stage === 'stage1_mcq') {
+      setStage('stage1_mcq');
+      setStage1TimerActive(true);
+    } else if (unfinishedSession.stage === 'stage2_coding') {
+      setStage('stage2_coding');
+      setStage2TimerActive(true);
+    } else {
+      setStage('intermission');
+    }
+    setUnfinishedSession(null);
+    addToast('Assessment resumed from saved session checkpoint!', 'success');
+  };
+
+  const handleDiscardSavedSession = () => {
+    sessionStorage.removeItem('bridgeiq_active_test_session');
+    setUnfinishedSession(null);
+    addToast('Previous assessment attempt discarded.', 'info');
+  };
+
+  // Synchronize ongoing assessment session into sessionStorage
+  useEffect(() => {
+    const isTestActive = stage === 'stage1_mcq' || stage === 'intermission' || stage === 'stage2_coding';
+    if (!isTestActive) return;
+
+    try {
+      const backup = {
+        stage,
+        selectedLanguage,
+        mcqQuestions,
+        currentMcqIdx,
+        userMcqAnswers,
+        flaggedMcqs: Array.from(flaggedMcqs),
+        codingChallenges,
+        currentChallengeIdx,
+        userCode,
+        stage1SecondsLeft,
+        stage2SecondsLeft,
+        savedAt: Date.now()
+      };
+      sessionStorage.setItem('bridgeiq_active_test_session', JSON.stringify(backup));
+    } catch (e) {
+      console.warn('Session sync warning:', e);
+    }
+  }, [
+    stage,
+    selectedLanguage,
+    mcqQuestions,
+    currentMcqIdx,
+    userMcqAnswers,
+    flaggedMcqs,
+    codingChallenges,
+    currentChallengeIdx,
+    userCode,
+    stage1SecondsLeft,
+    stage2SecondsLeft
+  ]);
+
+  // -------------------------------------------------------------------------
+  // NAVIGATION & HISTORY LOCK (INTERCEPTS BACK BUTTON, RELOAD, & LINK CLICKS)
+  // -------------------------------------------------------------------------
+  useEffect(() => {
+    const isTestActive = stage === 'stage1_mcq' || stage === 'intermission' || stage === 'stage2_coding';
+    if (!isTestActive) {
+      document.body.style.overflow = '';
+      return;
+    }
+
+    // Lock body scrolling behind proctored portal
+    document.body.style.overflow = 'hidden';
+
+    // 1. Trap Browser Back / Forward buttons (popstate)
+    window.history.pushState({ bridgeIqTestActive: true }, '', window.location.href);
+
+    const handlePopState = () => {
+      // Re-push state so URL doesn't navigate away
+      window.history.pushState({ bridgeIqTestActive: true }, '', window.location.href);
+      // Immediately open exit confirmation modal
+      setShowExitConfirmModal(true);
+    };
+
+    // 2. Intercept tab close or browser reload
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = 'Assessment in progress! Are you sure you want to abandon? All progress and test data will be lost.';
+      return e.returnValue;
+    };
+
+    // 3. Document-level Capture Phase Click Listener for any links
+    const handleCaptureClick = (e) => {
+      const link = e.target.closest('a');
+      if (link) {
+        const href = link.getAttribute('href');
+        if (href && !href.startsWith('#')) {
+          e.preventDefault();
+          e.stopPropagation();
+          setPendingNavTarget(href);
+          setShowExitConfirmModal(true);
+        }
+      }
+    };
+
+    // 4. Keyboard shortcuts (Escape key)
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setShowExitConfirmModal(true);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    document.addEventListener('click', handleCaptureClick, true);
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      document.removeEventListener('click', handleCaptureClick, true);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [stage]);
+
+  const handleAbandonAssessment = () => {
+    setStage1TimerActive(false);
+    setStage2TimerActive(false);
+    sessionStorage.removeItem('bridgeiq_active_test_session');
+    setShowExitConfirmModal(false);
+    document.body.style.overflow = '';
+
+    if (pendingNavTarget) {
+      const target = pendingNavTarget;
+      setPendingNavTarget(null);
+      setStage('catalog');
+      navigate(target);
+    } else {
+      setStage('catalog');
+      addToast('Assessment forfeited. Returned to domain catalog.', 'info');
+    }
+  };
+
+  const renderExitConfirmModal = () => {
+    if (!showExitConfirmModal) return null;
+    return createPortal(
+      <div 
+        className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="exit-modal-title"
+      >
+        <div 
+          className="bg-white border-2 border-slate-200 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative text-slate-900 space-y-5 animate-in zoom-in-95 duration-150"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="w-14 h-14 rounded-2xl bg-rose-100 border-2 border-rose-200 text-rose-700 flex items-center justify-center text-3xl font-black mx-auto">
+            ⚠️
+          </div>
+
+          <div className="text-center space-y-2">
+            <span className="text-[11px] font-black uppercase tracking-wider text-rose-700 bg-rose-50 border border-rose-200 px-3 py-1 rounded-full">
+              Standardized Assessment Guard
+            </span>
+            <h3 id="exit-modal-title" className="text-xl font-black text-slate-950 pt-1">
+              Abandon Active Assessment?
+            </h3>
+            <p className="text-xs text-slate-600 leading-relaxed font-medium">
+              You are currently taking the <strong className="text-slate-900">{selectedLanguage} Assessment</strong>. If you exit now, your answers, code progress, and this session attempt will be forfeited.
+            </p>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-1">
+            <div className="font-bold flex items-center gap-1.5">
+              <span>⏱️</span>
+              <span>
+                {stage === 'stage1_mcq' 
+                  ? `Stage 1 Remaining: ${formatTimer(stage1SecondsLeft)}` 
+                  : stage === 'stage2_coding' 
+                  ? `Stage 2 Remaining: ${formatTimer(stage2SecondsLeft)}` 
+                  : 'Assessment In Progress'}
+              </span>
+            </div>
+            <p className="text-[11px] text-amber-800 leading-tight">
+              To keep your attempt and continue solving, click <strong>Resume Assessment</strong>.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3 pt-1">
+            <button
+              type="button"
+              onClick={() => {
+                setShowExitConfirmModal(false);
+                setPendingNavTarget(null);
+              }}
+              className="flex-1 py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-md active:scale-95"
+            >
+              Resume Assessment
+            </button>
+
+            <button
+              type="button"
+              onClick={handleAbandonAssessment}
+              className="py-3.5 px-5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 text-xs font-bold rounded-xl transition-all cursor-pointer active:scale-95"
+            >
+              Quit & Forfeit
+            </button>
+          </div>
+        </div>
+      </div>,
+      document.body
+    );
+  };
 
   // History & past scorecards
   const [historyResults, setHistoryResults] = useState(() => {
@@ -158,12 +411,6 @@ export default function CandidatePractice() {
     return () => clearInterval(interval);
   }, [stage2TimerActive, stage2SecondsLeft]);
 
-  const formatTimer = (secs) => {
-    const mins = Math.floor(secs / 60);
-    const rem = secs % 60;
-    return `${mins.toString().padStart(2, '0')}:${rem.toString().padStart(2, '0')}`;
-  };
-
   // -------------------------------------------------------------------------
   // LAUNCHING THE ASSESSMENT
   // -------------------------------------------------------------------------
@@ -190,11 +437,15 @@ export default function CandidatePractice() {
 
     try {
       // 1. Fetch 20 MCQs and 2 Coding Challenges concurrently in parallel
+      const candidateEmail = profile?.email || session?.user?.email || '';
       const [quizRes, codeRes] = await Promise.all([
         fetch(`${API_BASE_URL}/api/generate-quiz`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ skill: langName })
+          body: JSON.stringify({ 
+            skill: langName,
+            user_email: candidateEmail
+          })
         }),
         fetch(`${API_BASE_URL}/api/generate-coding-challenge`, {
           method: 'POST',
@@ -508,6 +759,9 @@ export default function CandidatePractice() {
       }
     };
 
+    sessionStorage.removeItem('bridgeiq_active_test_session');
+    document.body.style.overflow = '';
+
     setScorecardData(scorecard);
     setStage('scorecard');
 
@@ -611,6 +865,45 @@ export default function CandidatePractice() {
     return (
       <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-200 pb-16">
         
+        {/* Unfinished Assessment Recovery Banner */}
+        {unfinishedSession && (
+          <div className="bg-amber-50 border-2 border-amber-300 rounded-3xl p-6 sm:p-7 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-300">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center text-2xl font-black shrink-0">
+                🔄
+              </div>
+              <div className="space-y-1">
+                <span className="text-[11px] font-black uppercase tracking-wider text-amber-900 bg-amber-200/70 border border-amber-300 px-2.5 py-0.5 rounded-full inline-block">
+                  Active Session Checkpoint Detected
+                </span>
+                <h3 className="text-lg font-black text-slate-950">
+                  Resume Ongoing {unfinishedSession.selectedLanguage || 'Technical'} Assessment?
+                </h3>
+                <p className="text-xs text-slate-700 font-medium leading-relaxed">
+                  You have an unfinished assessment session with answers and timer preserved ({unfinishedSession.stage === 'stage2_coding' ? 'Stage 2: Coding Sandbox' : 'Stage 1: Diagnostic MCQs'}). Would you like to resume where you left off?
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 shrink-0">
+              <button
+                type="button"
+                onClick={handleResumeSavedSession}
+                className="px-5 py-3 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-black uppercase tracking-wider rounded-xl shadow-md transition-all cursor-pointer active:scale-95"
+              >
+                Resume Assessment →
+              </button>
+              <button
+                type="button"
+                onClick={handleDiscardSavedSession}
+                className="px-4 py-3 bg-white hover:bg-rose-50 text-rose-700 border border-rose-300 text-xs font-bold rounded-xl transition-all cursor-pointer"
+              >
+                Discard
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Header Hero */}
         <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 sm:p-10 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
@@ -623,6 +916,12 @@ export default function CandidatePractice() {
                 <span>⏱️</span>
                 <span>Daily Quota: <strong className={remainingDailyTests > 0 ? "text-emerald-800 font-black" : "text-amber-800 font-black"}>{remainingDailyTests} of {DAILY_LIMIT} Remaining</strong> Today</span>
               </div>
+              {((profile?.email || session?.user?.email)?.toLowerCase() === 'mvanupriya1907@gmail.com') && (
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-100 border border-sky-300 text-sky-950 text-xs font-black">
+                  <span>🛡️</span>
+                  <span>Token Saver Mode Active (Curated Pool • 0 Gemini Tokens)</span>
+                </div>
+              )}
             </div>
             <h1 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
               Skill Benchmarking & <span className="text-emerald-700">Contest Rating</span>
@@ -819,8 +1118,9 @@ export default function CandidatePractice() {
     const isFlagged = flaggedMcqs.has(currentMcqIdx);
     const answeredCount = Object.keys(userMcqAnswers).length;
 
-    return (
-      <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-200 pb-16">
+    return createPortal(
+      <div className="fixed inset-0 z-[9990] bg-[#FAFCF8] overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 text-slate-900 font-sans">
+        <div className="max-w-4xl mx-auto space-y-6 pb-20 animate-in fade-in duration-200">
         
         {/* Top Header & Telemetry */}
         <div className="bg-white border-2 border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-wrap items-center justify-between gap-4">
@@ -843,12 +1143,23 @@ export default function CandidatePractice() {
             <span>{formatTimer(stage1SecondsLeft)} Remaining</span>
           </div>
 
-          <button
-            onClick={handleFinishStage1}
-            className="text-xs font-black text-emerald-800 hover:text-emerald-950 underline underline-offset-4 cursor-pointer"
-          >
-            End Stage 1 & Go to Coding →
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setShowExitConfirmModal(true)}
+              className="px-3 py-1.5 rounded-xl border border-rose-300 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
+            >
+              <span>✕</span>
+              <span>Quit Test</span>
+            </button>
+
+            <button
+              onClick={handleFinishStage1}
+              className="text-xs font-black text-emerald-800 hover:text-emerald-950 underline underline-offset-4 cursor-pointer"
+            >
+              End Stage 1 & Go to Coding →
+            </button>
+          </div>
         </div>
 
         {/* Question Matrix Track (1 to 20 numbered circles) */}
@@ -985,7 +1296,11 @@ export default function CandidatePractice() {
 
         </div>
 
-      </div>
+        </div>
+        {/* Exit Confirmation Modal */}
+        {renderExitConfirmModal()}
+      </div>,
+      document.body
     );
   }
 
@@ -995,41 +1310,56 @@ export default function CandidatePractice() {
   if (stage === 'intermission') {
     const answeredCount = Object.keys(userMcqAnswers).length;
 
-    return (
-      <div className="max-w-2xl mx-auto space-y-6 animate-in zoom-in-95 duration-200 py-12">
-        <div className="bg-white border-2 border-slate-200 rounded-3xl p-8 sm:p-12 text-center shadow-sm space-y-6">
-          <div className="w-16 h-16 rounded-2xl bg-emerald-100 border-2 border-emerald-300 text-emerald-900 flex items-center justify-center text-3xl mx-auto">
-            ✓
+    return createPortal(
+      <div className="fixed inset-0 z-[9990] bg-[#FAFCF8] overflow-y-auto px-4 sm:px-6 lg:px-8 py-12 flex items-center justify-center text-slate-900 font-sans">
+        <div className="max-w-2xl w-full mx-auto space-y-6 animate-in zoom-in-95 duration-200">
+          <div className="bg-white border-2 border-slate-200 rounded-3xl p-8 sm:p-12 text-center shadow-xl space-y-6">
+            <div className="w-16 h-16 rounded-2xl bg-emerald-100 border-2 border-emerald-300 text-emerald-900 flex items-center justify-center text-3xl mx-auto font-black">
+              ✓
+            </div>
+
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-950">
+              Stage 1 Diagnostics Complete!
+            </h2>
+
+            <p className="text-slate-700 text-sm font-medium leading-relaxed max-w-lg mx-auto">
+              You completed <strong>{answeredCount} of {mcqQuestions.length}</strong> technical diagnostic questions.
+              Take a deep breath before starting the practical coding challenges.
+            </p>
+
+            <div className="p-4 rounded-2xl bg-slate-50 border-2 border-slate-200 text-xs text-slate-800 text-left space-y-2">
+              <span className="font-black text-slate-950 uppercase tracking-wider block">
+                Stage 2 Details (45-Minute Timer):
+              </span>
+              <ul className="list-disc pl-5 space-y-1 font-medium text-slate-700">
+                <li>2 Practical Coding Challenges in {selectedLanguage} (300 Pts each).</li>
+                <li>Each challenge has 6 automated test cases (4 public + 2 hidden edge cases).</li>
+                <li>You can test your code anytime using the Run Test Cases button.</li>
+              </ul>
+            </div>
+
+            <div className="space-y-3 pt-2">
+              <button
+                onClick={handleStartStage2}
+                className="w-full py-4 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md shadow-emerald-700/25 transition-all cursor-pointer active:scale-95"
+              >
+                Start Stage 2: Coding Sandbox (45 Mins) →
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowExitConfirmModal(true)}
+                className="text-xs font-bold text-rose-700 hover:text-rose-900 underline underline-offset-4 cursor-pointer"
+              >
+                ✕ Quit & Forfeit Assessment
+              </button>
+            </div>
           </div>
-
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-950">
-            Stage 1 Diagnostics Complete!
-          </h2>
-
-          <p className="text-slate-700 text-sm font-medium leading-relaxed max-w-lg mx-auto">
-            You completed <strong>{answeredCount} of {mcqQuestions.length}</strong> technical diagnostic questions.
-            Take a deep breath before starting the practical coding challenges.
-          </p>
-
-          <div className="p-4 rounded-2xl bg-slate-50 border-2 border-slate-200 text-xs text-slate-800 text-left space-y-2">
-            <span className="font-black text-slate-950 uppercase tracking-wider block">
-              Stage 2 Details (45-Minute Timer):
-            </span>
-            <ul className="list-disc pl-5 space-y-1 font-medium text-slate-700">
-              <li>2 Practical Coding Challenges in {selectedLanguage} (300 Pts each).</li>
-              <li>Each challenge has 6 automated test cases (4 public + 2 hidden edge cases).</li>
-              <li>You can test your code anytime using the Run Test Cases button.</li>
-            </ul>
-          </div>
-
-          <button
-            onClick={handleStartStage2}
-            className="w-full py-4 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md shadow-emerald-700/25 transition-all cursor-pointer active:scale-95"
-          >
-            Start Stage 2: Coding Sandbox (45 Mins) →
-          </button>
         </div>
-      </div>
+        {/* Exit Confirmation Modal */}
+        {renderExitConfirmModal()}
+      </div>,
+      document.body
     );
   }
 
@@ -1042,8 +1372,9 @@ export default function CandidatePractice() {
     const testCases = challenge.test_cases || [];
     const results = testCaseResults[challenge.id] || [];
 
-    return (
-      <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in duration-200 pb-16">
+    return createPortal(
+      <div className="fixed inset-0 z-[9990] bg-[#FAFCF8] overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 text-slate-900 font-sans">
+        <div className="max-w-7xl mx-auto space-y-6 pb-20 animate-in fade-in duration-200">
         
         {/* Top Header & Telemetry */}
         <div className="bg-white border-2 border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-wrap items-center justify-between gap-4">
@@ -1078,12 +1409,23 @@ export default function CandidatePractice() {
             <span>{formatTimer(stage2SecondsLeft)} Remaining</span>
           </div>
 
-          <button
-            onClick={handleFinishAssessment}
-            className="px-5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-black rounded-xl shadow-xs transition-all cursor-pointer active:scale-95"
-          >
-            Submit Assessment & View Scorecard →
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setShowExitConfirmModal(true)}
+              className="px-3.5 py-2 rounded-xl border border-rose-300 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
+            >
+              <span>✕</span>
+              <span>Quit Test</span>
+            </button>
+
+            <button
+              onClick={handleFinishAssessment}
+              className="px-5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-black rounded-xl shadow-xs transition-all cursor-pointer active:scale-95"
+            >
+              Submit Assessment & View Scorecard →
+            </button>
+          </div>
         </div>
 
         {/* 2-Column Split Workspace (Clean Light Mode) */}
@@ -1255,7 +1597,11 @@ export default function CandidatePractice() {
 
         </div>
 
-      </div>
+        </div>
+        {/* Exit Confirmation Modal */}
+        {renderExitConfirmModal()}
+      </div>,
+      document.body
     );
   }
 
