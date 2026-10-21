@@ -12,6 +12,7 @@ from services.code_evaluator import evaluate_submission
 import logging
 import re
 import time
+import base64
 
 app = FastAPI()
 
@@ -112,19 +113,48 @@ def analyze_gap(request: AnalyzeGapRequest):
     }
 
 class ResumeRequest(BaseModel):
-    resume_text: str
+    resume_text: str = ""
+    file_content_base64: str = ""
+    file_name: str = ""
 
-    @field_validator('resume_text', mode='before')
+    @field_validator('resume_text', 'file_name', mode='before')
     @classmethod
-    def clean_resume(cls, v):
-        return sanitize_text(v)
+    def clean_text_fields(cls, v):
+        return sanitize_text(v) if isinstance(v, str) else v
 
 @app.post("/api/extract-resume")
 def extract_resume(request: ResumeRequest):
-    skills = extract_skills_from_resume(request.resume_text)
-    return {"skills": skills}
+    pdf_bytes = None
+    resume_text = request.resume_text or ""
 
-# python-multipart dependency removed. Using /api/extract-resume for JSON payloads.
+    if request.file_content_base64:
+        try:
+            b64_str = request.file_content_base64
+            if "," in b64_str:
+                b64_str = b64_str.split(",", 1)[1]
+            raw_bytes = base64.b64decode(b64_str)
+            
+            # Check if PDF by extension or magic header (%PDF)
+            is_pdf = (
+                (request.file_name and request.file_name.lower().endswith(".pdf")) or 
+                raw_bytes.startswith(b"%PDF")
+            )
+            if is_pdf:
+                pdf_bytes = raw_bytes
+            else:
+                resume_text = raw_bytes.decode('utf-8', errors='ignore')
+        except Exception as e:
+            logging.error(f"Error decoding base64 resume file: {e}")
+
+    skills = extract_skills_from_resume(resume_text=resume_text, pdf_bytes=pdf_bytes)
+    return {
+        "status": "success",
+        "skills": skills,
+        "count": len(skills),
+        "source": "pdf" if pdf_bytes else "text"
+    }
+
+# Using /api/extract-resume with clean JSON base64 / text payloads for high reliability across platforms.
 
 class JobSearchRequest(BaseModel):
     query: str

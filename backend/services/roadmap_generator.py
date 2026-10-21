@@ -12,7 +12,7 @@ def generate_learning_roadmap(missing_skills: list[str], target_role: str) -> li
     if api_key and not ("your_" in api_key.lower() or "placeholder" in api_key.lower()):
         try:
             genai.configure(api_key=api_key)
-            model_name = 'gemini-1.5-flash'
+            candidate_models = ['gemini-3.8-flash', 'gemini-flash-latest', 'gemini-2.0-flash']
             
             prompt = f"""
             You are an expert career coach. The candidate is targeting the role of '{target_role}'.
@@ -31,16 +31,20 @@ def generate_learning_roadmap(missing_skills: list[str], target_role: str) -> li
             ]
             """
             
-            model = genai.GenerativeModel(model_name)
-            response = model.generate_content(
-                prompt,
-                generation_config={"response_mime_type": "application/json"},
-                request_options={"timeout": 12.0}
-            )
-            parsed = json.loads(response.text)
-            
-            if isinstance(parsed, list):
-                return parsed
+            for model_name in candidate_models:
+                try:
+                    model = genai.GenerativeModel(model_name)
+                    response = model.generate_content(
+                        prompt,
+                        generation_config={"response_mime_type": "application/json"},
+                        request_options={"timeout": 15.0}
+                    )
+                    parsed = json.loads(response.text)
+                    if isinstance(parsed, list) and len(parsed) > 0:
+                        return parsed
+                except Exception as m_err:
+                    logging.warning(f"Roadmap model {model_name} failed: {m_err}. Trying next...")
+                    continue
         except Exception as e:
             logging.warning(f"Roadmap generation failed: {e}. Falling back...")
 

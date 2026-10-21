@@ -43,8 +43,9 @@ export default function SkillGapAnalyzer() {
 
   const handleSkillsExtracted = (extractedSkills) => {
     const newSkills = [...new Set([...userSkills, ...extractedSkills])];
+    const addedCount = newSkills.length - userSkills.length;
     setUserSkills(newSkills);
-    addToast('Resume uploaded and skills extracted successfully!', 'success');
+    addToast(`Extracted ${extractedSkills.length} skills (${addedCount} new) from your resume!`, 'success');
   };
 
   const handleSubmit = async (e) => {
@@ -148,7 +149,20 @@ export default function SkillGapAnalyzer() {
             </div>
 
             <div>
-              <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-2">Your Current Skills</label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800">
+                  Your Current Skills {userSkills.length > 0 && <span className="text-emerald-700 font-black">({userSkills.length})</span>}
+                </label>
+                {userSkills.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setUserSkills([])}
+                    className="text-[11px] font-bold text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
+                  >
+                    Clear All
+                  </button>
+                )}
+              </div>
               <div className="p-3 border-2 border-slate-300 rounded-2xl focus-within:border-emerald-600 bg-white transition-colors flex flex-wrap gap-2 items-center min-h-[64px]">
                 {userSkills.map((skill, idx) => (
                   <span key={idx} className="flex items-center gap-1.5 bg-emerald-100 text-emerald-950 border border-emerald-300 px-3.5 py-1.5 rounded-xl text-sm font-bold shadow-xs">
