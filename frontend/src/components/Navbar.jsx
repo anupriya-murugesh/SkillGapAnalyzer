@@ -26,7 +26,16 @@ export default function Navbar({ session, userProfile, handleLogout, openAuth })
     { path: '/jobs', label: 'Live Market' }
   ];
 
-  const navLinks = currentRole === 'employer' ? employerLinks : candidateLinks;
+  const adminLinks = [
+    { path: '/admin', label: '📊 Overview' },
+    { path: '/admin?tab=users', label: '👥 Users' },
+    { path: '/admin?tab=jobs', label: '📢 Jobs' },
+    { path: '/admin?tab=questions', label: '🧠 Question Bank' },
+    { path: '/admin?tab=audits', label: '🛡️ Audits' },
+    { path: '/admin?tab=telemetry', label: '⚡ Telemetry' }
+  ];
+
+  const navLinks = currentRole === 'admin' ? adminLinks : currentRole === 'employer' ? employerLinks : candidateLinks;
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -92,23 +101,27 @@ export default function Navbar({ session, userProfile, handleLogout, openAuth })
             <div className="flex items-center gap-3 animate-in fade-in duration-300">
               {/* Role Indicator Badge */}
               <span className={`px-2.5 py-1 rounded-full text-xs font-bold border flex items-center gap-1.5 ${
-                currentRole === 'employer'
+                currentRole === 'admin'
+                  ? 'bg-purple-100 border-purple-300 text-purple-950'
+                  : currentRole === 'employer'
                   ? 'bg-amber-100 border-amber-300 text-amber-950'
                   : 'bg-emerald-100 border-emerald-300 text-emerald-950'
               }`}>
                 <span className={`w-2 h-2 rounded-full animate-pulse ${
-                  currentRole === 'employer' ? 'bg-amber-600' : 'bg-emerald-600'
+                  currentRole === 'admin' ? 'bg-purple-600' : currentRole === 'employer' ? 'bg-amber-600' : 'bg-emerald-600'
                 }`} />
-                <span>{currentRole === 'employer' ? '🏢 Employer' : '🎯 Candidate'}</span>
+                <span>{currentRole === 'admin' ? '👑 Admin' : currentRole === 'employer' ? '🏢 Employer' : '🎯 Candidate'}</span>
               </span>
 
               {/* User Profile Avatar Pill */}
               <Link
-                to={currentRole === 'employer' ? '/employer' : '/candidate/profile'}
+                to={currentRole === 'admin' ? '/admin' : currentRole === 'employer' ? '/employer' : '/candidate/profile'}
                 className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-50 border-2 border-slate-200 hover:border-emerald-600 transition-colors shadow-xs"
-                title={currentRole === 'employer' ? 'Employer Dashboard' : 'Candidate Profile'}
+                title={currentRole === 'admin' ? 'Superadmin Command Center' : currentRole === 'employer' ? 'Employer Dashboard' : 'Candidate Profile'}
               >
-                <div className="w-7 h-7 rounded-full bg-emerald-700 text-white font-black text-xs flex items-center justify-center shadow-xs">
+                <div className={`w-7 h-7 rounded-full text-white font-black text-xs flex items-center justify-center shadow-xs ${
+                  currentRole === 'admin' ? 'bg-purple-700' : 'bg-emerald-700'
+                }`}>
                   {userInitial}
                 </div>
                 <span className="text-xs font-bold text-slate-950 max-w-[140px] truncate">
@@ -125,7 +138,7 @@ export default function Navbar({ session, userProfile, handleLogout, openAuth })
             </div>
           ) : (
             <div className="flex items-center gap-3 animate-in fade-in duration-300">
-              {/* Dual-Role Sign In Dropdown Trigger */}
+              {/* Multi-Role Sign In Dropdown Trigger */}
               <div className="relative" ref={signInDropdownRef}>
                 <button
                   type="button"
@@ -155,7 +168,7 @@ export default function Navbar({ session, userProfile, handleLogout, openAuth })
 
                     <button
                       onClick={() => handleSelectRoleSignIn('candidate')}
-                      className="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-left hover:bg-emerald-50 transition-colors group cursor-pointer"
+                      className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left hover:bg-emerald-50 transition-colors group cursor-pointer"
                     >
                       <div className="w-8 h-8 rounded-lg bg-emerald-100 border border-emerald-300 text-emerald-900 flex items-center justify-center text-base group-hover:scale-105 transition-transform">
                         🎯
@@ -165,14 +178,14 @@ export default function Navbar({ session, userProfile, handleLogout, openAuth })
                           Sign in as Candidate
                         </div>
                         <div className="text-[11px] font-semibold text-slate-600">
-                          College & Career Assessment Panel
+                          Assessment & Career Hub
                         </div>
                       </div>
                     </button>
 
                     <button
                       onClick={() => handleSelectRoleSignIn('employer')}
-                      className="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-left hover:bg-emerald-50 transition-colors group mt-1 cursor-pointer"
+                      className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left hover:bg-emerald-50 transition-colors group mt-1 cursor-pointer"
                     >
                       <div className="w-8 h-8 rounded-lg bg-emerald-100 border border-emerald-300 text-emerald-900 flex items-center justify-center text-base group-hover:scale-105 transition-transform">
                         🏢
@@ -182,7 +195,24 @@ export default function Navbar({ session, userProfile, handleLogout, openAuth })
                           Sign in as Employer
                         </div>
                         <div className="text-[11px] font-semibold text-slate-600">
-                          Hiring & Talent Benchmarking
+                          Hiring & Benchmarking
+                        </div>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => handleSelectRoleSignIn('admin')}
+                      className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left hover:bg-purple-50 transition-colors group mt-1 cursor-pointer border-t border-slate-100 pt-2"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-purple-100 border border-purple-300 text-purple-900 flex items-center justify-center text-base group-hover:scale-105 transition-transform">
+                        👑
+                      </div>
+                      <div>
+                        <div className="text-sm font-extrabold text-slate-950 group-hover:text-purple-800 transition-colors">
+                          Sign in as Admin
+                        </div>
+                        <div className="text-[11px] font-semibold text-purple-700">
+                          Governance & Telemetry
                         </div>
                       </div>
                     </button>
@@ -256,6 +286,13 @@ export default function Navbar({ session, userProfile, handleLogout, openAuth })
               >
                 <span>🏢 Sign in as Employer</span>
                 <span className="text-emerald-700 font-bold">→</span>
+              </button>
+              <button
+                onClick={() => handleSelectRoleSignIn('admin')}
+                className="w-full flex items-center justify-between px-4 py-3 text-sm font-bold bg-purple-50 border-2 border-purple-200 rounded-xl text-slate-950"
+              >
+                <span>👑 Sign in as Admin</span>
+                <span className="text-purple-700 font-bold">→</span>
               </button>
               <Link
                 to="/candidate/signup"

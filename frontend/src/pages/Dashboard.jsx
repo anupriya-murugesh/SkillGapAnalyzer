@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
-import { getUserProfile } from '../lib/auth';
+import { getUserProfile, isAdminEmail } from '../lib/auth';
 import CandidateDashboard from '../components/CandidateDashboard';
 import EmployerPortal from './EmployerPortal';
+import AdminPortal from './AdminPortal';
 import { useToast } from '../context/ToastContext';
 
 export default function Dashboard({ session: propSession, userProfile: propProfile }) {
@@ -33,9 +34,13 @@ export default function Dashboard({ session: propSession, userProfile: propProfi
 
         if (isMounted) {
           if (userProf) {
+            if (isAdminEmail(currentSession?.user?.email)) {
+              userProf.role = 'admin';
+            }
             setProfile(userProf);
           } else {
-            const fallbackRole = currentSession?.user?.user_metadata?.role || 'candidate';
+            const isMasterAdmin = isAdminEmail(currentSession?.user?.email);
+            const fallbackRole = isMasterAdmin ? 'admin' : (currentSession?.user?.user_metadata?.role || 'candidate');
             setProfile({
               id: userId,
               email: currentSession?.user?.email || 'user@bridge-iq.ai',
@@ -57,15 +62,21 @@ export default function Dashboard({ session: propSession, userProfile: propProfi
     return () => { isMounted = false; };
   }, [propSession, propProfile]);
 
-  // Demo Role Toggle helper (allows previewing both Candidate and Employer dashboards)
+  // Demo Role Toggle helper (allows previewing Candidate, Employer, and Admin dashboards)
   const handleToggleRolePreview = () => {
-    const nextRole = profile?.role === 'employer' ? 'candidate' : 'employer';
+    let nextRole = 'candidate';
+    if (profile?.role === 'candidate') nextRole = 'employer';
+    else if (profile?.role === 'employer') nextRole = 'admin';
+    else nextRole = 'candidate';
+
     const updated = {
       ...profile,
       role: nextRole,
     };
     setProfile(updated);
-    addToast(`Switched view to ${nextRole === 'employer' ? 'Employer Portal' : 'Candidate Dashboard'}`, 'info');
+    addToast(`Switched view to ${
+      nextRole === 'admin' ? 'Superadmin Command Center' : nextRole === 'employer' ? 'Employer Portal' : 'Candidate Dashboard'
+    }`, 'info');
   };
 
   if (loading) {
@@ -77,7 +88,7 @@ export default function Dashboard({ session: propSession, userProfile: propProfi
     );
   }
 
-  const isEmployer = profile?.role === 'employer';
+  const role = profile?.role || 'candidate';
 
   return (
     <div className="space-y-6">
@@ -87,15 +98,24 @@ export default function Dashboard({ session: propSession, userProfile: propProfi
         <button
           onClick={handleToggleRolePreview}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white hover:bg-slate-50 border-2 border-slate-200 text-slate-800 text-xs font-bold shadow-sm transition-all active:scale-95 cursor-pointer"
-          title="Toggle between Candidate and Employer role views"
+          title="Toggle between Candidate, Employer, and Admin role views"
         >
           <span className="text-xs">🔄</span>
-          <span>View as: <strong className="text-emerald-800 capitalize font-black">{profile?.role || 'candidate'}</strong> (Click to switch)</span>
+          <span>
+            View as: <strong className={`capitalize font-black ${
+              role === 'admin' ? 'text-purple-700' : 'text-emerald-800'
+            }`}>{role}</strong> (Click to switch)
+          </span>
         </button>
       </div>
 
       {/* Role-Based Dashboard View */}
-      {isEmployer ? (
+      {role === 'admin' ? (
+        <AdminPortal
+          userProfile={profile}
+          session={session}
+        />
+      ) : role === 'employer' ? (
         <EmployerPortal 
           userProfile={profile} 
           session={session} 

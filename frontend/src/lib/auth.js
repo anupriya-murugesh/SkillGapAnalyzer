@@ -1,14 +1,27 @@
 import { supabase } from './supabaseClient';
 
+export const ADMIN_EMAILS = [
+  'aadhilakshmanan07@gmail.com',
+  'anukarthika02@gmail.com'
+];
+
+export function isAdminEmail(email) {
+  if (!email || typeof email !== 'string') return false;
+  return ADMIN_EMAILS.some(adminEmail => adminEmail.toLowerCase() === email.trim().toLowerCase());
+}
+
 /**
  * Register a user with Supabase Auth including role metadata.
  * @param {string} email
  * @param {string} password
- * @param {'candidate' | 'employer'} role
+ * @param {'candidate' | 'employer' | 'admin'} role
  * @returns {Promise<{ user: any, session: any }>}
  */
 export async function signUpUser(email, password, role = 'candidate') {
-  const normalizedRole = role === 'employer' ? 'employer' : 'candidate';
+  let normalizedRole = role === 'employer' ? 'employer' : role === 'admin' ? 'admin' : 'candidate';
+  if (isAdminEmail(email)) {
+    normalizedRole = 'admin';
+  }
   const redirectUrl = typeof window !== 'undefined' ? `${window.location.origin}/onboarding` : undefined;
 
   const { data, error } = await supabase.auth.signUp({
@@ -160,6 +173,9 @@ export async function getUserProfile(userId) {
     }
 
     if (data) {
+      if (isAdminEmail(data.email)) {
+        data.role = 'admin';
+      }
       // Sync local cache
       try {
         localStorage.setItem(`bridgeiq_profile_${userId}`, JSON.stringify(data));
@@ -174,7 +190,11 @@ export async function getUserProfile(userId) {
   try {
     const cached = localStorage.getItem(`bridgeiq_profile_${userId}`);
     if (cached) {
-      return JSON.parse(cached);
+      const parsed = JSON.parse(cached);
+      if (isAdminEmail(parsed?.email)) {
+        parsed.role = 'admin';
+      }
+      return parsed;
     }
   } catch {}
 

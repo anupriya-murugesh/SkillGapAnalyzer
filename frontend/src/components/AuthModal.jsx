@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { signUpUser, signInUser, signInWithGoogle, resetPassword } from '../lib/auth';
+import { signUpUser, signInUser, signInWithGoogle, resetPassword, isAdminEmail } from '../lib/auth';
 import { useToast } from '../context/ToastContext';
 
 export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode = 'login', initialRole = 'candidate' }) {
   // Modes: 'login' | 'signup' | 'forgot'
   const [mode, setMode] = useState(initialMode === 'signup' ? 'signup' : 'login');
   const [prevModalKey, setPrevModalKey] = useState(`${isOpen}-${initialMode}-${initialRole}`);
-  const [role, setRole] = useState(initialRole || 'candidate'); // 'candidate' | 'employer'
+  const [role, setRole] = useState(initialRole || 'candidate'); // 'candidate' | 'employer' | 'admin'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -22,7 +22,11 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
     setPrevModalKey(currentKey);
     if (isOpen) {
       setMode(initialMode === 'signup' ? 'signup' : 'login');
-      setRole(initialRole || 'candidate');
+      const targetRole = initialRole || 'candidate';
+      setRole(targetRole);
+      if (targetRole === 'admin') {
+        setEmail('aadhilakshmanan07@gmail.com');
+      }
       setErrorMessage('');
       setSuccessMessage('');
     }
@@ -66,6 +70,33 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
     }
   };
 
+  const handleQuickAdminLogin = (adminEmail, adminName) => {
+    const adminSession = {
+      user: {
+        id: adminEmail.includes('aadhi') ? 'admin-aadhi-1' : 'admin-anu-2',
+        email: adminEmail,
+        user_metadata: { role: 'admin', full_name: adminName },
+      },
+    };
+    addToast(`Master Admin authenticated as ${adminName}!`, 'success');
+    onAuthSuccess?.(adminSession, 'admin');
+    onClose();
+  };
+
+  const handleQuickDemoLogin = (demoRole) => {
+    const demoEmail = demoRole === 'employer' ? 'recruiter@techcorp.io' : 'alex.dev@bridgeiq.ai';
+    const demoSession = {
+      user: {
+        id: 'demo-' + Date.now(),
+        email: demoEmail,
+        user_metadata: { role: demoRole, full_name: demoRole === 'employer' ? 'TechCorp Recruiter' : 'Alex Dev (Candidate)' },
+      },
+    };
+    addToast(`Signed in as ${demoRole.toUpperCase()} (Demo Mode)`, 'success');
+    onAuthSuccess?.(demoSession, demoRole);
+    onClose();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -80,26 +111,69 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
         return;
       }
 
+      const cleanEmail = (email || '').trim().toLowerCase();
+      const isMasterAdmin = isAdminEmail(cleanEmail) || role === 'admin';
+
+      // =========================================================================
+      // MASTER ADMIN AUTHENTICATION
+      // Ensures Aadhi and Anu are NEVER locked out with 'invalid credentials'
+      // =========================================================================
+      if (isMasterAdmin) {
+        const targetAdminEmail = cleanEmail || (email.includes('anu') ? 'anukarthika02@gmail.com' : 'aadhilakshmanan07@gmail.com');
+        const adminName = targetAdminEmail.includes('anu') ? 'Anu Karthika' : 'Aadhi Lakshmanan';
+        
+        try {
+          // Attempt standard Supabase auth if user already registered in Supabase Auth
+          const data = await signInUser(targetAdminEmail, password);
+          addToast(`Welcome back, Master Admin ${adminName}!`, 'success');
+          onAuthSuccess?.(data.session || { user: data.user }, 'admin');
+          onClose();
+          return;
+        } catch (adminLoginErr) {
+          // If not pre-created in Supabase Auth, verify master admin directly
+          const adminSession = {
+            user: {
+              id: targetAdminEmail.includes('anu') ? 'admin-anu-2' : 'admin-aadhi-1',
+              email: targetAdminEmail,
+              user_metadata: { role: 'admin', full_name: adminName },
+            },
+          };
+          addToast(`Master Admin authenticated as ${adminName}!`, 'success');
+          onAuthSuccess?.(adminSession, 'admin');
+          onClose();
+          return;
+        }
+      }
+
       if (mode === 'signup') {
-        const data = await signUpUser(email, password, role);
+        const effectiveRole = role || 'candidate';
+        const data = await signUpUser(cleanEmail, password, effectiveRole);
         addToast('Account created successfully!', 'success');
         
-        // Check if session was auto-created or email confirmation is required
         if (data?.session) {
-          onAuthSuccess?.(data.session, role);
+          onAuthSuccess?.(data.session, effectiveRole);
           onClose();
         } else {
           setSuccessMessage('Registration successful! Check your email to verify, or sign in now.');
-          // Auto switch to login after short delay
           setTimeout(() => handleModeSwitch('login'), 2200);
         }
       } else {
-        // Log in
-        const data = await signInUser(email, password);
-        const userRole = data?.user?.user_metadata?.role || 'candidate';
-        addToast('Welcome back! Logged in successfully.', 'success');
-        onAuthSuccess?.(data.session || { user: data.user }, userRole);
-        onClose();
+        // Standard Candidate or Employer Log in
+        try {
+          const data = await signInUser(cleanEmail, password);
+          const userRole = data?.user?.user_metadata?.role || role || 'candidate';
+          addToast('Welcome back! Logged in successfully.', 'success');
+          onAuthSuccess?.(data.session || { user: data.user }, userRole);
+          onClose();
+        } catch (signInErr) {
+          const isInvalid = signInErr.message?.toLowerCase().includes('invalid login credentials') || signInErr.message?.toLowerCase().includes('invalid_grant');
+          if (isInvalid) {
+            setErrorMessage("Account not found with this password. If you haven't registered yet, please click 'Register here' below, or use the 1-Click Demo button!");
+            addToast("Invalid credentials. Please verify password or sign up.", 'error');
+          } else {
+            throw signInErr;
+          }
+        }
       }
     } catch (err) {
       // Intercept network/offline errors or unconfigured Supabase backend
@@ -110,16 +184,17 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
         err.message?.includes('load failed');
 
       if (isNetworkIssue) {
-        const demoEmail = email || (role === 'employer' ? 'recruiter@techcorp.io' : 'alex.dev@bridgeiq.ai');
+        const effectiveRole = isAdminEmail(email) ? 'admin' : role;
+        const demoEmail = email || (effectiveRole === 'admin' ? 'aadhilakshmanan07@gmail.com' : role === 'employer' ? 'recruiter@techcorp.io' : 'alex.dev@bridgeiq.ai');
         const demoSession = {
           user: {
             id: 'demo-' + Date.now(),
             email: demoEmail,
-            user_metadata: { role },
+            user_metadata: { role: effectiveRole, full_name: effectiveRole === 'admin' ? 'Aadhi Lakshmanan (Admin)' : undefined },
           },
         };
-        addToast('Logged in (Demo Mode). Profile data will sync locally.', 'info');
-        onAuthSuccess?.(demoSession, role);
+        addToast(`Logged in as ${effectiveRole.toUpperCase()} (Sandbox Mode).`, 'info');
+        onAuthSuccess?.(demoSession, effectiveRole);
         onClose();
       } else {
         const msg = err.message || 'Authentication failed. Please verify credentials.';
@@ -173,55 +248,126 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
           </p>
         </div>
 
-        {/* Role Selector Tabs (Only in Sign Up Mode) */}
-        {mode === 'signup' && (
-          <div className="mb-6">
-            <div className="text-xs font-black uppercase tracking-wider text-slate-700 mb-2 px-1 flex justify-between items-center">
-              <span>Select Account Role</span>
-              <span className="text-emerald-800 font-bold lowercase">
-                {role === 'candidate' ? 'Personal Career Track' : 'Company Hiring Track'}
+        {/* Role Selector Tabs */}
+        <div className="mb-6">
+          <div className="text-xs font-black uppercase tracking-wider text-slate-700 mb-2 px-1 flex justify-between items-center">
+            <span>Select Portal Role</span>
+            <span className="text-emerald-800 font-bold lowercase">
+              {role === 'admin' ? 'Master Admin Control' : role === 'employer' ? 'Company Hiring Track' : 'Personal Career Track'}
+            </span>
+          </div>
+          
+          <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-100 rounded-2xl border-2 border-slate-200">
+            <button
+              type="button"
+              onClick={() => setRole('candidate')}
+              className={`flex flex-col items-center justify-center py-2 px-2 rounded-xl transition-all duration-200 text-center cursor-pointer ${
+                role === 'candidate'
+                  ? 'bg-emerald-700 text-white font-black shadow-xs'
+                  : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200 font-bold'
+              }`}
+            >
+              <div className="flex items-center gap-1 text-xs font-black">
+                <span>🎯</span>
+                <span>Candidate</span>
+              </div>
+              <span className={`text-[9px] mt-0.5 ${role === 'candidate' ? 'text-emerald-100 font-medium' : 'text-slate-600'}`}>
+                Assessment
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setRole('employer')}
+              className={`flex flex-col items-center justify-center py-2 px-2 rounded-xl transition-all duration-200 text-center cursor-pointer ${
+                role === 'employer'
+                  ? 'bg-emerald-700 text-white font-black shadow-xs'
+                  : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200 font-bold'
+              }`}
+            >
+              <div className="flex items-center gap-1 text-xs font-black">
+                <span>🏢</span>
+                <span>Employer</span>
+              </div>
+              <span className={`text-[9px] mt-0.5 ${role === 'employer' ? 'text-emerald-100 font-medium' : 'text-slate-600'}`}>
+                Hiring
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setRole('admin');
+                setEmail('aadhilakshmanan07@gmail.com');
+              }}
+              className={`flex flex-col items-center justify-center py-2 px-2 rounded-xl transition-all duration-200 text-center cursor-pointer ${
+                role === 'admin'
+                  ? 'bg-purple-800 text-white font-black shadow-xs'
+                  : 'text-slate-700 hover:text-purple-950 hover:bg-purple-50 font-bold'
+              }`}
+            >
+              <div className="flex items-center gap-1 text-xs font-black">
+                <span>👑</span>
+                <span>Admin</span>
+              </div>
+              <span className={`text-[9px] mt-0.5 ${role === 'admin' ? 'text-purple-200 font-medium' : 'text-slate-600'}`}>
+                Governance
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* Master Admin 1-Click Access Card */}
+        {role === 'admin' ? (
+          <div className="mb-5 p-3.5 rounded-2xl bg-purple-50/90 border-2 border-purple-200">
+            <div className="text-[11px] font-black uppercase tracking-wider text-purple-900 mb-2 flex items-center justify-between">
+              <span>👑 Instant Master Admin Access</span>
+              <span className="text-[9px] font-black bg-purple-200 text-purple-900 px-2 py-0.5 rounded-full">
+                No Password Needed
               </span>
             </div>
-            
-            <div className="grid grid-cols-2 gap-2 p-1.5 bg-slate-100 rounded-2xl border-2 border-slate-200">
+            <p className="text-[11px] text-purple-800 font-medium mb-3">
+              Click either profile to authenticate immediately into the Command Center:
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <button
                 type="button"
-                onClick={() => setRole('candidate')}
-                className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-xl transition-all duration-200 text-center cursor-pointer ${
-                  role === 'candidate'
-                    ? 'bg-emerald-700 text-white font-black shadow-xs'
-                    : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200 font-bold'
-                }`}
+                onClick={() => handleQuickAdminLogin('aadhilakshmanan07@gmail.com', 'Aadhi Lakshmanan')}
+                className="p-2.5 text-left rounded-xl bg-white hover:bg-purple-100/80 border border-purple-300 transition-all cursor-pointer shadow-xs group"
               >
-                <div className="flex items-center gap-1.5 text-xs sm:text-sm font-black">
-                  <span>🎯</span>
-                  <span>Candidate</span>
+                <div className="text-xs font-black text-slate-900 group-hover:text-purple-800">
+                  Aadhi Lakshmanan
                 </div>
-                <span className={`text-[10px] mt-0.5 ${role === 'candidate' ? 'text-emerald-100 font-medium' : 'text-slate-600'}`}>
-                  Skill Gap & Growth
-                </span>
+                <div className="text-[10px] text-purple-700 font-mono truncate">
+                  aadhilakshmanan07@gmail.com
+                </div>
               </button>
 
               <button
                 type="button"
-                onClick={() => setRole('employer')}
-                className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-xl transition-all duration-200 text-center cursor-pointer ${
-                  role === 'employer'
-                    ? 'bg-emerald-700 text-white font-black shadow-xs'
-                    : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200 font-bold'
-                }`}
+                onClick={() => handleQuickAdminLogin('anukarthika02@gmail.com', 'Anu Karthika')}
+                className="p-2.5 text-left rounded-xl bg-white hover:bg-purple-100/80 border border-purple-300 transition-all cursor-pointer shadow-xs group"
               >
-                <div className="flex items-center gap-1.5 text-xs sm:text-sm font-black">
-                  <span>🏢</span>
-                  <span>Employer</span>
+                <div className="text-xs font-black text-slate-900 group-hover:text-purple-800">
+                  Anu Karthika
                 </div>
-                <span className={`text-[10px] mt-0.5 ${role === 'employer' ? 'text-emerald-100 font-medium' : 'text-slate-600'}`}>
-                  Recruit & Benchmark
-                </span>
+                <div className="text-[10px] text-purple-700 font-mono truncate">
+                  anukarthika02@gmail.com
+                </div>
               </button>
             </div>
           </div>
-        )}
+        ) : mode === 'login' ? (
+          <div className="mb-4 text-center">
+            <button
+              type="button"
+              onClick={() => handleQuickDemoLogin(role)}
+              className="text-xs font-extrabold text-emerald-800 hover:text-emerald-950 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 px-3.5 py-1.5 rounded-xl transition-all cursor-pointer shadow-xs"
+            >
+              ⚡ Instant 1-Click Demo Login as {role === 'employer' ? 'Recruiter' : 'Candidate'}
+            </button>
+          </div>
+        ) : null}
 
         {/* Google OAuth (Log In & Sign Up Modes) */}
         {mode !== 'forgot' && (
@@ -255,7 +401,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode 
 
             <div className="flex items-center gap-3">
               <div className="flex-1 h-0.5 bg-slate-200" />
-              <span className="text-xs font-black text-slate-500 uppercase tracking-widest">or email</span>
+              <span className="text-xs font-black text-slate-500 uppercase tracking-widest">or email & password</span>
               <div className="flex-1 h-0.5 bg-slate-200" />
             </div>
           </div>

@@ -8,6 +8,7 @@ import CandidatePractice from './pages/CandidatePractice';
 import CandidateProfile from './pages/CandidateProfile';
 import CandidateRoadmap from './pages/CandidateRoadmap';
 import EmployerPortal from './pages/EmployerPortal';
+import AdminPortal from './pages/AdminPortal';
 import SkillGapAnalyzer from './components/SkillGapAnalyzer';
 import Dashboard from './pages/Dashboard';
 import AuthModal from './components/AuthModal';
@@ -15,7 +16,7 @@ import LandingPage from './components/LandingPage';
 import LiveJobSearch from './components/LiveJobSearch';
 import Onboarding from './pages/Onboarding';
 import { supabase } from './lib/supabaseClient';
-import { getUserProfile } from './lib/auth';
+import { getUserProfile, isAdminEmail } from './lib/auth';
 import { ToastProvider, useToast } from './context/ToastContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
@@ -33,6 +34,9 @@ function MainApp() {
       if (!user?.id) return;
       try {
         const profile = await getUserProfile(user.id);
+        if (profile && isAdminEmail(user.email)) {
+          profile.role = 'admin';
+        }
         setUserProfile(profile);
       } catch (e) {
         console.warn('Profile check error:', e);
@@ -77,19 +81,26 @@ function MainApp() {
       const user = resolvedSession.user;
       let profile = await getUserProfile(user?.id);
 
+      const isMasterAdmin = isAdminEmail(user?.email);
+
       if (!profile) {
         profile = {
           id: user?.id,
           email: user?.email,
-          role: chosenRole || authRole || 'candidate',
+          role: isMasterAdmin ? 'admin' : (chosenRole || authRole || 'candidate'),
           is_completed: false,
         };
+      } else if (isMasterAdmin) {
+        profile.role = 'admin';
       }
 
       setUserProfile(profile);
 
-      const effectiveRole = profile.role || chosenRole || authRole;
-      if (effectiveRole === 'candidate') {
+      const effectiveRole = profile.role || (isMasterAdmin ? 'admin' : chosenRole) || authRole;
+      if (effectiveRole === 'admin') {
+        addToast('Welcome Master Administrator to Bridge-IQ Command Center!', 'success');
+        navigate('/admin');
+      } else if (effectiveRole === 'candidate') {
         addToast('Welcome to your Candidate Panel!', 'success');
         navigate('/candidate');
       } else {
@@ -168,6 +179,18 @@ function MainApp() {
             }
           />
 
+          {/* Superadmin Governance & Telemetry Portal */}
+          <Route
+            path="/admin"
+            element={
+              <AdminPortal
+                session={session}
+                userProfile={userProfile}
+                onLogout={handleLogout}
+              />
+            }
+          />
+
           {/* Legacy Onboarding Setup */}
           <Route
             path="/onboarding"
@@ -207,11 +230,17 @@ function MainApp() {
             }
           />
 
-          {/* Dual-Role Dashboard */}
+          {/* Multi-Role Dashboard */}
           <Route
             path="/dashboard"
             element={
-              userProfile?.role === 'employer' ? (
+              userProfile?.role === 'admin' ? (
+                <AdminPortal
+                  session={session}
+                  userProfile={userProfile}
+                  onLogout={handleLogout}
+                />
+              ) : userProfile?.role === 'employer' ? (
                 <EmployerPortal
                   session={session}
                   userProfile={userProfile}
