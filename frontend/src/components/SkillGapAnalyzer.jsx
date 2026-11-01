@@ -4,6 +4,7 @@ import ResumeUploader from './ResumeUploader';
 import LearningRoadmap from './LearningRoadmap';
 import { useToast } from '../context/ToastContext';
 import { API_BASE_URL } from '../config';
+import { extractAllResumeSkills } from '../utils/cleanText';
 
 export default function SkillGapAnalyzer() {
   const location = useLocation();
@@ -75,16 +76,54 @@ export default function SkillGapAnalyzer() {
       }).catch(console.error);
     } catch (err) {
       console.error('SkillGapAnalyzer Error:', err);
-      let errorMsg = err.message || 'An error occurred during analysis';
-      if (err.name === 'TypeError' && String(err.message).toLowerCase().includes('fetch')) {
-        const isProd = typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-        if (isProd && API_BASE_URL.includes('localhost')) {
-          errorMsg = 'Cannot connect to backend: Your deployed frontend is still attempting to call localhost:8000. Please add the VITE_BACKEND_URL environment variable in your Netlify/Vercel dashboard pointing to your deployed backend URL (e.g. https://your-backend.onrender.com).';
-        } else {
-          errorMsg = 'Unable to connect to the backend server. Please ensure the backend is running and reachable.';
-        }
+      const isNetworkErr =
+        (err.name === 'TypeError' && String(err.message).toLowerCase().includes('fetch')) ||
+        String(err.message).toLowerCase().includes('failed to fetch');
+
+      if (isNetworkErr) {
+        // Fallback: Run analysis directly in browser if backend is unreachable
+        const extractedTech = extractAllResumeSkills(jobDescription);
+        const reqList = extractedTech.length > 0 ? extractedTech : ['Software Engineering'];
+
+        const matched = [];
+        const missing = [];
+        reqList.forEach(r => {
+          const isMatch = userSkills.some(u => {
+            const uL = u.trim().toLowerCase();
+            const rL = r.trim().toLowerCase();
+            return uL === rL || uL.includes(rL) || rL.includes(uL);
+          });
+          if (isMatch) matched.push(r);
+          else missing.push(r);
+        });
+
+        const pct = reqList.length > 0 ? Math.round((matched.length / reqList.length) * 100) : 0;
+
+        const fallbackRoadmap = missing.slice(0, 4).map((sk, idx) => ({
+          week: idx + 1,
+          focus_area: `Mastering ${sk}`,
+          topics: [sk, `${sk} Core Concepts`, `${sk} Best Practices`],
+          recommended_resources: [`Official ${sk} Documentation`, `Interactive Tutorials`],
+          hands_on_project: `Build a production-grade mini project using ${sk}`
+        }));
+
+        const fallbackData = {
+          job_title: jobTitle || 'Target Role',
+          match_percentage: pct,
+          matched_skills: matched,
+          missing_tech_skills: missing,
+          missing_soft_skills: [],
+          all_required_tech: reqList,
+          all_required_soft: [],
+          roadmap: fallbackRoadmap
+        };
+
+        setResult(fallbackData);
+        addToast('Analysis complete using client engine (Backend is offline/unreachable).', 'info');
+        return;
       }
-      setError(errorMsg);
+
+      setError(err.message || 'An error occurred during analysis');
     } finally {
       setLoading(false);
     }

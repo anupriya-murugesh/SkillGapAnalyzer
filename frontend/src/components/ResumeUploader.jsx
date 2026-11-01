@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { API_BASE_URL } from '../config';
+import { extractAllResumeSkills } from '../utils/cleanText';
 
 export default function ResumeUploader({ onSkillsExtracted }) {
   const [loading, setLoading] = useState(false);
@@ -33,7 +34,7 @@ export default function ResumeUploader({ onSkillsExtracted }) {
       clearTimeout(timeoutId);
 
       if (!response.ok) {
-        throw new Error('Analysis request failed. Please check the backend connection.');
+        throw new Error(`Analysis request failed with status ${response.status}. Please check backend connection.`);
       }
 
       const data = await response.json();
@@ -50,7 +51,36 @@ export default function ResumeUploader({ onSkillsExtracted }) {
       if (err.name === 'AbortError') {
         setError('Extraction timed out. The AI model or server took too long. Please try again or paste key skills directly.');
       } else {
-        setError(err.message || 'Failed to extract resume.');
+        const isNetworkErr =
+          (err.name === 'TypeError' && String(err.message).toLowerCase().includes('fetch')) ||
+          String(err.message).toLowerCase().includes('failed to fetch') ||
+          String(err.message).toLowerCase().includes('networkerror') ||
+          String(err.message).toLowerCase().includes('load failed');
+
+        if (isNetworkErr) {
+          // Attempt client-side offline fallback extraction if resume text is present
+          if (payload.resume_text) {
+            const fallbackSkills = extractAllResumeSkills(payload.resume_text);
+            if (fallbackSkills && fallbackSkills.length > 0) {
+              onSkillsExtracted(fallbackSkills);
+              setError(`Notice: Backend unreachable. Extracted ${fallbackSkills.length} skills using built-in offline skill scanner. To enable AI analysis, ensure the backend is running at http://127.0.0.1:8000.`);
+              return;
+            }
+          }
+
+          const isProd = typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+          if (isProd) {
+            setError(
+              `Backend Connection Error: Your deployed frontend is trying to call a local backend (${API_BASE_URL || 'localhost:8000'}). Please deploy your FastAPI backend online (e.g. Render/Railway) and configure the VITE_BACKEND_URL environment variable in your Netlify/Vercel dashboard.`
+            );
+          } else {
+            setError(
+              `Backend Connection Error: Unable to reach backend at ${API_BASE_URL || 'http://127.0.0.1:8000'}. Please ensure your FastAPI backend is running in your terminal: 'uvicorn main:app --reload --port 8000' (or 'python main.py').`
+            );
+          }
+        } else {
+          setError(err.message || 'Failed to extract resume.');
+        }
       }
     } finally {
       clearTimeout(timeoutId);
@@ -73,13 +103,21 @@ export default function ResumeUploader({ onSkillsExtracted }) {
 
     try {
       if (isPdf) {
+        // Decode raw bytes to text for resilient client-side fallback
+        let rawDecoded = '';
+        try {
+          const buffer = await file.arrayBuffer();
+          rawDecoded = new TextDecoder('latin1').decode(buffer);
+        } catch (_) {}
+
         // Read PDF as Base64 Data URL
         const reader = new FileReader();
         reader.onload = async () => {
           const base64Content = reader.result;
           await sendExtractRequest({
             file_content_base64: base64Content,
-            file_name: fileName
+            file_name: fileName,
+            resume_text: rawDecoded
           });
         };
         reader.onerror = () => {

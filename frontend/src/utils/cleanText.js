@@ -63,6 +63,40 @@ export function extractKeySkills(text, existingTags = []) {
   return result.length > 0 ? result.slice(0, 7) : ["Software Engineering"];
 }
 
+export function extractAllResumeSkills(text) {
+  if (!text || typeof text !== 'string') return [];
+
+  const catalog = [
+    // Programming Languages
+    "Python", "JavaScript", "TypeScript", "Java", "C++", "C#", "Go", "Rust", "PHP", "Ruby",
+    "Swift", "Kotlin", "Scala", "Dart", "R", "SQL", "HTML", "HTML5", "CSS", "CSS3", "Bash", "Shell", "PowerShell",
+    // Frontend
+    "React", "React.js", "Next.js", "Vue", "Vue.js", "Angular", "Svelte", "Redux", "Zustand", "Tailwind CSS",
+    "TailwindCSS", "Bootstrap", "Material UI", "SASS", "SCSS", "Webpack", "Vite", "jQuery",
+    // Backend & APIs
+    "Node.js", "Express.js", "Express", "FastAPI", "Django", "Flask", "Spring Boot", "Spring", "ASP.NET",
+    "GraphQL", "REST APIs", "RESTful API", "gRPC", "WebSockets", "Microservices",
+    // Databases
+    "PostgreSQL", "MySQL", "MongoDB", "Redis", "SQLite", "DynamoDB", "Cassandra", "Supabase", "Firebase",
+    // DevOps, Cloud & Tools
+    "AWS", "Azure", "GCP", "Google Cloud", "Docker", "Kubernetes", "Terraform", "CI/CD", "Git", "GitHub Actions",
+    "Linux", "Nginx", "Jenkins", "Ansible", "Kafka", "RabbitMQ", "Prometheus", "Grafana",
+    // AI, Data & Architecture
+    "Machine Learning", "Deep Learning", "PyTorch", "TensorFlow", "Pandas", "NumPy", "Scikit-Learn",
+    "Computer Vision", "NLP", "LLM", "Generative AI", "System Design", "Agile", "Scrum", "Unit Testing", "Jest"
+  ];
+
+  const found = new Set();
+  catalog.forEach(skill => {
+    const escaped = skill.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+    if (new RegExp(`(?:^|[^a-zA-Z0-9_#+])${escaped}(?:$|[^a-zA-Z0-9_#+])`, 'i').test(text)) {
+      found.add(skill);
+    }
+  });
+
+  return Array.from(found).sort((a, b) => a.localeCompare(b));
+}
+
 export function formatSalary(min, max, currency = 'USD', period = 'YEAR') {
   if (!min && !max) return null;
 
