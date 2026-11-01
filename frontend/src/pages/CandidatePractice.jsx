@@ -464,7 +464,39 @@ export default function CandidatePractice() {
       const questions = data?.questions || [];
       const challenges = codeData?.challenges || [];
 
-      setMcqQuestions(questions);
+      // Merge Admin-Added Custom Questions from Question Bank
+      let customAdminQuestions = [];
+      try {
+        const rawCustom = localStorage.getItem('bridgeiq_admin_custom_questions');
+        if (rawCustom) {
+          const parsed = JSON.parse(rawCustom);
+          if (Array.isArray(parsed)) {
+            const lName = langName.toLowerCase();
+            customAdminQuestions = parsed.filter(q => {
+              const qSkill = (q.skill || '').toLowerCase();
+              return (
+                qSkill === lName ||
+                lName.includes(qSkill) ||
+                qSkill.includes(lName) ||
+                (lName.includes('sql') && qSkill.includes('sql'))
+              );
+            });
+          }
+        }
+      } catch (e) {
+        console.warn('Could not read custom admin questions:', e);
+      }
+
+      // Prepend admin custom questions so they appear first as Question 1, capped strictly at 20
+      const mergedList = [...customAdminQuestions, ...questions].slice(0, 20);
+
+      // Re-index questions cleanly from 1 to 20
+      const finalQuestions = mergedList.map((q, idx) => ({
+        ...q,
+        id: idx + 1
+      }));
+
+      setMcqQuestions(finalQuestions);
       setCodingChallenges(challenges);
 
       // Init starter codes

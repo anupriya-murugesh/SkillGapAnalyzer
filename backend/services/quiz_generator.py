@@ -500,6 +500,211 @@ def get_curated_mcqs(skill: str) -> list:
             }
         ]
 
+    # SQL & RELATIONAL DATABASES 20-QUESTION HARD BANK
+    if "sql" in s or "database" in s or "postgres" in s or "mysql" in s:
+        return [
+            {
+                "id": 1,
+                "category": "Predict the Output",
+                "question": "What is the result of the following query when evaluating NULL ternary logic in SQL?",
+                "code_snippet": "SELECT CASE \n    WHEN NULL = NULL THEN 'Equal'\n    WHEN NULL IS NULL THEN 'Is Null'\n    ELSE 'Unknown'\nEND AS result;",
+                "options": ["Is Null", "Equal", "Unknown", "SyntaxError"],
+                "correct_answer": "Is Null",
+                "explanation": "In standard SQL, NULL = NULL evaluates to UNKNOWN (truth value neither TRUE nor FALSE). NULL IS NULL evaluates strictly to TRUE.",
+                "difficulty": "Hard"
+            },
+            {
+                "id": 2,
+                "category": "Time & Space Complexity",
+                "question": "A composite B-Tree index exists on (company_id, department_id, created_at). Which WHERE clause CANNOT use this index?",
+                "code_snippet": "-- Index on (company_id, department_id, created_at)\nSELECT * FROM employees WHERE department_id = 42;",
+                "options": ["WHERE department_id = 42 (Violates Leftmost Prefix rule)", "WHERE company_id = 10 AND department_id = 42", "WHERE company_id = 10", "WHERE company_id = 10 AND department_id = 42 AND created_at > '2025-01-01'"],
+                "correct_answer": "WHERE department_id = 42 (Violates Leftmost Prefix rule)",
+                "explanation": "B-Tree composite indexes require queries to filter on the leading leftmost column (company_id). Skipping company_id forces a sequential table scan.",
+                "difficulty": "Hard"
+            },
+            {
+                "id": 3,
+                "category": "System & Concurrency",
+                "question": "Which transaction isolation level prevents Dirty Reads and Non-Repeatable Reads, but allows Phantom Reads in ANSI SQL?",
+                "code_snippet": "SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;",
+                "options": ["Repeatable Read", "Read Committed", "Read Uncommitted", "Serializable"],
+                "correct_answer": "Repeatable Read",
+                "explanation": "Repeatable Read ensures that any data read cannot be modified by another transaction. In ANSI SQL-92, it permits phantom rows unless Serializable or MVCC snapshot isolation is enforced.",
+                "difficulty": "Hard"
+            },
+            {
+                "id": 4,
+                "category": "Predict the Output",
+                "question": "What is the output difference between COUNT(*) and COUNT(salary)?",
+                "code_snippet": "-- Table employees has 5 rows: salaries are [1000, 2000, NULL, 4000, NULL]\nSELECT COUNT(*), COUNT(salary) FROM employees;",
+                "options": ["5 and 3", "5 and 5", "3 and 3", "5 and NULL"],
+                "correct_answer": "5 and 3",
+                "explanation": "COUNT(*) counts all physical rows regardless of content. COUNT(column_name) counts only non-NULL occurrences of that column.",
+                "difficulty": "Hard"
+            },
+            {
+                "id": 5,
+                "category": "Spot the Bug",
+                "question": "Identify why this query produces duplicate rows and degrades query throughput.",
+                "code_snippet": "SELECT id, name FROM users \nUNION \nSELECT id, name FROM archived_users;",
+                "options": ["UNION performs an expensive DISTINCT sort/hash across the entire result set; use UNION ALL if records are mutually disjoint", "UNION causes an unhandled foreign key violation", "archived_users cannot be unioned without an explicit JOIN", "SELECT requires column alias casting under ANSI specs"],
+                "correct_answer": "UNION performs an expensive DISTINCT sort/hash across the entire result set; use UNION ALL if records are mutually disjoint",
+                "explanation": "UNION deduplicates by sorting or hashing all tuples in memory, adding heavy CPU overhead. UNION ALL simply concatenates result sets in O(1) time.",
+                "difficulty": "Hard"
+            },
+            {
+                "id": 6,
+                "category": "Predict the Output",
+                "question": "What is the difference between RANK() and DENSE_RANK() for values (100, 100, 200)?",
+                "code_snippet": "SELECT val, \n       RANK() OVER (ORDER BY val) as r,\n       DENSE_RANK() OVER (ORDER BY val) as dr\nFROM (VALUES (100), (100), (200)) AS t(val);",
+                "options": ["r: 1, 1, 3 | dr: 1, 1, 2", "r: 1, 2, 3 | dr: 1, 1, 2", "r: 1, 1, 2 | dr: 1, 1, 3", "Both output 1, 1, 2"],
+                "correct_answer": "r: 1, 1, 3 | dr: 1, 1, 2",
+                "explanation": "RANK() skips ranks following a tie (1, 1, 3). DENSE_RANK() does not leave gaps in rankings (1, 1, 2).",
+                "difficulty": "Hard"
+            },
+            {
+                "id": 7,
+                "category": "System & Concurrency",
+                "question": "What happens when two concurrent transactions execute SELECT ... FOR UPDATE on overlapping rows in reverse order?",
+                "code_snippet": "-- Transaction 1: Lock row A then row B\n-- Transaction 2: Lock row B then row A",
+                "options": ["A Deadlock occurs; the database deadlock detector detects a cycle in the wait-for graph and rolls back one transaction", "Both transactions proceed with optimistic lock escalation", "The database automatically merges the updates", "The database server crashes with an out-of-memory error"],
+                "correct_answer": "A Deadlock occurs; the database deadlock detector detects a cycle in the wait-for graph and rolls back one transaction",
+                "explanation": "Circular lock waits create a deadlock. The DBMS engine aborts one transaction and raises a deadlock error.",
+                "difficulty": "Hard"
+            },
+            {
+                "id": 8,
+                "category": "Time & Space Complexity",
+                "question": "When does a database optimizer choose a Sequential Scan (Seq Scan) over an Index Scan on an indexed column?",
+                "code_snippet": "-- Index exists on column 'status'\nSELECT * FROM orders WHERE status = 'pending';",
+                "options": ["When 'pending' matches a large percentage (e.g. >20%) of total table rows, making random I/O from index lookups slower than sequential disk reads", "Only when the index is corrupted or disabled", "Index scans are strictly always faster than sequential scans", "When the table has more than 100 columns"],
+                "correct_answer": "When 'pending' matches a large percentage (e.g. >20%) of total table rows, making random I/O from index lookups slower than sequential disk reads",
+                "explanation": "Index lookups require random disk I/O to fetch heap pages. If selectivity is low (matches many rows), a sequential scan with sequential read-ahead is faster.",
+                "difficulty": "Hard"
+            },
+            {
+                "id": 9,
+                "category": "Predict the Output",
+                "question": "What is returned by this query filtering with NOT IN containing a NULL?",
+                "code_snippet": "SELECT id FROM users \nWHERE id NOT IN (1, 2, NULL);",
+                "options": ["Empty result set (0 rows)", "All users except id 1 and 2", "SyntaxError", "Users with NULL ids only"],
+                "correct_answer": "Empty result set (0 rows)",
+                "explanation": "x NOT IN (1, 2, NULL) expands to x != 1 AND x != 2 AND x != NULL. Since x != NULL evaluates to UNKNOWN, the entire condition evaluates to FALSE/UNKNOWN, returning 0 rows.",
+                "difficulty": "Hard"
+            },
+            {
+                "id": 10,
+                "category": "Spot the Bug",
+                "question": "Why does this aggregation query fail to compile?",
+                "code_snippet": "SELECT department, COUNT(*) \nFROM employees \nWHERE COUNT(*) > 10 \nGROUP BY department;",
+                "options": ["Aggregate functions cannot appear in the WHERE clause; must use HAVING COUNT(*) > 10", "COUNT(*) requires an explicit column alias", "GROUP BY must precede WHERE in SQL grammar", "department must be wrapped in MAX()"],
+                "correct_answer": "Aggregate functions cannot appear in the WHERE clause; must use HAVING COUNT(*) > 10",
+                "explanation": "WHERE filters individual rows before aggregation occurs. Filtering on grouped aggregate values requires the HAVING clause.",
+                "difficulty": "Hard"
+            },
+            {
+                "id": 11,
+                "category": "System & Concurrency",
+                "question": "What is the purpose of the Write-Ahead Log (WAL) in relational databases like PostgreSQL and SQLite?",
+                "code_snippet": "-- WAL Engine Architecture",
+                "options": ["Ensures ACID durability by appending changes sequentially to disk before flushing dirty buffer pages to data files", "Stores temporary SQL query execution plans", "Compresses JSON documents before transmission", "Encrypts client connections"],
+                "correct_answer": "Ensures ACID durability by appending changes sequentially to disk before flushing dirty buffer pages to data files",
+                "explanation": "WAL guarantees that committed transactions can be recovered after a crash because disk writes are appended sequentially before modifying random data blocks.",
+                "difficulty": "Hard"
+            },
+            {
+                "id": 12,
+                "category": "Time & Space Complexity",
+                "question": "What index type in PostgreSQL is specifically optimized for full-text search and array containment (@>)?",
+                "code_snippet": "CREATE INDEX idx_tags ON articles USING GIN(tags);",
+                "options": ["GIN (Generalized Inverted Index)", "B-Tree Index", "BRIN (Block Range Index)", "Hash Index"],
+                "correct_answer": "GIN (Generalized Inverted Index)",
+                "explanation": "GIN indexes store inverted mappings from individual elements (e.g. array items, JSON keys, lexemes) to row pointers, enabling O(1) containment lookups.",
+                "difficulty": "Hard"
+            },
+            {
+                "id": 13,
+                "category": "Predict the Output",
+                "question": "What does COALESCE(NULL, NULL, 'Alpha', 'Beta') evaluate to?",
+                "code_snippet": "SELECT COALESCE(NULL, NULL, 'Alpha', 'Beta');",
+                "options": ["Alpha", "NULL", "Beta", "Alpha, Beta"],
+                "correct_answer": "Alpha",
+                "explanation": "COALESCE returns the first non-NULL expression among its arguments from left to right.",
+                "difficulty": "Hard"
+            },
+            {
+                "id": 14,
+                "category": "Spot the Bug",
+                "question": "What is the problem with using OFFSET 1000000 LIMIT 20 for deep pagination in SQL?",
+                "code_snippet": "SELECT * FROM logs ORDER BY created_at DESC OFFSET 1000000 LIMIT 20;",
+                "options": ["The database must read, sort, and discard 1,000,000 rows in memory before returning the 20 rows, degrading latency", "OFFSET cannot exceed 10,000 in SQL specifications", "ORDER BY created_at is prohibited with OFFSET", "LIMIT must precede OFFSET in SQL grammar"],
+                "correct_answer": "The database must read, sort, and discard 1,000,000 rows in memory before returning the 20 rows, degrading latency",
+                "explanation": "Deep OFFSET scans force the database to traverse all preceding rows. Keyset pagination (cursor-based WHERE id < last_id) resolves this in O(1).",
+                "difficulty": "Hard"
+            },
+            {
+                "id": 15,
+                "category": "System & Concurrency",
+                "question": "What is the difference between a Clustered Index and a Non-Clustered Index?",
+                "code_snippet": "-- Clustered vs Secondary Index Architecture",
+                "options": ["A clustered index dictates the physical storage order of table data on disk; secondary indexes store pointers back to clustered keys", "Clustered indexes only support unique constraints", "Non-clustered indexes cannot be used in WHERE queries", "A table can contain up to 16 clustered indexes"],
+                "correct_answer": "A clustered index dictates the physical storage order of table data on disk; secondary indexes store pointers back to clustered keys",
+                "explanation": "Table rows can only be physically sorted in one order on disk, so only one clustered index exists per table. Secondary indexes store B-Tree pointers.",
+                "difficulty": "Hard"
+            },
+            {
+                "id": 16,
+                "category": "Predict the Output",
+                "question": "What is the result of using a Common Table Expression (CTE) with RECURSIVE for hierarchical traversal?",
+                "code_snippet": "WITH RECURSIVE nums AS (\n    SELECT 1 AS n\n    UNION ALL\n    SELECT n + 1 FROM nums WHERE n < 3\n)\nSELECT SUM(n) FROM nums;",
+                "options": ["6", "3", "1", "Infinite loop"],
+                "correct_answer": "6",
+                "explanation": "The base query yields 1. Recursive steps yield 2, then 3 (terminating when n < 3 is false). SUM(1 + 2 + 3) = 6.",
+                "difficulty": "Hard"
+            },
+            {
+                "id": 17,
+                "category": "Spot the Bug",
+                "question": "What is wrong with this query trying to find departments with average salary above 50,000?",
+                "code_snippet": "SELECT dept_id, AVG(salary) \nFROM employees \nGROUP BY dept_id \nHAVING salary > 50000;",
+                "options": ["HAVING requires an aggregate condition (e.g. HAVING AVG(salary) > 50000), not an unaggregated column salary", "dept_id must be indexed to use HAVING", "AVG() requires explicit integer casting", "GROUP BY cannot be followed by HAVING"],
+                "correct_answer": "HAVING requires an aggregate condition (e.g. HAVING AVG(salary) > 50000), not an unaggregated column salary",
+                "explanation": "HAVING filters groups of aggregated records. To filter on individual employee salaries before grouping, use WHERE salary > 50000.",
+                "difficulty": "Hard"
+            },
+            {
+                "id": 18,
+                "category": "Time & Space Complexity",
+                "question": "What is the time complexity of a Hash Join between Table A (M rows) and Table B (N rows)?",
+                "code_snippet": "-- Hash Join: builds hash table on smaller relation",
+                "options": ["O(M + N) time and O(min(M, N)) memory space", "O(M * N) quadratic time", "O(M log N) time", "O(1) time"],
+                "correct_answer": "O(M + N) time and O(min(M, N)) memory space",
+                "explanation": "Hash join builds an in-memory hash table on the smaller relation (O(min(M,N))), then probes it with the larger relation, achieving linear O(M + N) time.",
+                "difficulty": "Hard"
+            },
+            {
+                "id": 19,
+                "category": "System & Concurrency",
+                "question": "What is the purpose of MVCC (Multi-Version Concurrency Control) in PostgreSQL?",
+                "code_snippet": "-- MVCC Snapshot Isolation",
+                "options": ["Allows readers to not block writers and writers to not block readers by maintaining multiple row snapshots with xmin/xmax transaction IDs", "Encrypts database backups incrementally", "Compresses table partitions automatically", "Converts relational schemas to NoSQL documents"],
+                "correct_answer": "Allows readers to not block writers and writers to not block readers by maintaining multiple row snapshots with xmin/xmax transaction IDs",
+                "explanation": "MVCC provides snapshot isolation. Updates create new row versions rather than in-place overwrites, allowing concurrent non-blocking reads.",
+                "difficulty": "Hard"
+            },
+            {
+                "id": 20,
+                "category": "Predict the Output",
+                "question": "What is the computed result of window framing with ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW?",
+                "code_snippet": "SELECT val, \n       SUM(val) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as running_total\nFROM (VALUES (1, 10), (2, 20), (3, 30)) AS t(id, val);",
+                "options": ["Row 1: 10, Row 2: 30, Row 3: 60 (Cumulative Running Total)", "Row 1: 60, Row 2: 60, Row 3: 60", "Row 1: 10, Row 2: 20, Row 3: 30", "SyntaxError"],
+                "correct_answer": "Row 1: 10, Row 2: 30, Row 3: 60 (Cumulative Running Total)",
+                "explanation": "ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW computes a cumulative running sum from the first row up to the current row.",
+                "difficulty": "Hard"
+            }
+        ]
+
     # GENERIC HIGH-TECH HARD FALLBACK FOR OTHER LANGUAGES (Java, C++, Go, Rust, etc.)
     return [
         {
@@ -589,6 +794,89 @@ def randomize_and_format_questions(questions: list, count: int = 20) -> list:
         
     return formatted
 
+def pad_curated_to_count(curated: list, skill: str, count: int = 20) -> list:
+    """Ensures the question pool always has at least `count` high-signal questions across all archetypes."""
+    pool = list(curated)
+    supplemental_templates = [
+        {
+            "category": "System & Concurrency",
+            "question": f"In production systems using {skill}, what architectural pattern prevents cascading microservice failures?",
+            "code_snippet": f"// Resilience & Circuit Breaking pattern in {skill}",
+            "options": [
+                "Circuit Breaker with exponential backoff retries and fallback endpoints",
+                "Infinite immediate synchronous retries without timeout limits",
+                "Spawning unlimited unconstrained worker threads",
+                "Disabling logging and monitoring to save CPU cycles"
+            ],
+            "correct_answer": "Circuit Breaker with exponential backoff retries and fallback endpoints",
+            "explanation": "Circuit breakers trip open when downstream dependencies fail, shielding the caller from socket exhaustion and cascading outages.",
+            "difficulty": "Hard"
+        },
+        {
+            "category": "Time & Space Complexity",
+            "question": f"What is the average and worst-case time complexity of QuickSelect to find the k-th smallest element in {skill}?",
+            "code_snippet": f"// QuickSelect algorithm in {skill}\nkth_element = quickselect(data, k)",
+            "options": [
+                "Average: O(N), Worst-case: O(N^2)",
+                "Average: O(N log N), Worst-case: O(N log N)",
+                "Average: O(1), Worst-case: O(N)",
+                "Average: O(log N), Worst-case: O(N)"
+            ],
+            "correct_answer": "Average: O(N), Worst-case: O(N^2)",
+            "explanation": "QuickSelect partitions the array like QuickSort but recurses into only one half, yielding average O(N) time. Pathological pivots cause O(N^2) worst case.",
+            "difficulty": "Hard"
+        },
+        {
+            "category": "Spot the Bug",
+            "question": f"Identify the subtle resource leak in this I/O handler written in {skill}.",
+            "code_snippet": f"// Resource handler in {skill}\ndef handle_stream(conn):\n    buf = conn.read(4096)\n    if not buf: return\n    process_buffer(buf)",
+            "options": [
+                "The socket connection is never explicitly closed if an exception or early return occurs",
+                "Buffer size 4096 causes an unhandled kernel segmentation fault",
+                "conn.read() requires synchronous mutex locking under all OS kernels",
+                "process_buffer cannot access outer scope variables"
+            ],
+            "correct_answer": "The socket connection is never explicitly closed if an exception or early return occurs",
+            "explanation": "Failing to wrap I/O resources in a try-finally block or context manager causes file descriptor leaks on early returns or unhandled exceptions.",
+            "difficulty": "Hard"
+        },
+        {
+            "category": "Predict the Output",
+            "question": f"What occurs when an integer division by zero is evaluated in an unhandled block in {skill}?",
+            "code_snippet": f"// Unhandled zero division\nx = 100 / 0;",
+            "options": [
+                "Raises a runtime division exception (ZeroDivisionError / ArithmeticException) or triggers SIGFPE",
+                "Evaluates silently to NaN without interrupting execution",
+                "Evaluates to 0 in all release builds",
+                "Compiler silently replaces it with NULL"
+            ],
+            "correct_answer": "Raises a runtime division exception (ZeroDivisionError / ArithmeticException) or triggers SIGFPE",
+            "explanation": "Integer division by zero is an invalid mathematical operation that raises a runtime exception or hardware trap signal.",
+            "difficulty": "Hard"
+        },
+        {
+            "category": "System & Concurrency",
+            "question": f"When caching database queries in Redis for {skill} services, which policy mitigates the Cache Stampede (Thundering Herd) problem?",
+            "code_snippet": f"// Redis Cache Access in {skill}\nval = cache.get(key)\nif val is None:\n    val = db.fetch(key)\n    cache.set(key, val)",
+            "options": [
+                "Mutual exclusion locks (Mutex / Singleflight) or probabilistic early expiration (XFetch)",
+                "Setting TTL to 0 to make keys permanent",
+                "Flushing all Redis keys every minute",
+                "Disabling database query indexing"
+            ],
+            "correct_answer": "Mutual exclusion locks (Mutex / Singleflight) or probabilistic early expiration (XFetch)",
+            "explanation": "When an expensive cache key expires, thousands of concurrent requests can simultaneously hit the database. A mutex lock or probabilistic early refresh ensures only one query recalculates the cache.",
+            "difficulty": "Hard"
+        }
+    ]
+    idx = 0
+    while len(pool) < count:
+        tmpl = dict(supplemental_templates[idx % len(supplemental_templates)])
+        tmpl["id"] = len(pool) + 1
+        pool.append(tmpl)
+        idx += 1
+    return pool
+
 def generate_quiz_questions(skill: str, count: int = 20, user_email: str = "") -> list:
     cleaned_skill = skill.strip()
     curated = get_curated_mcqs(cleaned_skill)
@@ -605,7 +893,8 @@ def generate_quiz_questions(skill: str, count: int = 20, user_email: str = "") -
         print("Gemini API query bypassed to save 100% of tokens.")
         print("===========================================================\n")
         logging.info(f"[quiz_generator] Gemini query bypassed for {user_email} to preserve tokens.")
-        return randomize_and_format_questions(curated, count)
+        curated_padded = pad_curated_to_count(curated, cleaned_skill, count)
+        return randomize_and_format_questions(curated_padded, count)
 
     api_keys = get_api_keys()
 
@@ -660,29 +949,14 @@ def generate_quiz_questions(skill: str, count: int = 20, user_email: str = "") -
                     return randomize_and_format_questions(parsed, count)
                 elif isinstance(parsed, list) and len(parsed) > 0:
                     combined = parsed + curated
-                    return randomize_and_format_questions(combined, count)
+                    padded = pad_curated_to_count(combined, cleaned_skill, count)
+                    return randomize_and_format_questions(padded, count)
             except Exception as err:
                 logging.warning(f"AI API key #{idx+1} note ({err}). Trying next key in pool if available.")
 
     # 2. Curated Bank with Random Sampling & Shuffled Options (Instant fallback when AI hits 429 quota or offline)
-    while len(curated) < count:
-        curated.append({
-            "id": len(curated) + 1,
-            "category": "System & Concurrency",
-            "question": f"In production systems using {cleaned_skill}, what architectural pattern prevents cascading microservice failures?",
-            "code_snippet": "// Resilience & Circuit Breaking pattern in " + cleaned_skill,
-            "options": [
-                "Circuit Breaker with exponential backoff retries and fallback endpoints",
-                "Infinite immediate synchronous retries without timeout limits",
-                "Spawning unlimited unconstrained worker threads",
-                "Disabling logging and monitoring to save CPU cycles"
-            ],
-            "correct_answer": "Circuit Breaker with exponential backoff retries and fallback endpoints",
-            "explanation": "Circuit breakers trip open when downstream dependencies fail, shielding the caller from socket exhaustion and cascading outages.",
-            "difficulty": "Hard"
-        })
-
-    return randomize_and_format_questions(curated, count)
+    curated_padded = pad_curated_to_count(curated, cleaned_skill, count)
+    return randomize_and_format_questions(curated_padded, count)
 
 # =========================================================================
 # 2 CODING CHALLENGES WITH 6 TEST CASES (4 PUBLIC + 2 HIDDEN EDGE CASES)
