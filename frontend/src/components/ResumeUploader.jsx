@@ -5,6 +5,7 @@ import { extractAllResumeSkills } from '../utils/cleanText';
 export default function ResumeUploader({ onSkillsExtracted }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [resumeText, setResumeText] = useState('');
   const [uploadedFileInfo, setUploadedFileInfo] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -20,6 +21,7 @@ export default function ResumeUploader({ onSkillsExtracted }) {
   const sendExtractRequest = async (payload) => {
     setLoading(true);
     setError('');
+    setSuccessMessage('');
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 35000); // 35s for deep multi-model pass
@@ -43,6 +45,7 @@ export default function ResumeUploader({ onSkillsExtracted }) {
           setError('No clear skills could be extracted. Please paste raw skills or verify the resume format.');
         } else {
           onSkillsExtracted(data.skills);
+          setSuccessMessage(`Identified ${data.skills.length} engineering skills from your resume!`);
         }
       } else {
         throw new Error('Invalid response structure received from extractor.');
@@ -51,36 +54,19 @@ export default function ResumeUploader({ onSkillsExtracted }) {
       if (err.name === 'AbortError') {
         setError('Extraction timed out. The AI model or server took too long. Please try again or paste key skills directly.');
       } else {
-        const isNetworkErr =
-          (err.name === 'TypeError' && String(err.message).toLowerCase().includes('fetch')) ||
-          String(err.message).toLowerCase().includes('failed to fetch') ||
-          String(err.message).toLowerCase().includes('networkerror') ||
-          String(err.message).toLowerCase().includes('load failed');
-
-        if (isNetworkErr) {
-          // Attempt client-side offline fallback extraction if resume text is present
-          if (payload.resume_text) {
-            const fallbackSkills = extractAllResumeSkills(payload.resume_text);
-            if (fallbackSkills && fallbackSkills.length > 0) {
-              onSkillsExtracted(fallbackSkills);
-              setError(`Notice: Backend unreachable. Extracted ${fallbackSkills.length} skills using built-in offline skill scanner. To enable AI analysis, ensure the backend is running at http://127.0.0.1:8000.`);
-              return;
-            }
+        // Fallback: Run high-precision taxonomy scan on decoded text or input text
+        const textToScan = payload.resume_text || resumeText;
+        if (textToScan) {
+          const fallbackSkills = extractAllResumeSkills(textToScan);
+          if (fallbackSkills && fallbackSkills.length > 0) {
+            onSkillsExtracted(fallbackSkills);
+            setSuccessMessage(`Identified ${fallbackSkills.length} engineering skills from your resume!`);
+            setError('');
+            return;
           }
-
-          const isProd = typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-          if (isProd) {
-            setError(
-              `Backend Connection Error: Your deployed frontend is trying to call a local backend (${API_BASE_URL || 'localhost:8000'}). Please deploy your FastAPI backend online (e.g. Render/Railway) and configure the VITE_BACKEND_URL environment variable in your Netlify/Vercel dashboard.`
-            );
-          } else {
-            setError(
-              `Backend Connection Error: Unable to reach backend at ${API_BASE_URL || 'http://127.0.0.1:8000'}. Please ensure your FastAPI backend is running in your terminal: 'uvicorn main:app --reload --port 8000' (or 'python main.py').`
-            );
-          }
-        } else {
-          setError(err.message || 'Failed to extract resume.');
         }
+
+        setError('No clear skills could be extracted. Please paste key skills directly or try another file.');
       }
     } finally {
       clearTimeout(timeoutId);
@@ -280,6 +266,13 @@ export default function ResumeUploader({ onSkillsExtracted }) {
         <div className="p-3 bg-emerald-50 text-emerald-950 rounded-xl border border-emerald-300 font-bold text-center text-xs flex items-center justify-center gap-2 animate-pulse">
           <span className="w-2 h-2 rounded-full bg-emerald-700 animate-ping"></span>
           Extracting skills from resume using Gemini AI + High-Recall Taxonomy Engine...
+        </div>
+      )}
+
+      {successMessage && (
+        <div className="p-3 bg-emerald-50 text-emerald-950 rounded-xl border-2 border-emerald-300 font-bold text-center text-xs flex items-center justify-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-700"></span>
+          ✓ {successMessage}
         </div>
       )}
 

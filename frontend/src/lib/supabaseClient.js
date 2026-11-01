@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
 let supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://lenjytkwvsbxjytfwqce.supabase.co/rest/v1/';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxlbmp5dGt3dnNieGp5dGZ3cWNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwODczNDMsImV4cCI6MjEwNjY2MzM0M30.xFhCAEscM5B22lTu7rCZEMGivRycqDTZKqfJkba-H5g';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxlbmp5dGt3dnNieGp5dGZ3cWNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwODczNDMsImV4cCI6MjEwNjY2MzM0M30.xFhCAEscM5B22lTu7rCZEMGivRycqDTZKqfJkba-H5g';
 
 // The JS client strictly requires the base URL. If the REST API path is included, strip it.
 if (supabaseUrl.includes('/rest/v1')) {
