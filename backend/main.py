@@ -13,6 +13,7 @@ import logging
 import re
 import time
 import base64
+import threading
 
 app = FastAPI()
 
@@ -78,22 +79,25 @@ def analyze_gap(request: AnalyzeGapRequest):
     # 2. Calculate the skill gap
     gap_result = calculate_skill_gap(request.user_skills, req_tech, req_soft)
     
-    # 3. Attempt to save to Supabase
+    # 3. Non-blocking asynchronous save to Supabase (so DNS hiccups or network drops never stall the response)
     saved_to_db = False
     if supabase is not None:
-        try:
-            data_to_insert = {
-                "user_id": request.user_id,
-                "job_title": request.job_title,
-                "match_percentage": gap_result["match_percentage"],
-                "matched_skills": gap_result["matched_skills"],
-                "missing_tech_skills": gap_result["missing_tech_skills"],
-                "missing_soft_skills": gap_result["missing_soft_skills"]
-            }
-            supabase.table("skill_gap_reports").insert(data_to_insert).execute()
-            saved_to_db = True
-        except Exception as e:
-            logging.error(f"Supabase insert failed: {e}")
+        def _async_save():
+            try:
+                data_to_insert = {
+                    "user_id": request.user_id,
+                    "job_title": request.job_title,
+                    "match_percentage": gap_result["match_percentage"],
+                    "matched_skills": gap_result["matched_skills"],
+                    "missing_tech_skills": gap_result["missing_tech_skills"],
+                    "missing_soft_skills": gap_result["missing_soft_skills"]
+                }
+                supabase.table("skill_gap_reports").insert(data_to_insert).execute()
+            except Exception as e:
+                logging.warning(f"Supabase background sync note: {e}")
+        
+        threading.Thread(target=_async_save, daemon=True).start()
+        saved_to_db = True
             
     # Generate Roadmap
     missing_all = gap_result["missing_tech_skills"] + gap_result["missing_soft_skills"]

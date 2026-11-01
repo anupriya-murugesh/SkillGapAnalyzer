@@ -1,12 +1,17 @@
 import os
+import re
 import logging
 from dotenv import load_dotenv
 from supabase import create_client, Client
 
 load_dotenv()
 
-SUPABASE_URL = os.environ.get("SUPABASE_URL")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "").strip()
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "").strip()
+
+if SUPABASE_URL:
+    # Ensure standard Supabase base URL format (without /rest/v1 trailing path)
+    SUPABASE_URL = re.sub(r'/rest/v1/?$', '', SUPABASE_URL).rstrip('/')
 
 if not SUPABASE_URL or not SUPABASE_KEY:
     logging.warning("SUPABASE_URL or SUPABASE_KEY is missing from environment variables.")

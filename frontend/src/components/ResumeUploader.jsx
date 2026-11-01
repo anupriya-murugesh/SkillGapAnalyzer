@@ -94,7 +94,7 @@ export default function ResumeUploader({ onSkillsExtracted }) {
         try {
           const buffer = await file.arrayBuffer();
           rawDecoded = new TextDecoder('latin1').decode(buffer);
-        } catch (_) {}
+        } catch (_) { }
 
         // Read PDF as Base64 Data URL
         const reader = new FileReader();
@@ -170,23 +170,22 @@ export default function ResumeUploader({ onSkillsExtracted }) {
   return (
     <div className="border-2 border-slate-200 rounded-3xl p-6 bg-slate-50 flex flex-col gap-4 shadow-sm">
       <div className="flex flex-col sm:flex-row gap-6 items-stretch">
-        
+
         {/* Dropzone File Upload */}
-        <div 
+        <div
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           onClick={() => !loading && fileInputRef.current?.click()}
-          className={`flex-1 flex flex-col justify-center border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all bg-white relative ${
-            isDragging 
-              ? 'border-emerald-600 bg-emerald-50/50 scale-[1.01]' 
+          className={`flex-1 flex flex-col justify-center border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all bg-white relative ${isDragging
+              ? 'border-emerald-600 bg-emerald-50/50 scale-[1.01]'
               : 'border-slate-300 hover:border-emerald-600 hover:bg-slate-50/50'
-          }`}
+            }`}
         >
-          <input 
+          <input
             ref={fileInputRef}
-            type="file" 
-            accept=".pdf,.txt,.md,.docx" 
+            type="file"
+            accept=".pdf,.txt,.md,.docx"
             onChange={handleFileUpload}
             disabled={loading}
             className="hidden"
@@ -222,7 +221,7 @@ export default function ResumeUploader({ onSkillsExtracted }) {
             </div>
           ) : (
             <div className="relative mx-auto inline-block">
-              <button 
+              <button
                 type="button"
                 disabled={loading}
                 className="px-6 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black rounded-xl shadow-xs transition-all text-xs cursor-pointer"
@@ -251,7 +250,7 @@ export default function ResumeUploader({ onSkillsExtracted }) {
             onChange={(e) => setResumeText(e.target.value)}
             disabled={loading}
           />
-          <button 
+          <button
             type="button"
             onClick={handleTextSubmit}
             disabled={loading || !resumeText.trim()}
@@ -261,7 +260,7 @@ export default function ResumeUploader({ onSkillsExtracted }) {
           </button>
         </div>
       </div>
-      
+
       {loading && (
         <div className="p-3 bg-emerald-50 text-emerald-950 rounded-xl border border-emerald-300 font-bold text-center text-xs flex items-center justify-center gap-2 animate-pulse">
           <span className="w-2 h-2 rounded-full bg-emerald-700 animate-ping"></span>

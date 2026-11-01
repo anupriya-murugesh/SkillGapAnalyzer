@@ -241,7 +241,7 @@ Example: ["Python", "FastAPI", "React", "PostgreSQL", "Docker", "Git", "Problem 
 Resume Text:
 {cleaned_text[:12000]}
 """
-        # Single responsive AI attempt (6s timeout) to prevent UI lag on network timeouts
+        # Fast AI attempt with 2.5s deadline to ensure instantaneous UI response
         for key in api_keys[:1]:
             if ai_success:
                 break
@@ -251,7 +251,7 @@ Resume Text:
                 response = model.generate_content(
                     prompt,
                     generation_config={"response_mime_type": "application/json"},
-                    request_options={"timeout": 6.0}
+                    request_options={"timeout": 2.5}
                 )
                 parsed = json.loads(response.text)
                 
