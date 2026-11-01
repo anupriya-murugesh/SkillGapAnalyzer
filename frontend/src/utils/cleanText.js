@@ -63,38 +63,140 @@ export function extractKeySkills(text, existingTags = []) {
   return result.length > 0 ? result.slice(0, 7) : ["Software Engineering"];
 }
 
+export const TAXONOMY_SKILLS = [
+  // Programming Languages
+  "Python", "JavaScript", "TypeScript", "Java", "C++", "C#", "C", "Go", "Golang", 
+  "Rust", "PHP", "Ruby", "Swift", "Kotlin", "R", "Scala", "Dart", "Perl", 
+  "Haskell", "Elixir", "Lua", "Julia", "SQL", "HTML", "HTML5", "CSS", "CSS3", 
+  "Bash", "Shell", "PowerShell",
+
+  // Frontend Frameworks & Libraries
+  "React", "React.js", "Next.js", "Vue", "Vue.js", "Nuxt.js", "Angular", "AngularJS", 
+  "Svelte", "SvelteKit", "Redux", "Redux Toolkit", "Zustand", "MobX", "Tailwind CSS", 
+  "Bootstrap", "Material UI", "Chakra UI", "SASS", "SCSS", "Less", "Webpack", 
+  "Vite", "Babel", "jQuery", "Three.js", "D3.js", "Chart.js",
+
+  // Backend Frameworks & APIs
+  "Node.js", "Express.js", "Express", "FastAPI", "Django", "Flask", "Spring", 
+  "Spring Boot", "ASP.NET", ".NET", ".NET Core", "Ruby on Rails", "Laravel", 
+  "Symfony", "NestJS", "Fastify", "Koa", "GraphQL", "REST API", "RESTful APIs", 
+  "gRPC", "WebSockets", "Microservices", "Celery", "Socket.io",
+
+  // Databases & Caching
+  "PostgreSQL", "MySQL", "MongoDB", "Redis", "SQLite", "Oracle", "Microsoft SQL Server", 
+  "Cassandra", "Elasticsearch", "DynamoDB", "Firebase", "Supabase", "MariaDB", 
+  "CouchDB", "Neo4j", "Memcached", "Prisma", "SQLAlchemy", "Mongoose", "Hibernate",
+
+  // Cloud & DevOps
+  "AWS", "Amazon Web Services", "Azure", "Microsoft Azure", "Google Cloud", 
+  "Google Cloud Platform", "GCP", "Docker", "Kubernetes", "K8s", "Terraform", 
+  "Ansible", "Jenkins", "CI/CD", "GitHub Actions", "GitLab CI", "CircleCI", 
+  "Linux", "Ubuntu", "Debian", "CentOS", "RedHat", "Unix", "Nginx", "Apache", 
+  "Serverless", "Prometheus", "Grafana", "Cloudflare", "OpenShift", "Helm",
+
+  // AI, ML, Data Science & Big Data
+  "Machine Learning", "Deep Learning", "Artificial Intelligence", "NLP", 
+  "Natural Language Processing", "Computer Vision", "LLMs", "Generative AI", 
+  "Prompt Engineering", "PyTorch", "TensorFlow", "Keras", "Scikit-Learn", 
+  "Pandas", "NumPy", "SciPy", "OpenCV", "Hugging Face", "LangChain", "LlamaIndex", 
+  "RAG", "Data Analysis", "Data Engineering", "Data Science", "ETL", "Apache Spark", 
+  "PySpark", "Hadoop", "Apache Kafka", "Kafka", "RabbitMQ", "Power BI", "Tableau", 
+  "Matplotlib", "Seaborn", "Jupyter", "Databricks", "Snowflake", "BigQuery",
+
+  // Mobile & Desktop Development
+  "React Native", "Flutter", "Android", "iOS", "SwiftUI", "Expo", "Ionic", 
+  "Electron", "Capacitor",
+
+  // Testing & Quality Assurance
+  "Git", "GitHub", "GitLab", "Bitbucket", "Postman", "Swagger", "OpenAPI", 
+  "Jest", "Mocha", "Chai", "PyTest", "Selenium", "Cypress", "Playwright", 
+  "JUnit", "Unit Testing", "Integration Testing", "End-to-End Testing", 
+  "TDD", "BDD", "Jira", "Confluence", "Figma",
+
+  // Software Engineering & Architecture
+  "Data Structures", "Algorithms", "Object-Oriented Programming", "OOP", 
+  "System Design", "Distributed Systems", "Design Patterns", "Clean Code", 
+  "Refactoring", "Microservices Architecture", "Agile", "Scrum", "Kanban",
+
+  // Professional & Soft Skills
+  "Problem Solving", "Critical Thinking", "Communication", "Team Collaboration", 
+  "Leadership", "Time Management", "Adaptability", "Mentoring", "Analytical Skills", 
+  "Stakeholder Management", "Project Management", "Attention to Detail"
+];
+
+export const CANONICAL_NAME_MAP = {
+  "react.js": "React",
+  "reactjs": "React",
+  "vue.js": "Vue",
+  "vuejs": "Vue",
+  "node.js": "Node.js",
+  "nodejs": "Node.js",
+  "express.js": "Express",
+  "next.js": "Next.js",
+  "nuxt.js": "Nuxt.js",
+  "restful apis": "REST API",
+  "rest api": "REST API",
+  "k8s": "Kubernetes",
+  "amazon web services": "AWS",
+  "google cloud platform": "GCP",
+  "google cloud": "GCP",
+  "microsoft azure": "Azure",
+  "html5": "HTML5",
+  "css3": "CSS3",
+  "js": "JavaScript",
+  "ts": "TypeScript",
+  "golang": "Go",
+  "postgresql": "PostgreSQL",
+  "postgres": "PostgreSQL",
+  "mongodb": "MongoDB",
+  "scikit-learn": "Scikit-Learn",
+  "scikitlearn": "Scikit-Learn",
+  "pytorch": "PyTorch",
+  "tensorflow": "TensorFlow",
+  "github actions": "GitHub Actions",
+  "ci/cd": "CI/CD",
+  "cicd": "CI/CD",
+  "object-oriented programming": "OOP",
+  "natural language processing": "NLP",
+  "large language models": "LLMs",
+  "llm": "LLMs",
+  "llms": "LLMs"
+};
+
+function canonicalizeSkill(name) {
+  const cleaned = name.trim();
+  const key = cleaned.toLowerCase();
+  return CANONICAL_NAME_MAP[key] || cleaned;
+}
+
 export function extractAllResumeSkills(text) {
   if (!text || typeof text !== 'string') return [];
 
-  const catalog = [
-    // Programming Languages
-    "Python", "JavaScript", "TypeScript", "Java", "C++", "C#", "Go", "Rust", "PHP", "Ruby",
-    "Swift", "Kotlin", "Scala", "Dart", "R", "SQL", "HTML", "HTML5", "CSS", "CSS3", "Bash", "Shell", "PowerShell",
-    // Frontend
-    "React", "React.js", "Next.js", "Vue", "Vue.js", "Angular", "Svelte", "Redux", "Zustand", "Tailwind CSS",
-    "TailwindCSS", "Bootstrap", "Material UI", "SASS", "SCSS", "Webpack", "Vite", "jQuery",
-    // Backend & APIs
-    "Node.js", "Express.js", "Express", "FastAPI", "Django", "Flask", "Spring Boot", "Spring", "ASP.NET",
-    "GraphQL", "REST APIs", "RESTful API", "gRPC", "WebSockets", "Microservices",
-    // Databases
-    "PostgreSQL", "MySQL", "MongoDB", "Redis", "SQLite", "DynamoDB", "Cassandra", "Supabase", "Firebase",
-    // DevOps, Cloud & Tools
-    "AWS", "Azure", "GCP", "Google Cloud", "Docker", "Kubernetes", "Terraform", "CI/CD", "Git", "GitHub Actions",
-    "Linux", "Nginx", "Jenkins", "Ansible", "Kafka", "RabbitMQ", "Prometheus", "Grafana",
-    // AI, Data & Architecture
-    "Machine Learning", "Deep Learning", "PyTorch", "TensorFlow", "Pandas", "NumPy", "Scikit-Learn",
-    "Computer Vision", "NLP", "LLM", "Generative AI", "System Design", "Agile", "Scrum", "Unit Testing", "Jest"
-  ];
+  const foundSet = new Set();
+  const foundNormalized = new Set();
 
-  const found = new Set();
-  catalog.forEach(skill => {
+  for (const skill of TAXONOMY_SKILLS) {
     const escaped = skill.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-    if (new RegExp(`(?:^|[^a-zA-Z0-9_#+])${escaped}(?:$|[^a-zA-Z0-9_#+])`, 'i').test(text)) {
-      found.add(skill);
+    let pattern;
+    if (["c", "r", "go"].includes(skill.toLowerCase())) {
+      pattern = new RegExp(`(?<![A-Za-z0-9])${escaped}(?![A-Za-z0-9])`, 'i');
+    } else if (/[+#./\-]/.test(skill)) {
+      pattern = new RegExp(`(?:^|[\\s,;/()\\[\\]])${escaped}(?:$|[\\s,;/()\\[\\]])`, 'i');
+    } else {
+      pattern = new RegExp(`\\b${escaped}\\b`, 'i');
     }
-  });
 
-  return Array.from(found).sort((a, b) => a.localeCompare(b));
+    if (pattern.test(text)) {
+      const canonical = canonicalizeSkill(skill);
+      const cLower = canonical.toLowerCase();
+      if (!foundNormalized.has(cLower)) {
+        foundNormalized.add(cLower);
+        foundSet.add(canonical);
+      }
+    }
+  }
+
+  return Array.from(foundSet).sort((a, b) => a.localeCompare(b));
 }
 
 export function formatSalary(min, max, currency = 'USD', period = 'YEAR') {
