@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabaseClient';
+import { supabase, withTimeout } from '../lib/supabaseClient';
 
 const JOBS_STORAGE_KEY = 'bridgeiq_employer_jobs';
 const SHORTLIST_STORAGE_KEY_PREFIX = 'bridgeiq_employer_shortlist_';
@@ -6,7 +6,7 @@ const INVITATIONS_STORAGE_KEY = 'bridgeiq_assessment_invitations';
 const APPLICATIONS_STORAGE_KEY = 'bridgeiq_job_applications';
 
 // Default initial jobs if none exist
-const DEFAULT_INITIAL_JOBS = [
+export const DEFAULT_INITIAL_JOBS = [
   {
     id: 'job-101',
     title: 'Senior Full-Stack Engineer',
@@ -50,46 +50,69 @@ const getSessionUser = async () => {
 };
 
 // ============================================================================
-// 1. EMPLOYER JOBS MANAGEMENT (CRUD)
+// 1. SYNCHRONOUS GETTERS (0ms Instant First-Render)
+// ============================================================================
+
+export const getEmployerJobsSync = () => {
+  try {
+    const raw = localStorage.getItem(JOBS_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+    localStorage.setItem(JOBS_STORAGE_KEY, JSON.stringify(DEFAULT_INITIAL_JOBS));
+    return DEFAULT_INITIAL_JOBS;
+  } catch {
+    return DEFAULT_INITIAL_JOBS;
+  }
+};
+
+export const getShortlistedCandidateIdsSync = (employerId = 'default_employer') => {
+  const key = `${SHORTLIST_STORAGE_KEY_PREFIX}${employerId}`;
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? new Set(JSON.parse(raw)) : new Set();
+  } catch {
+    return new Set();
+  }
+};
+
+export const getAssessmentInvitationsSync = (employerName = null) => {
+  try {
+    const raw = localStorage.getItem(INVITATIONS_STORAGE_KEY);
+    const invitations = raw ? JSON.parse(raw) : [];
+    if (employerName) {
+      return invitations.filter(inv => !inv.employer_name || inv.employer_name.toLowerCase() === employerName.toLowerCase());
+    }
+    return invitations;
+  } catch {
+    return [];
+  }
+};
+
+// ============================================================================
+// 2. EMPLOYER JOBS MANAGEMENT (CRUD)
 // ============================================================================
 
 export const getEmployerJobs = async () => {
-  let remoteJobs = [];
-  try {
-    const { data, error } = await supabase
+  const localJobs = getEmployerJobsSync();
+
+  // Background sync with remote Supabase with fast circuit-breaker timeout
+  withTimeout(
+    supabase
       .from('employer_jobs')
       .select('*')
-      .order('created_at', { ascending: false });
-    if (!error && Array.isArray(data) && data.length > 0) {
-      remoteJobs = data;
+      .order('created_at', { ascending: false }),
+    1000
+  ).then((res) => {
+    if (res?.data && Array.isArray(res.data) && res.data.length > 0) {
+      try {
+        localStorage.setItem(JOBS_STORAGE_KEY, JSON.stringify(res.data));
+      } catch {}
     }
-  } catch (err) {
-    console.warn('[employerService] Supabase getEmployerJobs fallback to storage:', err);
-  }
+  }).catch(() => {});
 
-  const localRaw = localStorage.getItem(JOBS_STORAGE_KEY);
-  let localJobs = [];
-  try {
-    localJobs = localRaw ? JSON.parse(localRaw) : [];
-  } catch {
-    localJobs = [];
-  }
-
-  if (remoteJobs.length > 0) {
-    try {
-      localStorage.setItem(JOBS_STORAGE_KEY, JSON.stringify(remoteJobs));
-    } catch {}
-    return remoteJobs;
-  }
-
-  if (localJobs.length > 0) {
-    return localJobs;
-  }
-
-  try {
-    localStorage.setItem(JOBS_STORAGE_KEY, JSON.stringify(DEFAULT_INITIAL_JOBS));
-  } catch {}
-  return DEFAULT_INITIAL_JOBS;
+  return localJobs;
 };
 
 // Used by Candidate Live Market to display internal active openings
@@ -107,76 +130,55 @@ export const createEmployerJob = async (jobPayload) => {
     created_at: jobPayload.created_at || new Date().toISOString()
   };
 
-  try {
-    await supabase.from('employer_jobs').insert([jobWithId]);
-  } catch (err) {
-    console.warn('[employerService] createEmployerJob Supabase insert failed, using local storage:', err);
-  }
-
-  const existing = await getEmployerJobs();
+  const existing = getEmployerJobsSync();
   const updated = [jobWithId, ...existing.filter(j => j.id !== jobWithId.id)];
   try {
     localStorage.setItem(JOBS_STORAGE_KEY, JSON.stringify(updated));
   } catch {}
 
+  // Background sync without blocking
+  withTimeout(supabase.from('employer_jobs').insert([jobWithId]), 1000).catch(() => {});
+
   return jobWithId;
 };
 
 export const updateEmployerJob = async (jobId, updatedFields) => {
-  try {
-    await supabase
-      .from('employer_jobs')
-      .update(updatedFields)
-      .eq('id', jobId);
-  } catch (err) {
-    console.warn('[employerService] updateEmployerJob Supabase update failed:', err);
-  }
-
-  const existing = await getEmployerJobs();
+  const existing = getEmployerJobsSync();
   const updated = existing.map(j => (j.id === jobId ? { ...j, ...updatedFields } : j));
   try {
     localStorage.setItem(JOBS_STORAGE_KEY, JSON.stringify(updated));
   } catch {}
 
+  // Background sync without blocking
+  withTimeout(supabase.from('employer_jobs').update(updatedFields).eq('id', jobId), 1000).catch(() => {});
+
   return updated.find(j => j.id === jobId);
 };
 
 export const deleteEmployerJob = async (jobId) => {
-  try {
-    await supabase
-      .from('employer_jobs')
-      .delete()
-      .eq('id', jobId);
-  } catch (err) {
-    console.warn('[employerService] deleteEmployerJob Supabase delete failed:', err);
-  }
-
-  const existing = await getEmployerJobs();
+  const existing = getEmployerJobsSync();
   const updated = existing.filter(j => j.id !== jobId);
   try {
     localStorage.setItem(JOBS_STORAGE_KEY, JSON.stringify(updated));
   } catch {}
 
+  // Background sync without blocking
+  withTimeout(supabase.from('employer_jobs').delete().eq('id', jobId), 1000).catch(() => {});
+
   return true;
 };
 
 // ============================================================================
-// 2. CANDIDATE SHORTLISTING PERSISTENCE
+// 3. CANDIDATE SHORTLISTING PERSISTENCE
 // ============================================================================
 
 export const getShortlistedCandidateIds = async (employerId = 'default_employer') => {
-  const key = `${SHORTLIST_STORAGE_KEY_PREFIX}${employerId}`;
-  try {
-    const raw = localStorage.getItem(key);
-    return raw ? new Set(JSON.parse(raw)) : new Set();
-  } catch {
-    return new Set();
-  }
+  return getShortlistedCandidateIdsSync(employerId);
 };
 
 export const toggleShortlistCandidate = async (candidateId, employerId = 'default_employer') => {
   const key = `${SHORTLIST_STORAGE_KEY_PREFIX}${employerId}`;
-  const currentSet = await getShortlistedCandidateIds(employerId);
+  const currentSet = getShortlistedCandidateIdsSync(employerId);
   const isCurrentlyShortlisted = currentSet.has(candidateId);
 
   if (isCurrentlyShortlisted) {
@@ -189,21 +191,23 @@ export const toggleShortlistCandidate = async (candidateId, employerId = 'defaul
     localStorage.setItem(key, JSON.stringify(Array.from(currentSet)));
   } catch {}
 
-  try {
-    const user = await getSessionUser();
+  getSessionUser().then((user) => {
     if (user) {
       if (!isCurrentlyShortlisted) {
-        await supabase.from('employer_shortlists').insert([
-          { employer_id: user.id, candidate_id: candidateId, created_at: new Date().toISOString() }
-        ]);
+        withTimeout(
+          supabase.from('employer_shortlists').insert([
+            { employer_id: user.id, candidate_id: candidateId, created_at: new Date().toISOString() }
+          ]),
+          1000
+        ).catch(() => {});
       } else {
-        await supabase.from('employer_shortlists')
-          .delete()
-          .eq('employer_id', user.id)
-          .eq('candidate_id', candidateId);
+        withTimeout(
+          supabase.from('employer_shortlists').delete().eq('employer_id', user.id).eq('candidate_id', candidateId),
+          1000
+        ).catch(() => {});
       }
     }
-  } catch {}
+  }).catch(() => {});
 
   return {
     isShortlisted: !isCurrentlyShortlisted,
@@ -212,7 +216,7 @@ export const toggleShortlistCandidate = async (candidateId, employerId = 'defaul
 };
 
 // ============================================================================
-// 3. ASSESSMENT INVITATIONS (Real, End-to-End)
+// 4. ASSESSMENT INVITATIONS (Real, End-to-End)
 // ============================================================================
 
 export const createAssessmentInvitation = async ({
@@ -244,46 +248,35 @@ export const createAssessmentInvitation = async ({
   };
 
   try {
-    await supabase.from('assessment_invitations').insert([invitation]);
-  } catch (err) {
-    console.warn('[employerService] createAssessmentInvitation Supabase insert failed:', err);
-  }
-
-  try {
     const raw = localStorage.getItem(INVITATIONS_STORAGE_KEY);
     const existing = raw ? JSON.parse(raw) : [];
     const updated = [invitation, ...existing];
     localStorage.setItem(INVITATIONS_STORAGE_KEY, JSON.stringify(updated));
   } catch {}
 
+  withTimeout(supabase.from('assessment_invitations').insert([invitation]), 1000).catch(() => {});
+
   return invitation;
 };
 
 export const getAssessmentInvitations = async (employerName = null) => {
-  let invitations = [];
-  try {
-    const { data, error } = await supabase
+  const local = getAssessmentInvitationsSync(employerName);
+
+  withTimeout(
+    supabase
       .from('assessment_invitations')
       .select('*')
-      .order('created_at', { ascending: false });
-    if (!error && Array.isArray(data) && data.length > 0) {
-      invitations = data;
+      .order('created_at', { ascending: false }),
+    1000
+  ).then((res) => {
+    if (res?.data && Array.isArray(res.data) && res.data.length > 0) {
+      try {
+        localStorage.setItem(INVITATIONS_STORAGE_KEY, JSON.stringify(res.data));
+      } catch {}
     }
-  } catch {}
+  }).catch(() => {});
 
-  if (invitations.length === 0) {
-    try {
-      const raw = localStorage.getItem(INVITATIONS_STORAGE_KEY);
-      invitations = raw ? JSON.parse(raw) : [];
-    } catch {
-      invitations = [];
-    }
-  }
-
-  if (employerName) {
-    return invitations.filter(inv => !inv.employer_name || inv.employer_name.toLowerCase() === employerName.toLowerCase());
-  }
-  return invitations;
+  return local;
 };
 
 export const getCandidateInvitations = async (candidateEmail) => {

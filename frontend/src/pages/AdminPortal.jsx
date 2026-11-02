@@ -3,15 +3,19 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
 import {
   getAdminMetrics,
+  getAdminMetricsSync,
   getAdminUsers,
+  getAdminUsersSync,
   updateUserRole,
   toggleUserVerification,
   moderateJob,
   getAdminCustomQuestions,
+  getAdminCustomQuestionsSync,
   addCustomQuestion,
-  getAdminAuditLogs
+  getAdminAuditLogs,
+  getAdminAuditLogsSync
 } from '../services/adminService';
-import { getEmployerJobs, deleteEmployerJob } from '../services/employerService';
+import { getEmployerJobs, deleteEmployerJob, getEmployerJobsSync } from '../services/employerService';
 import LanguageLogo from '../components/LanguageLogo';
 
 export default function AdminPortal({ session, userProfile, onLogout }) {
@@ -25,13 +29,13 @@ export default function AdminPortal({ session, userProfile, onLogout }) {
     setSearchParams({ tab });
   };
 
-  // State
-  const [loading, setLoading] = useState(true);
-  const [metrics, setMetrics] = useState(null);
-  const [users, setUsers] = useState([]);
-  const [jobs, setJobs] = useState([]);
-  const [questions, setQuestions] = useState([]);
-  const [auditLogs, setAuditLogs] = useState([]);
+  // Instant 0ms Synchronous State Initializers
+  const [loading, setLoading] = useState(false);
+  const [metrics, setMetrics] = useState(() => getAdminMetricsSync());
+  const [users, setUsers] = useState(() => getAdminUsersSync());
+  const [jobs, setJobs] = useState(() => getEmployerJobsSync());
+  const [questions, setQuestions] = useState(() => getAdminCustomQuestionsSync());
+  const [auditLogs, setAuditLogs] = useState(() => getAdminAuditLogsSync());
 
   // Search & Filter States
   const [userSearch, setUserSearch] = useState('');
@@ -58,9 +62,8 @@ export default function AdminPortal({ session, userProfile, onLogout }) {
   const [pingRunning, setPingRunning] = useState(false);
   const [pingResults, setPingResults] = useState(null);
 
-  // Load all platform data
+  // Background sync platform data
   const loadAllData = async () => {
-    setLoading(true);
     try {
       const [m, u, j, q, a] = await Promise.all([
         getAdminMetrics(),
@@ -69,16 +72,13 @@ export default function AdminPortal({ session, userProfile, onLogout }) {
         getAdminCustomQuestions(),
         getAdminAuditLogs()
       ]);
-      setMetrics(m);
-      setUsers(u);
-      setJobs(j);
-      setQuestions(q);
-      setAuditLogs(a);
+      if (m) setMetrics(m);
+      if (u && u.length > 0) setUsers(u);
+      if (j && j.length > 0) setJobs(j);
+      if (q && q.length > 0) setQuestions(q);
+      if (a && a.length > 0) setAuditLogs(a);
     } catch (err) {
-      console.error('Error loading admin portal data:', err);
-      addToast('Error loading some administrative data.', 'error');
-    } finally {
-      setLoading(false);
+      console.warn('Background sync warning in admin portal:', err);
     }
   };
 

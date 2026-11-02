@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-export default function Navbar({ session, userProfile, handleLogout, openAuth }) {
+export default function Navbar({ session, userProfile, handleLogout, openAuth, onSwitchRole }) {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [signInMenuOpen, setSignInMenuOpen] = useState(false);
+  const [roleMenuOpen, setRoleMenuOpen] = useState(false);
   const signInDropdownRef = useRef(null);
+  const roleSwitcherRef = useRef(null);
 
   const currentRole = userProfile?.role || session?.user?.user_metadata?.role || 'candidate';
   const userInitial = (userProfile?.full_name || session?.user?.email || 'A').trim().charAt(0).toUpperCase();
@@ -37,11 +39,14 @@ export default function Navbar({ session, userProfile, handleLogout, openAuth })
 
   const navLinks = currentRole === 'admin' ? adminLinks : currentRole === 'employer' ? employerLinks : candidateLinks;
 
-  // Close dropdown on outside click
+  // Close dropdowns on outside click
   useEffect(() => {
     function handleClickOutside(event) {
       if (signInDropdownRef.current && !signInDropdownRef.current.contains(event.target)) {
         setSignInMenuOpen(false);
+      }
+      if (roleSwitcherRef.current && !roleSwitcherRef.current.contains(event.target)) {
+        setRoleMenuOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -99,19 +104,99 @@ export default function Navbar({ session, userProfile, handleLogout, openAuth })
         <div className="hidden lg:flex items-center gap-3">
           {session ? (
             <div className="flex items-center gap-3 animate-in fade-in duration-300">
-              {/* Role Indicator Badge */}
-              <span className={`px-2.5 py-1 rounded-full text-xs font-bold border flex items-center gap-1.5 ${
-                currentRole === 'admin'
-                  ? 'bg-purple-100 border-purple-300 text-purple-950'
-                  : currentRole === 'employer'
-                  ? 'bg-amber-100 border-amber-300 text-amber-950'
-                  : 'bg-emerald-100 border-emerald-300 text-emerald-950'
-              }`}>
-                <span className={`w-2 h-2 rounded-full animate-pulse ${
-                  currentRole === 'admin' ? 'bg-purple-600' : currentRole === 'employer' ? 'bg-amber-600' : 'bg-emerald-600'
-                }`} />
-                <span>{currentRole === 'admin' ? '👑 Admin' : currentRole === 'employer' ? '🏢 Employer' : '🎯 Candidate'}</span>
-              </span>
+              {/* Quick Role Switcher Trigger Button */}
+              <div className="relative" ref={roleSwitcherRef}>
+                <button
+                  type="button"
+                  onClick={() => setRoleMenuOpen((prev) => !prev)}
+                  title="Click to instantly switch between Candidate, Employer, and Admin dashboards"
+                  className={`px-3 py-1.5 rounded-full text-xs font-black border-2 flex items-center gap-1.5 transition-all cursor-pointer shadow-xs hover:shadow-md hover:scale-105 active:scale-95 ${
+                    currentRole === 'admin'
+                      ? 'bg-purple-100 hover:bg-purple-200 border-purple-400 text-purple-950'
+                      : currentRole === 'employer'
+                      ? 'bg-amber-100 hover:bg-amber-200 border-amber-400 text-amber-950'
+                      : 'bg-emerald-100 hover:bg-emerald-200 border-emerald-400 text-emerald-950'
+                  }`}
+                >
+                  <span className={`w-2 h-2 rounded-full animate-pulse ${
+                    currentRole === 'admin' ? 'bg-purple-600' : currentRole === 'employer' ? 'bg-amber-600' : 'bg-emerald-600'
+                  }`} />
+                  <span>{currentRole === 'admin' ? '👑 Admin' : currentRole === 'employer' ? '🏢 Employer' : '🎯 Candidate'}</span>
+                  <span className="text-[9px] text-slate-600 ml-0.5">▼ Switch</span>
+                </button>
+
+                {/* Instant Role Switcher Dropdown */}
+                {roleMenuOpen && (
+                  <div className="absolute left-0 mt-2 w-64 rounded-2xl bg-white border-2 border-slate-200 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                    <div className="px-3 py-1.5 border-b border-slate-100 mb-1 flex items-center justify-between">
+                      <p className="text-[10px] font-black uppercase tracking-wider text-slate-600">
+                        ⚡ Quick Portal Switcher
+                      </p>
+                      <span className="text-[9px] font-extrabold bg-emerald-100 text-emerald-900 px-1.5 py-0.5 rounded-full">0ms</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRoleMenuOpen(false);
+                        if (onSwitchRole) onSwitchRole('candidate');
+                      }}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-xs font-bold transition-all cursor-pointer ${
+                        currentRole === 'candidate'
+                          ? 'bg-emerald-700 text-white shadow-xs'
+                          : 'text-slate-800 hover:bg-emerald-50 hover:text-emerald-900'
+                      }`}
+                    >
+                      <span>🎯</span>
+                      <div className="flex-1">
+                        <div>Candidate Portal</div>
+                        <div className={`text-[10px] font-normal ${currentRole === 'candidate' ? 'text-emerald-100' : 'text-slate-500'}`}>Roadmaps & Skill Assessments</div>
+                      </div>
+                      {currentRole === 'candidate' && <span className="text-xs">✓ Active</span>}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRoleMenuOpen(false);
+                        if (onSwitchRole) onSwitchRole('employer');
+                      }}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-xs font-bold transition-all cursor-pointer mt-1 ${
+                        currentRole === 'employer'
+                          ? 'bg-amber-600 text-white shadow-xs'
+                          : 'text-slate-800 hover:bg-amber-50 hover:text-amber-950'
+                      }`}
+                    >
+                      <span>🏢</span>
+                      <div className="flex-1">
+                        <div>Employer Dashboard</div>
+                        <div className={`text-[10px] font-normal ${currentRole === 'employer' ? 'text-amber-100' : 'text-slate-500'}`}>Talent Pool & Job Postings</div>
+                      </div>
+                      {currentRole === 'employer' && <span className="text-xs">✓ Active</span>}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRoleMenuOpen(false);
+                        if (onSwitchRole) onSwitchRole('admin');
+                      }}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-xs font-bold transition-all cursor-pointer mt-1 border-t border-slate-100 pt-1.5 ${
+                        currentRole === 'admin'
+                          ? 'bg-purple-800 text-white shadow-xs'
+                          : 'text-slate-800 hover:bg-purple-50 hover:text-purple-900'
+                      }`}
+                    >
+                      <span>👑</span>
+                      <div className="flex-1">
+                        <div>Admin Command Center</div>
+                        <div className={`text-[10px] font-normal ${currentRole === 'admin' ? 'text-purple-200' : 'text-purple-600'}`}>Full Platform Governance</div>
+                      </div>
+                      {currentRole === 'admin' && <span className="text-xs">✓ Active</span>}
+                    </button>
+                  </div>
+                )}
+              </div>
 
               {/* User Profile Avatar Pill */}
               <Link
@@ -220,12 +305,12 @@ export default function Navbar({ session, userProfile, handleLogout, openAuth })
                 )}
               </div>
 
-              {/* Candidate Registration Trigger */}
+              {/* Registration Trigger */}
               <Link
                 to="/candidate/signup"
-                className="px-5 py-2 text-sm font-extrabold bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl shadow-md shadow-emerald-700/25 transition-all active:scale-95 cursor-pointer"
+                className="px-4 py-2 text-sm font-extrabold text-white bg-emerald-700 hover:bg-emerald-800 rounded-xl transition-all shadow-md shadow-emerald-700/20 active:scale-95"
               >
-                Candidate Sign Up
+                Sign Up
               </Link>
             </div>
           )}
@@ -308,12 +393,52 @@ export default function Navbar({ session, userProfile, handleLogout, openAuth })
                 <span className="truncate">{session.user?.email}</span>
                 <span className="text-emerald-800 uppercase font-black text-[10px]">{currentRole}</span>
               </div>
+              
+              <div className="grid grid-cols-3 gap-1 pt-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    if (onSwitchRole) onSwitchRole('candidate');
+                  }}
+                  className={`py-2 px-1 text-center rounded-lg text-xs font-bold ${
+                    currentRole === 'candidate' ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-800'
+                  }`}
+                >
+                  🎯 Candidate
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    if (onSwitchRole) onSwitchRole('employer');
+                  }}
+                  className={`py-2 px-1 text-center rounded-lg text-xs font-bold ${
+                    currentRole === 'employer' ? 'bg-amber-600 text-white' : 'bg-slate-100 text-slate-800'
+                  }`}
+                >
+                  🏢 Employer
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    if (onSwitchRole) onSwitchRole('admin');
+                  }}
+                  className={`py-2 px-1 text-center rounded-lg text-xs font-bold ${
+                    currentRole === 'admin' ? 'bg-purple-800 text-white' : 'bg-slate-100 text-slate-800'
+                  }`}
+                >
+                  👑 Admin
+                </button>
+              </div>
+
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   handleLogout();
                 }}
-                className="w-full text-left px-4 py-2.5 text-sm font-bold text-red-700 hover:bg-red-50 rounded-xl transition-colors"
+                className="w-full text-left px-4 py-2.5 text-sm font-bold text-red-700 hover:bg-red-50 rounded-xl transition-colors mt-2"
               >
                 Logout
               </button>

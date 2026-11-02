@@ -1,5 +1,5 @@
-import { supabase } from '../lib/supabaseClient';
-import { getEmployerJobs, updateEmployerJob, deleteEmployerJob } from './employerService';
+import { supabase, withTimeout } from '../lib/supabaseClient';
+import { getEmployerJobs, updateEmployerJob, deleteEmployerJob, getEmployerJobsSync } from './employerService';
 import { ADMIN_EMAILS } from '../lib/auth';
 
 const ADMIN_USERS_STORAGE_KEY = 'bridgeiq_admin_users';
@@ -215,20 +215,61 @@ const INITIAL_AUDIT_LOGS = [
 ];
 
 // ============================================================================
-// 1. PLATFORM METRICS & KPI ENGINE
+// 1. SYNCHRONOUS GETTERS (0ms Instant First-Render)
 // ============================================================================
 
-export const getAdminMetrics = async () => {
-  const users = await getAdminUsers();
-  const jobs = await getEmployerJobs();
-  const auditLogs = await getAdminAuditLogs();
+export const getAdminUsersSync = () => {
+  try {
+    const localRaw = localStorage.getItem(ADMIN_USERS_STORAGE_KEY);
+    const localUsers = localRaw ? JSON.parse(localRaw) : [];
+    let merged = [...INITIAL_USERS];
+    if (localUsers.length > 0) {
+      localUsers.forEach(u => {
+        const idx = merged.findIndex(m => m.id === u.id || m.email?.toLowerCase() === u.email?.toLowerCase());
+        if (idx !== -1) merged[idx] = { ...merged[idx], ...u };
+        else merged.push(u);
+      });
+    }
+    return merged.map(u => {
+      if (ADMIN_EMAILS.some(e => e.toLowerCase() === u.email?.toLowerCase())) {
+        return { ...u, role: 'admin', is_master_admin: true, status: 'Active' };
+      }
+      return u;
+    });
+  } catch {
+    return INITIAL_USERS;
+  }
+};
+
+export const getAdminCustomQuestionsSync = () => {
+  try {
+    const raw = localStorage.getItem(ADMIN_QUESTIONS_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : INITIAL_CUSTOM_QUESTIONS;
+  } catch {
+    return INITIAL_CUSTOM_QUESTIONS;
+  }
+};
+
+export const getAdminAuditLogsSync = () => {
+  try {
+    const raw = localStorage.getItem(ADMIN_AUDIT_LOGS_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : INITIAL_AUDIT_LOGS;
+  } catch {
+    return INITIAL_AUDIT_LOGS;
+  }
+};
+
+export const getAdminMetricsSync = () => {
+  const users = getAdminUsersSync();
+  const jobs = getEmployerJobsSync();
+  const auditLogs = getAdminAuditLogsSync();
 
   const candidatesCount = users.filter(u => u.role === 'candidate').length;
   const employersCount = users.filter(u => u.role === 'employer').length;
   const adminsCount = users.filter(u => u.role === 'admin').length;
   const activeJobsCount = jobs.filter(j => (j.status || 'Active').toLowerCase() === 'active').length;
   
-  const totalTests = auditLogs.length + 32; // Include simulated historical runs
+  const totalTests = auditLogs.length + 32;
   const avgScore = Math.round(auditLogs.reduce((acc, curr) => acc + (curr.score || 0), 0) / Math.max(1, auditLogs.length));
 
   return {
@@ -249,62 +290,36 @@ export const getAdminMetrics = async () => {
 };
 
 // ============================================================================
-// 2. USER DIRECTORY & ROLE MANAGEMENT
+// 2. PLATFORM METRICS & KPI ENGINE (ASYNC)
+// ============================================================================
+
+export const getAdminMetrics = async () => {
+  return getAdminMetricsSync();
+};
+
+// ============================================================================
+// 3. USER DIRECTORY & ROLE MANAGEMENT
 // ============================================================================
 
 export const getAdminUsers = async () => {
-  // Try remote Supabase profiles first
-  let remoteUsers = [];
-  try {
-    const { data, error } = await supabase.from('profiles').select('*');
-    if (!error && Array.isArray(data) && data.length > 0) {
-      remoteUsers = data;
+  const localUsers = getAdminUsersSync();
+
+  // Background sync with Supabase profiles using circuit breaker
+  withTimeout(supabase.from('profiles').select('*'), 1000).then((res) => {
+    if (res?.data && Array.isArray(res.data) && res.data.length > 0) {
+      let merged = [...localUsers];
+      res.data.forEach(r => {
+        const idx = merged.findIndex(m => m.id === r.id || m.email?.toLowerCase() === r.email?.toLowerCase());
+        if (idx !== -1) merged[idx] = { ...merged[idx], ...r };
+        else merged.push(r);
+      });
+      try {
+        localStorage.setItem(ADMIN_USERS_STORAGE_KEY, JSON.stringify(merged));
+      } catch {}
     }
-  } catch (err) {
-    console.warn('[adminService] Supabase profiles fetch notice:', err);
-  }
+  }).catch(() => {});
 
-  // Load local store
-  const localRaw = localStorage.getItem(ADMIN_USERS_STORAGE_KEY);
-  let localUsers = [];
-  try {
-    localUsers = localRaw ? JSON.parse(localRaw) : [];
-  } catch {
-    localUsers = [];
-  }
-
-  // Ensure default master admins are always present and correctly elevated
-  let merged = [...INITIAL_USERS];
-
-  if (localUsers.length > 0) {
-    localUsers.forEach(u => {
-      const idx = merged.findIndex(m => m.id === u.id || m.email?.toLowerCase() === u.email?.toLowerCase());
-      if (idx !== -1) merged[idx] = { ...merged[idx], ...u };
-      else merged.push(u);
-    });
-  }
-
-  if (remoteUsers.length > 0) {
-    remoteUsers.forEach(r => {
-      const idx = merged.findIndex(m => m.id === r.id || m.email?.toLowerCase() === r.email?.toLowerCase());
-      if (idx !== -1) merged[idx] = { ...merged[idx], ...r };
-      else merged.push(r);
-    });
-  }
-
-  // Guarantee designated emails always have admin role
-  merged = merged.map(u => {
-    if (ADMIN_EMAILS.some(e => e.toLowerCase() === u.email?.toLowerCase())) {
-      return { ...u, role: 'admin', is_master_admin: true, status: 'Active' };
-    }
-    return u;
-  });
-
-  try {
-    localStorage.setItem(ADMIN_USERS_STORAGE_KEY, JSON.stringify(merged));
-  } catch {}
-
-  return merged;
+  return localUsers;
 };
 
 export const updateUserRole = async (userId, newRole) => {

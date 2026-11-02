@@ -1,4 +1,4 @@
-import { supabase } from './supabaseClient';
+import { supabase, withTimeout } from './supabaseClient';
 
 export const ADMIN_EMAILS = [
   'aadhilakshmanan07@gmail.com',
@@ -156,37 +156,13 @@ export async function getCurrentUser() {
 
 /**
  * Fetch user profile from the public.profiles table or local cache.
+ * Fast local-first strategy ensures 0ms latency for role changes and dashboard loads.
  * @param {string} userId
  */
 export async function getUserProfile(userId) {
   if (!userId) return null;
 
-  try {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .maybeSingle();
-
-    if (error) {
-      console.warn('Supabase query error on profiles table:', error.message);
-    }
-
-    if (data) {
-      if (isAdminEmail(data.email)) {
-        data.role = 'admin';
-      }
-      // Sync local cache
-      try {
-        localStorage.setItem(`bridgeiq_profile_${userId}`, JSON.stringify(data));
-      } catch {}
-      return data;
-    }
-  } catch (err) {
-    console.warn('Network or schema exception fetching profile:', err.message);
-  }
-
-  // Fallback to local storage cache
+  // 1. Instant check of local storage cache (0ms)
   try {
     const cached = localStorage.getItem(`bridgeiq_profile_${userId}`);
     if (cached) {
@@ -198,11 +174,37 @@ export async function getUserProfile(userId) {
     }
   } catch {}
 
+  // 2. Fallback to Supabase with fast circuit-breaker timeout
+  try {
+    const res = await withTimeout(
+      supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .maybeSingle(),
+      1200
+    );
+
+    const data = res?.data;
+    if (data) {
+      if (isAdminEmail(data.email)) {
+        data.role = 'admin';
+      }
+      try {
+        localStorage.setItem(`bridgeiq_profile_${userId}`, JSON.stringify(data));
+      } catch {}
+      return data;
+    }
+  } catch (err) {
+    console.warn('Network or schema exception fetching profile:', err?.message || err);
+  }
+
   return null;
 }
 
 /**
  * Upsert user profile into public.profiles with local cache fallback.
+ * Persists locally first to guarantee instantaneous UI updates.
  * @param {Object} profileData
  */
 export async function upsertUserProfile(profileData) {
@@ -215,32 +217,29 @@ export async function upsertUserProfile(profileData) {
     updated_at: new Date().toISOString(),
   };
 
-  let remoteSuccess = false;
-  let resultData = null;
-
+  // 1. Always persist locally first for 0ms responsiveness
   try {
-    const { data, error } = await supabase
+    localStorage.setItem(`bridgeiq_profile_${profileData.id}`, JSON.stringify(payload));
+  } catch {}
+
+  // 2. Non-blocking asynchronous sync to remote Supabase
+  withTimeout(
+    supabase
       .from('profiles')
       .upsert(payload, { onConflict: 'id' })
       .select()
-      .maybeSingle();
-
-    if (error) {
-      console.warn('Supabase profiles upsert warning:', error.message);
-    } else {
-      remoteSuccess = true;
-      resultData = data;
+      .maybeSingle(),
+    1200
+  ).then((res) => {
+    if (res?.data) {
+      try {
+        const merged = { ...payload, ...res.data, remoteSynced: true };
+        localStorage.setItem(`bridgeiq_profile_${profileData.id}`, JSON.stringify(merged));
+      } catch {}
     }
-  } catch (err) {
-    console.warn('Supabase profiles upsert exception:', err.message);
-  }
+  }).catch((err) => {
+    console.warn('Supabase profiles background upsert notice:', err?.message || err);
+  });
 
-  // Always persist locally for offline/demo resilience
-  try {
-    const merged = { ...(resultData || payload), remoteSynced: remoteSuccess };
-    localStorage.setItem(`bridgeiq_profile_${profileData.id}`, JSON.stringify(merged));
-    return merged;
-  } catch {
-    return resultData || payload;
-  }
+  return payload;
 }

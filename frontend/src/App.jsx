@@ -55,7 +55,40 @@ function MainApp() {
         setSession(currentSession);
       }
     });
-    return () => subscription.unsubscribe();
+    const handleSwitchRole = (newRole) => {
+    if (!session?.user) {
+      openAuth('login', newRole);
+      return;
+    }
+    const isMasterAdmin = isAdminEmail(session.user.email);
+    const effectiveRole = isMasterAdmin && newRole === 'admin' ? 'admin' : newRole;
+
+    const updated = {
+      ...userProfile,
+      id: session.user.id,
+      email: session.user.email,
+      role: effectiveRole,
+      full_name: userProfile?.full_name || (effectiveRole === 'employer' ? 'TechCorp Recruiter' : 'Candidate'),
+      company_name: effectiveRole === 'employer' ? (userProfile?.company_name || 'TechCorp Global Systems') : userProfile?.company_name
+    };
+    setUserProfile(updated);
+    try {
+      localStorage.setItem(`bridgeiq_profile_${session.user.id}`, JSON.stringify(updated));
+    } catch {}
+
+    if (effectiveRole === 'admin') {
+      addToast('Switched to Admin Command Center', 'info');
+      navigate('/admin');
+    } else if (effectiveRole === 'employer') {
+      addToast('Switched to Employer Dashboard', 'info');
+      navigate('/employer');
+    } else {
+      addToast('Switched to Candidate Portal', 'info');
+      navigate('/candidate');
+    }
+  };
+
+  return () => subscription.unsubscribe();
   }, []);
 
   const handleLogout = async () => {
@@ -72,31 +105,44 @@ function MainApp() {
     setIsAuthModalOpen(true);
   };
 
-  const handleAuthSuccess = async (newSession = null, chosenRole = null) => {
+  const handleAuthSuccess = (newSession = null, chosenRole = null) => {
     setIsAuthModalOpen(false);
     const resolvedSession = newSession || session;
 
     if (resolvedSession) {
       setSession(resolvedSession);
       const user = resolvedSession.user;
-      let profile = await getUserProfile(user?.id);
-
       const isMasterAdmin = isAdminEmail(user?.email);
+      const effectiveRole = isMasterAdmin
+        ? 'admin'
+        : (chosenRole || user?.user_metadata?.role || authRole || 'candidate');
+
+      // 1. Instant local profile resolution for zero latency
+      let profile = null;
+      try {
+        const cached = localStorage.getItem("bridgeiq_profile_" + user?.id);
+        if (cached) profile = JSON.parse(cached);
+      } catch {}
 
       if (!profile) {
         profile = {
           id: user?.id,
           email: user?.email,
-          role: isMasterAdmin ? 'admin' : (chosenRole || authRole || 'candidate'),
+          full_name: user?.user_metadata?.full_name || (effectiveRole === 'employer' ? 'TechCorp Recruiter' : 'Candidate'),
+          company_name: effectiveRole === 'employer' ? 'TechCorp Global Systems' : undefined,
+          role: effectiveRole,
           is_completed: false,
         };
+        try {
+          localStorage.setItem("bridgeiq_profile_" + user?.id, JSON.stringify(profile));
+        } catch {}
       } else if (isMasterAdmin) {
         profile.role = 'admin';
       }
 
       setUserProfile(profile);
 
-      const effectiveRole = profile.role || (isMasterAdmin ? 'admin' : chosenRole) || authRole;
+      // 2. Instant Zero-Latency Navigation (0ms)
       if (effectiveRole === 'admin') {
         addToast('Welcome Master Administrator to Bridge-IQ Command Center!', 'success');
         navigate('/admin');
@@ -107,8 +153,46 @@ function MainApp() {
         addToast('Welcome to Bridge-IQ Employer Platform!', 'success');
         navigate('/employer');
       }
+
+      // 3. Silent non-blocking profile sync in background
+      getUserProfile(user?.id).then((remoteProf) => {
+        if (remoteProf) setUserProfile(remoteProf);
+      }).catch(() => {});
     } else {
       addToast('Authenticated successfully.', 'success');
+    }
+  };
+
+  const handleSwitchRole = (newRole) => {
+    if (!session?.user) {
+      openAuth('login', newRole);
+      return;
+    }
+    const isMasterAdmin = isAdminEmail(session.user.email);
+    const effectiveRole = isMasterAdmin && newRole === 'admin' ? 'admin' : newRole;
+
+    const updated = {
+      ...userProfile,
+      id: session.user.id,
+      email: session.user.email,
+      role: effectiveRole,
+      full_name: userProfile?.full_name || (effectiveRole === 'employer' ? 'TechCorp Recruiter' : 'Candidate'),
+      company_name: effectiveRole === 'employer' ? (userProfile?.company_name || 'TechCorp Global Systems') : userProfile?.company_name
+    };
+    setUserProfile(updated);
+    try {
+      localStorage.setItem(`bridgeiq_profile_${session.user.id}`, JSON.stringify(updated));
+    } catch {}
+
+    if (effectiveRole === 'admin') {
+      addToast('Switched to Admin Command Center', 'info');
+      navigate('/admin');
+    } else if (effectiveRole === 'employer') {
+      addToast('Switched to Employer Dashboard', 'info');
+      navigate('/employer');
+    } else {
+      addToast('Switched to Candidate Portal', 'info');
+      navigate('/candidate');
     }
   };
 
@@ -121,6 +205,7 @@ function MainApp() {
         userProfile={userProfile}
         handleLogout={handleLogout}
         openAuth={openAuth}
+        onSwitchRole={handleSwitchRole}
       />
 
       <div className="flex-grow flex flex-col relative z-10">
@@ -269,6 +354,39 @@ function MainApp() {
 }
 
 export default function App() {
+  const handleSwitchRole = (newRole) => {
+    if (!session?.user) {
+      openAuth('login', newRole);
+      return;
+    }
+    const isMasterAdmin = isAdminEmail(session.user.email);
+    const effectiveRole = isMasterAdmin && newRole === 'admin' ? 'admin' : newRole;
+
+    const updated = {
+      ...userProfile,
+      id: session.user.id,
+      email: session.user.email,
+      role: effectiveRole,
+      full_name: userProfile?.full_name || (effectiveRole === 'employer' ? 'TechCorp Recruiter' : 'Candidate'),
+      company_name: effectiveRole === 'employer' ? (userProfile?.company_name || 'TechCorp Global Systems') : userProfile?.company_name
+    };
+    setUserProfile(updated);
+    try {
+      localStorage.setItem(`bridgeiq_profile_${session.user.id}`, JSON.stringify(updated));
+    } catch {}
+
+    if (effectiveRole === 'admin') {
+      addToast('Switched to Admin Command Center', 'info');
+      navigate('/admin');
+    } else if (effectiveRole === 'employer') {
+      addToast('Switched to Employer Dashboard', 'info');
+      navigate('/employer');
+    } else {
+      addToast('Switched to Candidate Portal', 'info');
+      navigate('/candidate');
+    }
+  };
+
   return (
     <ErrorBoundary>
       <ToastProvider>

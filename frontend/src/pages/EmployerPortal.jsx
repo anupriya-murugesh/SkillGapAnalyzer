@@ -4,13 +4,16 @@ import { supabase } from '../lib/supabaseClient';
 import { useToast } from '../context/ToastContext';
 import {
   getEmployerJobs,
+  getEmployerJobsSync,
   createEmployerJob,
   updateEmployerJob,
   deleteEmployerJob,
   getShortlistedCandidateIds,
+  getShortlistedCandidateIdsSync,
   toggleShortlistCandidate,
   createAssessmentInvitation,
   getAssessmentInvitations,
+  getAssessmentInvitationsSync,
   getApplicationsForJob
 } from '../services/employerService';
 
@@ -94,12 +97,12 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
   const recruiterName = userProfile?.full_name || session?.user?.email?.split('@')[0] || 'Talent Acquisition Team';
   const employerId = userProfile?.id || session?.user?.id || 'emp-demo';
 
-  // State
-  const [jobs, setJobs] = useState([]);
-  const [candidates, setCandidates] = useState([]);
-  const [invitations, setInvitations] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [shortlistedIds, setShortlistedIds] = useState(new Set());
+  // Instant 0ms Synchronous State Initializers
+  const [jobs, setJobs] = useState(() => getEmployerJobsSync());
+  const [candidates, setCandidates] = useState(INITIAL_TALENT_POOL);
+  const [invitations, setInvitations] = useState(() => getAssessmentInvitationsSync(companyName));
+  const [loading, setLoading] = useState(false);
+  const [shortlistedIds, setShortlistedIds] = useState(() => getShortlistedCandidateIdsSync(employerId));
   const [candidateSearch, setCandidateSearch] = useState('');
   const [candidateSkillFilter, setCandidateSkillFilter] = useState('all');
   const [onlyShortlistedFilter, setOnlyShortlistedFilter] = useState(false);
@@ -131,51 +134,46 @@ export default function EmployerPortal({ session, userProfile, onLogout }) {
   });
   const [submittingJob, setSubmittingJob] = useState(false);
 
-  // Load all data on mount
+  // Background non-blocking sync on mount or identity change
   useEffect(() => {
+    let isCancelled = false;
+
     async function loadData() {
-      setLoading(true);
       try {
-        // 1. Fetch Employer Jobs
-        const allJobs = await getEmployerJobs();
-        setJobs(allJobs);
+        const [allJobs, savedShortlists, allInvites] = await Promise.all([
+          getEmployerJobs(),
+          getShortlistedCandidateIds(employerId),
+          getAssessmentInvitations(companyName)
+        ]);
 
-        // 2. Fetch Shortlisted IDs for this employer
-        const savedShortlists = await getShortlistedCandidateIds(employerId);
-        setShortlistedIds(savedShortlists);
+        if (isCancelled) return;
+        if (allJobs && allJobs.length > 0) setJobs(allJobs);
+        if (savedShortlists) setShortlistedIds(savedShortlists);
+        if (allInvites) setInvitations(allInvites);
 
-        // 3. Fetch Invitations
-        const allInvites = await getAssessmentInvitations(companyName);
-        setInvitations(allInvites);
-
-        // 4. Fetch Candidates from Supabase profiles
-        let remoteCand = [];
         try {
           const { data: cData, error: cErr } = await supabase
             .from('profiles')
             .select('*')
             .eq('role', 'candidate');
-          if (!cErr && cData && cData.length > 0) {
-            remoteCand = cData.map((c, idx) => ({
+          if (!isCancelled && !cErr && cData && cData.length > 0) {
+            const remoteCand = cData.map((c, idx) => ({
               ...c,
               match_percentage: c.match_percentage || (82 + (idx * 5) % 15),
               l1_score: c.l1_score || (80 + (idx * 4) % 18)
             }));
+            setCandidates(remoteCand);
           }
         } catch (e) {
           console.warn('Candidate pool query:', e);
         }
-
-        setCandidates(remoteCand.length > 0 ? remoteCand : INITIAL_TALENT_POOL);
       } catch (err) {
-        console.error('Error loading employer portal data:', err);
-        setCandidates(INITIAL_TALENT_POOL);
-      } finally {
-        setLoading(false);
+        console.warn('Background sync error in employer portal:', err);
       }
     }
 
     loadData();
+    return () => { isCancelled = true; };
   }, [employerId, companyName]);
 
   // Post Job Handler

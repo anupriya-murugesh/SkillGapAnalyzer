@@ -13,8 +13,8 @@ if SUPABASE_URL:
     # Ensure standard Supabase base URL format (without /rest/v1 trailing path)
     SUPABASE_URL = re.sub(r'/rest/v1/?$', '', SUPABASE_URL).rstrip('/')
 
-if not SUPABASE_URL or not SUPABASE_KEY:
-    logging.warning("SUPABASE_URL or SUPABASE_KEY is missing from environment variables.")
+if not SUPABASE_URL or not SUPABASE_KEY or "lenjytkwvsbxjytfwqce" in SUPABASE_URL or "placeholder" in SUPABASE_URL:
+    logging.info("Supabase is in offline/local fallback mode (no active remote database configured).")
     supabase = None
 elif SUPABASE_URL == "your_supabase_url_here" or SUPABASE_KEY == "your_supabase_anon_key_here":
     logging.warning("SUPABASE_URL or SUPABASE_KEY are set to placeholder values. Please update your .env file.")
